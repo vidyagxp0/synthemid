@@ -991,6 +991,27 @@
                             <label for="comment">Comment <span class="text-danger">*</span></label>
                             <textarea required name="comment" value="{{ old('comment') }}"></textarea>
                         </div>
+
+                        @php
+                            $hideSubmitButton = false;
+                        @endphp
+
+                        @if ($document->stage == 2 && empty($document->drafter_remarks))
+                            <div style="color: red">Note: Please ensure that all required fields in the Drafter input are completed before proceeding with the activity to send it for HOD/CFT review.</div>
+                            @php $hideSubmitButton = true; @endphp
+                        @elseif ($document->stage == 3 && empty($document->hod_remarks))
+                            <div style="color: red">Note: Please ensure that all required fields in the HOD/CFT input are completed before proceeding with the activity to HOD/CFT Review Complete.</div>
+                            @php $hideSubmitButton = true; @endphp
+                        @elseif ($document->stage == 4 && empty($document->qa_remarks))
+                            <div style="color: red">Note: Please ensure that all required fields in the QA input are completed before proceeding with the activity to QA Review Complete.</div>
+                            @php $hideSubmitButton = true; @endphp
+                        @elseif ($document->stage == 5 && empty($document->reviewer_remarks))
+                            <div style="color: red">Note: Please ensure that all required fields in the Reviewer input are completed before proceeding with the activity to Reviewer Review.</div>
+                            @php $hideSubmitButton = true; @endphp
+                        @elseif ($document->stage == 6 && empty($document->approver_remarks))
+                            <div style="color: red">Note: Please ensure that all required fields in the Approver input are completed before proceeding with the activity to Approved.</div>
+                            @php $hideSubmitButton = true; @endphp
+                        @endif
                     </div>
 
                     @if ($document->stage == 2)
@@ -1040,9 +1061,10 @@
 
                     <!-- Modal footer -->
                     <div class="modal-footer">
-                        <button type="submit">Submit</button>
+                        @if (!$hideSubmitButton)
+                            <button type="submit">Submit</button>
+                        @endif
                         <button type="button" data-bs-dismiss="modal">Close</button>
-                        {{-- <button>Close</button> --}}
                     </div>
                 </form>
 

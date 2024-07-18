@@ -67,14 +67,14 @@
     <div id="data-fields">
         <div class="container-fluid">
             <div class="tab">
-            <button class="tablinks active" onclick="openData(event, 'doc-info')" id="defaultOpen">Document information</button>
-                {{-- <button class="tablinks" onclick="openData(event, 'doc-chem')">Chemistry SOP</button>
-                <button class="tablinks" onclick="openData(event, 'doc-instru')">Instrument SOP</button>
-                <button class="tablinks" onclick="openData(event, 'doc-instrumental')">Instrumental Chemistry SOP</button>
-                <button class="tablinks" onclick="openData(event, 'doc-micro')">Microbiology SOP</button> 
-                <button class="tablinks" onclick="openData(event, 'doc-lab')">Good Laboratory Practices</button>
-                <button class="tablinks" onclick="openData(event, 'doc-wet')">Wet Chemistry</button>
-                <button class="tablinks" onclick="openData(event, 'doc-others')">Others</button> --}}
+                <button class="tablinks active" onclick="openData(event, 'doc-info')" id="defaultOpen">Document information</button>
+                <button class="tablinks" onclick="openData(event, 'drafters')">Drafter Input</button>
+                <button class="tablinks" onclick="openData(event, 'hodcft')">HOD/CFTs Input</button>
+                <button class="tablinks" onclick="openData(event, 'qa')">QA Input</button>
+                <button class="tablinks" onclick="openData(event, '456')">Reviewer Input</button>
+                <button class="tablinks" onclick="openData(event, '123')">Approver Input</button>
+                {{-- <button class="tablinks" onclick="openData(event, 'reviewers')">Reviewer Input</button>
+                <button class="tablinks" onclick="openData(event, 'approvers')">Approver Input</button> --}}
                 <button class="tablinks" onclick="openData(event, 'add-doc')">Training Information</button>
                 <button class="tablinks" onclick="openData(event, 'doc-content')">Document Content</button>
                 <button class="tablinks" onclick="openData(event, 'hod-remarks-tab')">HOD Remarks</button>
@@ -89,13 +89,6 @@
                 @csrf
                 @method('PUT')
 
-                {{-- <textarea id="editor"><h1>Test</h1></textarea>
-                <script>
-                    const editor = Jodit.make('#editor');
-                </script> --}}
-
-                <!-- Tab content -->
-                {{-- @foreach ($history as $tempHistory) --}}
                 <div id="doc-info" class="tabcontent">
                     <div class="input-fields">
                         <div class="row">
@@ -176,7 +169,8 @@
                            
                             <div class="col-md-12">
                                 <div class="group-input">
-                                    <label for="short-desc">Short Description*    </label>
+                                    <label for="short-desc">Short Description <span
+                                        class="text-danger">*</span>    </label>
                                     <span id="editrchars">255</span>
                                 characters remaining
                                     <input type="text" name="short_desc" id="short_desc" maxlength="255"
@@ -226,7 +220,7 @@
 
                             @endif
 
-                            <div class="col-12">
+                            {{-- <div class="col-12">
                                 <div class="group-input">
                                     <label for="sop_type">SOP Type</label>
                                     
@@ -242,30 +236,8 @@
                                             value="IOP (Instrument Operating Procedure)" 
                                             {{ $document->sop_type == 'IOP (Instrument Operating Procedure)' ? 'selected' : '' }}>IOP (Instrument Operating Procedure)</option>
                                     </select>
-
-                                    {{-- @foreach ($history as $tempHistory)
-                                    @if (
-                                        $tempHistory->activity_type == 'SOP Type' &&
-                                            !empty($tempHistory->comment)  &&
-                                            $tempHistory->user_id == Auth::user()->id)
-                                        @php
-                                            $users_name = DB::table('users')
-                                                ->where('id', $tempHistory->user_id)
-                                                ->value('name');
-                                        @endphp
-                                        <p style="color: blue">Modify by {{ $users_name }} at
-                                            {{ $tempHistory->created_at }}
-                                        </p>
-                                        <input class="input-field"
-                                            style="background: #ffff0061;
-                                        color: black;"
-                                            type="text" value="{{ $tempHistory->comment }}" disabled>
-                                    @endif
-                                    @endforeach --}}
                                 </div>
                                 @if (Auth::user()->role != 3 && $document->stage < 8)
-
-                                <-- Add Comment  -->
                                 <div class="comment">
                                     <div>
                                         <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
@@ -276,7 +248,65 @@
                                     <div class="button">Add Comment</div>
                                 </div>
                             @endif
+                            </div> --}}
+                            <div class="col-md-6">
+                                <div class="group-input">
+                                    <label for="doc-type">Department Type</label>
+                                    <select name="document_type_id" id="doc-type" {{Helpers::isRevised($document->stage)}} >
+                                        <option value="">Enter your Selection</option>
+                                        @foreach (Helpers::getDocumentTypes() as $code => $type)
+                                            <option data-id="{{ $code }}" value="{{ $code }}" {{ $code == $document->document_type_id ? 'selected' : '' }}>
+                                                {{ $type }}</option>
+                                        @endforeach
+                                    </select>
+                                    @foreach ($history as $tempHistory)
+                                        @if (
+                                            $tempHistory->activity_type == 'Document' &&
+                                                !empty($tempHistory->comment)  &&
+                                                $tempHistory->user_id == Auth::user()->id)
+                                            @php
+                                                $users_name = DB::table('users')
+                                                    ->where('id', $tempHistory->user_id)
+                                                    ->value('name');
+                                            @endphp
+                                            <p style="color: blue">Modify by {{ $users_name }} at
+                                                {{ $tempHistory->created_at }}
+                                            </p>
+                                            <input class="input-field"
+                                                style="background: #ffff0061;
+                                    color: black;"
+                                                type="text" value="{{ $tempHistory->comment }}" disabled>
+                                        @endif
+                                    @endforeach
+                                </div>
+
+                                @if (Auth::user()->role != 3 && $document->stage < 8)
+                                    <div class="comment">
+                                        <div>
+                                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
+                                                at {{ date('d-M-Y h:i:s') }}</p>
+
+                                            <input class="input-field" type="text" name="document_type_id_comment">
+                                        </div>
+                                        <div class="button">Add Comment</div>
+                                    </div>
+                                @endif
+
                             </div>
+
+                            <div class="col-md-6">
+                                <div class="group-input">
+                                    <label for="doc-code">Department Type Code</label>
+                                    <div class="default-name"> <span id="document_type_code">
+                                            @foreach (Helpers::getDocumentTypes() as $code => $type)
+                                                {{ $code == $document->document_type_id ? $code : '' }}
+                                            @endforeach
+
+                                        </span> </div>
+
+                                </div>
+                            </div>
+                            <p id="doc-typeError" style="color:red">**Department Type is required</p>
                             <div class="col-md-4 new-date-data-field">
                                 <div class="group-input input-date">
                                     <label for="due-date">Due Date</label>
@@ -325,9 +355,9 @@
                                         <div class="button">Add Comment</div>
                                     </div>
                                 @endif
-
                             </div>
-                            <div class="col-md-8">
+
+                            {{-- <div class="col-md-8">
                                 <div class="group-input">
                                     <label for="notify_to">Notify To</label>
                                     <select multiple name="notify_to[]" placeholder="Select Persons" data-search="false"
@@ -337,7 +367,6 @@
                                         @endphp
                                         @foreach ($users as $data)
                                             <option value="{{ $data->id }}" {{ in_array($data->id, $notify_user_id) ? 'selected' : '' }}>{{ $data->name }}
-                                                {{-- ({{ $data->role }}) --}}
                                             </option>
                                         @endforeach
                                     </select>
@@ -364,7 +393,6 @@
 
                                 @if (Auth::user()->role != 3 && $document->stage < 8)
 
-                                    {{-- Add Comment  --}}
                                     <div class="comment">
                                         <div>
                                             <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
@@ -404,7 +432,6 @@
                             </div>
                             @if (Auth::user()->role != 3 && $document->stage < 8)
 
-                                {{-- Add Comment  --}}
                                 <div class="comment">
                                     <div>
                                         <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at
@@ -414,766 +441,7 @@
                                     </div>
                                     <div class="button">Add Comment</div>
                                 </div>
-                            @endif
-
-                        </div>
-                    </div>
-                    <div class="orig-head">
-                        Document Information
-                    </div>
-                    <div class="input-fields">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="group-input">
-                                    <label for="doc-num">Document Number</label>
-                                    <div class="default-name">
-                                        @php
-                                        $temp = DB::table('document_types')
-                                            ->where('name', $document->document_type_name)
-                                            ->value('typecode');
-                                       @endphp
-                                        @if($document->revised === 'Yes') 
-                                         {{ Helpers::getDivisionName($document->division_id) }}
-                                        /@if($document->document_type_name){{  $temp }} /@endif{{ $year }}
-                                        /000{{ $document->document_number }}/R{{$document->major}}.{{$document->minor}}
-                                       
-                                        @else
-                                        {{ Helpers::getDivisionName($document->division_id) }}
-                                        /@if($document->document_type_name){{ $temp }} /@endif{{ $year }}
-                                        /000{{ $document->document_number }}/R{{$document->major}}.{{$document->minor}}
-                                        
-                                    @endif
-                                    </div>
-                                        
-                                        {{-- {{ $document->division_name }} --}}
-                                </div>
-
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="group-input">
-                                    <label for="legacy_number">Legacy Document Number</label>
-                                    <input type="text" id="legacy_number" name="legacy_number" value="{{ $document->legacy_number }}" maxlength="255" {{ Helpers::isRevised($document->stage) }}>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="group-input">
-                                    <label for="link-doc">Reference Record</label>
-                                    <select multiple name="reference_record[]" placeholder="Select Reference Records"
-                                        data-search="false" data-silent-initial-value-set="true" id="reference_record" {{Helpers::isRevised($document->stage)}} >
-                                        @if (!empty($document_data))
-                                            @foreach ($document_data as $temp)
-                                            
-                                                <option value="{{ $temp->id }}" {{ str_contains($document->reference_record, $temp->id) ? 'selected' : '' }}>
-                                                    {{ Helpers::getDivisionName($temp->division_id) }}/{{ $temp->typecode }}/{{ $temp->year }}/000{{ $temp->id }}/R{{$temp->major}}.{{$temp->minor}}/{{$temp->document_name}}
-                                                </option>
-                                            @endforeach
-                                        @endif
-                                    </select>
-                                    @foreach ($history as $tempHistory)
-                                        @if (
-                                            $tempHistory->activity_type == 'Reference Record' &&
-                                                !empty($tempHistory->comment)  &&
-                                                $tempHistory->user_id == Auth::user()->id)
-                                            @php
-                                                $users_name = DB::table('users')
-                                                    ->where('id', $tempHistory->user_id)
-                                                    ->value('name');
-                                            @endphp
-                                            <p style="color: blue">Modify by {{ $users_name }} at
-                                                {{ $tempHistory->created_at }}
-                                            </p>
-                                            <input class="input-field"
-                                                style="background: #ffff0061;
-                                    color: black;"
-                                                type="text" value="{{ $tempHistory->comment }}" disabled>
-                                        @endif
-                                    @endforeach
-                                </div>
-
-                                @if (Auth::user()->role != 3 && $document->stage < 8)
-
-                                    {{-- Add Comment  --}}
-                                    <div class="comment">
-                                        <div>
-                                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                                                at {{ date('d-M-Y h:i:s') }}</p>
-
-                                            <input class="input-field" type="text" name="reference_record_comment">
-                                        </div>
-                                        <div class="button">Add Comment</div>
-                                    </div>
-                                @endif
-
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="group-input">
-                                    <label for="depart-name">Department Name</label>
-                                    <select name="department_id" id="depart-name" {{Helpers::isRevised($document->stage)}} >
-                                        <option value="" disabled selected>Enter your Selection</option>
-                                        
-                                        @foreach (Helpers::getDepartments() as $code => $department)
-                                                <option value="{{ $code }}" @if ($document->department_id == $code ) selected @endif>{{ $department }}</option>
-                                        @endforeach
-
-                                        {{-- @foreach ($departments as $department)
-                                            <option data-id="{{ $department->dc }}" value="{{ $department->id }}"
-                                                {{ $department->id == $document->department_id ? 'selected' : '' }}>
-                                                {{ $department->name }}</option>
-                                        @endforeach --}}
-                                    </select>
-                                    @foreach ($history as $tempHistory)
-                                        @if (
-                                            $tempHistory->activity_type == 'Department' &&
-                                                !empty($tempHistory->comment)  &&
-                                                $tempHistory->user_id == Auth::user()->id)
-                                            @php
-                                                $users_name = DB::table('users')
-                                                    ->where('id', $tempHistory->user_id)
-                                                    ->value('name');
-                                            @endphp
-                                            <p style="color: blue">Modify by {{ $users_name }} at
-                                                {{ $tempHistory->created_at }}
-                                            </p>
-                                            <input class="input-field"
-                                                style="background: #ffff0061;
-                                    color: black;"
-                                                type="text" value="{{ $tempHistory->comment }}" disabled>
-                                        @endif
-                                    @endforeach
-                                </div>
-                                <p id="depart-nameError" style="color:red">**Department Name is required</p>
-
-
-                                @if (Auth::user()->role != 3 && $document->stage < 8)
-                                    {{-- Add Comment  --}}
-                                    <div class="comment">
-                                        <div>
-                                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                                                at {{ date('d-M-Y h:i:s') }}</p>
-
-                                            <input class="input-field" type="text" name="department_id_comment">
-                                        </div>
-                                        <div class="button">Add Comment</div>
-                                    </div>
-                                @endif
-
-                            </div>
-
-                            {{-- <div class="col-md-6">
-                                <div class="group-input">
-                                    <label for="depart-code">Department Code</label>
-                                    <div class="default-name"> <span id="department-code">
-                                            @if (!empty($departments))
-                                                @foreach ($departments as $department)
-                                                    {{ $document->department_id == $department->id ? $department->dc : '' }}
-                                                @endforeach
-                                            @else
-                                                Not Selected
-                                            @endif
-
-                                        </span></div>
-                                </div>
-                            </div> --}}
-
-                            <div class="col-6">
-                                <div class="group-input">
-                                    <label for="major">Document Version <small>(Major)</small><span class="text-danger">*</span>
-                                        <span  class="text-primary" data-bs-toggle="modal"
-                                        data-bs-target="#document-management-system-modal"
-                                        style="font-size: 0.8rem; font-weight: 400;">
-                                        (Launch Instruction) </span>
-                                    </label>
-                                    <input type="number" name="major" id="major" min="0"  value="{{ $document->major }}" required {{Helpers::isRevised($document->stage)}} >
-                                    
-                                    @foreach ($history as $tempHistory)
-                                    @if (
-                                        $tempHistory->activity_type == 'Major' &&
-                                            !empty($tempHistory->comment)  &&
-                                            $tempHistory->user_id == Auth::user()->id)
-                                        @php
-                                            $users_name = DB::table('users')
-                                                ->where('id', $tempHistory->user_id)
-                                                ->value('name');
-                                        @endphp
-                                        <p style="color: blue">Modify by {{ $users_name }} at
-                                            {{ $tempHistory->created_at }}
-                                        </p>
-                                        <input class="input-field"
-                                            style="background: #ffff0061;
-                                color: black;"
-                                            type="text" value="{{ $tempHistory->comment }}" disabled>
-                                    @endif
-                                @endforeach
-                                </div> 
-                                @if (Auth::user()->role != 3 && $document->stage < 8)
-                                {{-- Add Comment  --}}
-                                <div class="comment">
-                                    <div>
-                                        <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                                            at {{ date('d-M-Y h:i:s') }}</p>
-
-                                        <input class="input-field" type="text" name="major_comment">
-                                    </div>
-                                    <div class="button">Add Comment</div>
-                                </div>
-                            @endif 
-                            </div>
-                            <div class="col-6">
-                                <div class="group-input">
-                                    <label for="minor">Document Version <small>(Minor)</small><span class="text-danger">*</span> 
-                                        <span  class="text-primary" data-bs-toggle="modal"
-                                        data-bs-target="#document-management-system-modal-minor"
-                                        style="font-size: 0.8rem; font-weight: 400;">
-                                        (Launch Instruction)
-                                        </span>
-                                    </label>
-                                    <input type="number" name="minor" id="minor" min="0" max="9"  value="{{ $document->minor }}" required {{Helpers::isRevised($document->stage)}} >
-                                    {{-- <select  name="minor">
-                                        <option  value="00">-- Select --</option>
-                                        <option @if ($document->minor =='0') selected @endif
-                                            value="0">0</option>
-                                        <option @if ($document->minor =='1') selected @endif
-                                            value="1">1</option>
-                                            <option @if ($document->minor =='2') selected @endif
-                                                value="2">2</option>
-                                            <option @if ($document->minor =='3') selected @endif
-                                                value="3">3</option>
-                                            <option @if ($document->minor =='4') selected @endif
-                                                value="4">4</option>
-                                                <option @if ($document->minor =='5') selected @endif
-                                                    value="5">5</option>
-                                                    <option @if ($document->minor =='6') selected @endif
-                                                        value="6">6</option>
-                                                        <option @if ($document->minor =='7') selected @endif
-                                                            value="7">7</option>
-                                                            <option @if ($document->minor =='8') selected @endif
-                                                                value="8">8</option>
-                                                                <option @if ($document->minor =='9') selected @endif
-                                                                    value="9">9</option>
-                                    </select> --}}
-                                    @foreach ($history as $tempHistory)
-                                    @if (
-                                        $tempHistory->activity_type == 'Minor' &&
-                                            !empty($tempHistory->comment)  &&
-                                            $tempHistory->user_id == Auth::user()->id)
-                                        @php
-                                            $users_name = DB::table('users')
-                                                ->where('id', $tempHistory->user_id)
-                                                ->value('name');
-                                        @endphp
-                                        <p style="color: blue">Modify by {{ $users_name }} at
-                                            {{ $tempHistory->created_at }}
-                                        </p>
-                                        <input class="input-field"
-                                            style="background: #ffff0061;
-                                color: black;"
-                                            type="text" value="{{ $tempHistory->comment }}" disabled>
-                                    @endif
-                                @endforeach
-                                </div>
-                                @if (Auth::user()->role != 3 && $document->stage < 8)
-                                    {{-- Add Comment  --}}
-                                    <div class="comment">
-                                        <div>
-                                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                                                at {{ date('d-M-Y h:i:s') }}</p>
-
-                                            <input class="input-field" type="text" name="minor_comment">
-                                        </div>
-                                        <div class="button">Add Comment</div>
-                                    </div>
-                                @endif
-                            </div>
-                            <div class="col-md-6">
-                                <div class="group-input">
-                                    <label for="doc-type">Document Type</label>
-                                    <select name="document_type_id" id="doc-type" {{Helpers::isRevised($document->stage)}} >
-                                        <option value="">Enter your Selection</option>
-                                        @foreach (Helpers::getDocumentTypes() as $code => $type)
-                                            <option data-id="{{ $code }}" value="{{ $code }}" {{ $code == $document->document_type_id ? 'selected' : '' }}>
-                                                {{ $type }}</option>
-                                        @endforeach
-                                    </select>
-                                    @foreach ($history as $tempHistory)
-                                        @if (
-                                            $tempHistory->activity_type == 'Document' &&
-                                                !empty($tempHistory->comment)  &&
-                                                $tempHistory->user_id == Auth::user()->id)
-                                            @php
-                                                $users_name = DB::table('users')
-                                                    ->where('id', $tempHistory->user_id)
-                                                    ->value('name');
-                                            @endphp
-                                            <p style="color: blue">Modify by {{ $users_name }} at
-                                                {{ $tempHistory->created_at }}
-                                            </p>
-                                            <input class="input-field"
-                                                style="background: #ffff0061;
-                                    color: black;"
-                                                type="text" value="{{ $tempHistory->comment }}" disabled>
-                                        @endif
-                                    @endforeach
-                                </div>
-
-                                @if (Auth::user()->role != 3 && $document->stage < 8)
-                                    {{-- Add Comment  --}}
-                                    <div class="comment">
-                                        <div>
-                                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                                                at {{ date('d-M-Y h:i:s') }}</p>
-
-                                            <input class="input-field" type="text" name="document_type_id_comment">
-                                        </div>
-                                        <div class="button">Add Comment</div>
-                                    </div>
-                                @endif
-
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="group-input">
-                                    <label for="doc-code">Document Type Code</label>
-                                    <div class="default-name"> <span id="document_type_code">
-                                            @foreach (Helpers::getDocumentTypes() as $code => $type)
-                                                {{ $code == $document->document_type_id ? $code : '' }}
-                                            @endforeach
-
-                                        </span> </div>
-
-                                </div>
-                            </div>
-                            <p id="doc-typeError" style="color:red">**Document Type is required</p>
-
-                            {{-- <div class="col-md-6">
-                                <div class="group-input">
-                                    <label for="doc-type">Document Sub Type</label>
-                                    <select name="document_subtype_id" id="doc-subtype">
-                                        <option value="">Enter your Selection</option>
-                                        @foreach ($documentsubTypes as $type)
-                                            <option data-id="{{ $type->code }}" value="{{ $type->id }}"
-                                                {{ $type->id == $document->document_subtype_id ? 'selected' : '' }}>
-                                                {{ $type->docSubtype }}</option>
-                                        @endforeach
-                                    </select>
-                                    @foreach ($history as $tempHistory)
-                                        @if (
-                                            $tempHistory->activity_type == 'Document Sub Type' &&
-                                                !empty($tempHistory->comment)  &&
-                                                $tempHistory->user_id == Auth::user()->id)
-                                            @php
-                                                $users_name = DB::table('users')
-                                                    ->where('id', $tempHistory->user_id)
-                                                    ->value('name');
-                                            @endphp
-                                            <p style="color: blue">Modify by {{ $users_name }} at
-                                                {{ $tempHistory->created_at }}
-                                            </p>
-                                            <input class="input-field"
-                                                style="background: #ffff0061;
-                                    color: black;"
-                                                type="text" value="{{ $tempHistory->comment }}" disabled>
-                                        @endif
-                                    @endforeach
-                                </div>
-
-
-
-                                @if (Auth::user()->role != 3 && $document->stage < 8)
-                                 Add Comment  
-                                    <div class="comment">
-                                        <div>
-                                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                                                at {{ date('d-M-Y h:i:s') }}</p>
-
-                                            <input class="input-field" type="text" name="document_type_id_comment">
-                                        </div>
-                                        <div class="button">Add Comment</div>
-                                    </div>
-                                @endif
-
-                            </div> --}}
-
-                            {{-- <div class="col-md-6">
-                                <div class="group-input">
-                                    <label for="doc-code">Document Type Code</label>
-                                    <div class="default-name"> <span id="document_type_code">
-                                            @if (!empty($documentTypes))
-                                                @foreach ($documentTypes as $type)
-                                                    {{ $document->document_type_id == $type->id ? $type->typecode : '' }}
-                                                @endforeach
-                                            @else
-                                                Not Selected
-                                            @endif
-
-                                        </span> </div>
-                                </div>
-                            </div> --}}
-
-                            <div class="col-md-6">
-                                <div class="group-input">
-                                    <label for="doc-lang">Document Language</label>
-                                    <select name="document_language_id" id="doc-lang" {{Helpers::isRevised($document->stage)}} >
-                                        <option value="">Enter your Selection</option>
-                                        @foreach ($documentLanguages as $lan)
-                                            <option data-id="{{ $lan->lcode }}" value="{{ $lan->id }}"
-                                                {{ $lan->id == $document->document_language_id ? 'selected' : '' }}>
-                                                {{ $lan->lname }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @foreach ($history as $tempHistory)
-                                        @if (
-                                            $tempHistory->activity_type == 'Document Language' &&
-                                                !empty($tempHistory->comment)  &&
-                                                $tempHistory->user_id == Auth::user()->id)
-                                            @php
-                                                $users_name = DB::table('users')
-                                                    ->where('id', $tempHistory->user_id)
-                                                    ->value('name');
-                                            @endphp
-                                            <p style="color: blue">Modify by {{ $users_name }} at
-                                                {{ $tempHistory->created_at }}
-                                            </p>
-                                            <input class="input-field"
-                                                style="background: #ffff0061;
-                                    color: black;"
-                                                type="text" value="{{ $tempHistory->comment }}" disabled>
-                                        @endif
-                                    @endforeach
-                                </div>
-
-                                @if (Auth::user()->role != 3 && $document->stage < 8)
-                                    {{-- Add Comment  --}}
-                                    <div class="comment">
-                                        <div>
-                                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                                                at {{ date('d-M-Y h:i:s') }}</p>
-
-                                            <input class="input-field" type="text"
-                                                name="document_language_id_comment">
-                                        </div>
-                                        <div class="button">Add Comment</div>
-                                    </div>
-                                @endif
-
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="group-input">
-                                    <label for="doc-lang">Document Language Code</label>
-                                    <div class="default-name"><span id="document_language">
-                                            @if (!empty($documentLanguages))
-                                                @foreach ($documentLanguages as $lan)
-                                                    {{ $document->document_language_id == $lan->id ? $lan->lcode : '' }}
-                                                @endforeach
-                                            @else
-                                                Not Selected
-                                            @endif
-
-                                        </span></div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="group-input">
-                                    <label for="keyword">Keywords</label>
-                                    <div class="add-keyword">
-                                        <input type="text" id="sourceField" class="mb-0" maxlength="15" {{Helpers::isRevised($document->stage)}} >
-                                        <button id="addButton" type="button">ADD</button>
-                                    </div>
-                                    <ul id="displayField" class="d-flex justify-content-between align-items-center">
-                                        @if (!empty($keywords))
-                                            @foreach ($keywords as $lan)
-                                                <li>
-                                                    {{ $lan->keyword }}
-                                                    <span class="close-icon ms-2">x</span>
-                                                </li>
-                                        @endforeach
-                                        @endif
-                                    </ul>
-                                    <select name="keywords[]" class="targetField" multiple id="keywords" style="display: none">
-                                        @if (!empty($keywords))
-                                            @foreach ($keywords as $lan)
-                                            <option value="{{ $lan->keyword }}" selected>
-                                                {{ $lan->keyword }}
-                                            </option>
-                                        @endforeach
-                                        @endif
-                                    </select>
-                                    @foreach ($history as $tempHistory)
-                                        @if (
-                                            $tempHistory->activity_type == 'Keywords' &&
-                                                !empty($tempHistory->comment)  &&
-                                                $tempHistory->user_id == Auth::user()->id)
-                                            @php
-                                                $users_name = DB::table('users')
-                                                    ->where('id', $tempHistory->user_id)
-                                                    ->value('name');
-                                            @endphp
-                                            <p style="color: blue">Modify by {{ $users_name }} at
-                                                {{ $tempHistory->created_at }}
-                                            </p>
-                                            <input class="input-field"
-                                                style="background: #ffff0061;
-                                    color: black;"
-                                                type="text" value="{{ $tempHistory->comment }}" disabled>
-                                        @endif
-                                    @endforeach
-                                </div>
-                            </div>
-
-                            <div class="col-md-5 new-date-data-field">
-                                <div class="group-input input-date">
-                                    <label for="effective-date">Effective Date</label>
-                                    <div><small class="text-primary">The effective date will be automatically populated once the record becomes effective</small></div>
-                                    <div class="calenderauditee">                                     
-                                        <input  @if($document->stage != 1) disabled @endif type="text"  id="effective_date" value="{{ $document->effective_date  ? Carbon\Carbon::parse($document->effective_date)->format('d-M-Y') : ''  }}" readonly placeholder="DD-MMM-YYYY" {{Helpers::isRevised($document->stage)}}  />
-                                        <input  @if($document->stage != 1) disabled @endif type="date" name="effective_date" value=""
-                                        class="hide-input"
-                                        min="{{ Carbon\Carbon::today()->format('Y-m-d') }}"
-                                        oninput="handleDateInput(this, 'effective_date')"/>
-                                    </div>
-                                    @foreach ($history as $tempHistory)
-                                        @if (
-                                            $tempHistory->activity_type == 'Effective Date' &&
-                                                !empty($tempHistory->comment) &&
-                                                $tempHistory->user_id == Auth::user()->id)
-                                            @php
-                                                $users_name = DB::table('users')
-                                                    ->where('id', $tempHistory->user_id)
-                                                    ->value('name');
-                                            @endphp
-                                            <p style="color: blue">Modify by {{ $users_name }} at
-                                                {{ $tempHistory->created_at }}
-                                            </p>
-                                            <input class="input-field"
-                                                style="background: #ffff0061;
-                                    color: black;"
-                                                type="text" value="{{ $tempHistory->comment }}" disabled>
-                                        @endif
-                                    @endforeach
-                                </div>
-
-                                @if (Auth::user()->role != 3)
-                                    {{-- Add Comment  --}}
-                                    <div class="comment">
-                                        <div>
-
-                                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                                                at {{ date('d-M-Y h:i:s') }}</p>
-
-                                            <input class="input-field" type="text" name="effective_date_comment">
-                                        </div>
-                                        <div class="button">Add Comment</div>
-                                    </div>
-                                @endif
-
-                            </div>
-                              <div class="col-md-2">
-                                <div class="group-input">
-                                    <label for="review-period">Review Period (in years)</label>
-                                    <input  style="margin-top: 25px;"  @if($document->stage != 1) readonly @endif type="number" name="review_period" id="review_period" min="0" {{Helpers::isRevised($document->stage)}}  value={{ $document->review_period }}>
-                                    @foreach ($history as $tempHistory)
-                                        @if (
-                                            $tempHistory->activity_type == 'Review Period' &&
-                                                !empty($tempHistory->comment) &&
-                                                $tempHistory->user_id == Auth::user()->id)
-                                            @php
-                                                $users_name = DB::table('users')
-                                                    ->where('id', $tempHistory->user_id)
-                                                    ->value('name');
-                                            @endphp
-                                            <p style="color: blue">Modify by {{ $users_name }} at
-                                                {{ $tempHistory->created_at }}
-                                            </p>
-                                            <input class="input-field"
-                                                style="background: #ffff0061;
-                                    color: black;"
-                                                type="text" value="{{ $tempHistory->comment }}" disabled>
-                                        @endif
-                                    @endforeach
-                                </div>
-                                <script>
-                                    function validateInput(input) {
-                                        if (input.value < 0) {
-                                            input.value = 0;
-                                        }
-                                    }
-                                </script>
-
-                                @if (Auth::user()->role != 3)
-                                    {{-- Add Comment  --}}
-                                    <div class="comment">
-                                        <div>
-                                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                                                at {{ date('d-M-Y h:i:s') }}</p>
-
-                                            <input class="input-field" type="text" name="review_period_comment">
-                                        </div>
-                                        <div class="button">Add Comment</div>
-                                    </div>
-                                @endif
-
-                            </div>
-
-                            <div class="col-md-5 new-date-data-field">
-                                <div class="group-input input-date">
-                                    <label for="review-date">Next Review Date</label>
-                                    
-                                        <div class="calenderauditee">                                     
-                                        <input  style="margin-top: 25px;" @if($document->stage != 1) disabled @endif type="text"  id="next_review_date" class="new_review_date_show" value="{{ $document->next_review_date ? Carbon\Carbon::parse($document->next_review_date)->format('d-M-Y') : '' }}" {{Helpers::isRevised($document->stage)}}  readonly placeholder="DD-MMM-YYYY" />
-                                        <input @if($document->stage != 1) disabled @endif type="date" name="next_review_date" value=""
-                                        class="hide-input new_review_date_hide"
-                                        min="{{ Carbon\Carbon::today()->format('Y-m-d') }}"
-                                        oninput="handleDateInput(this, 'next_review_date')"/>
-                                        </div>
-
-                                    @foreach ($history as $tempHistory)
-                                        @if (
-                                            $tempHistory->activity_type == 'Next-Review Date' &&
-                                                !empty($tempHistory->comment) &&
-                                                $tempHistory->user_id == Auth::user()->id)
-                                            @php
-                                                $users_name = DB::table('users')
-                                                    ->where('id', $tempHistory->user_id)
-                                                    ->value('name');
-                                            @endphp
-                                            <p style="color: blue">Modify by {{ $users_name }} at
-                                                {{ $tempHistory->created_at }}
-                                            </p>
-                                            <input class="input-field"
-                                                style="background: #ffff0061;
-                                        color: black;"
-                                                type="text" value="{{ $tempHistory->comment }}" disabled>
-                                        @endif
-                                    @endforeach
-                                </div>
-
-                                @if (Auth::user()->role != 3)
-                                    {{-- Add Comment  --}}
-                                    <div class="comment">
-                                        <div>
-                                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                                                at {{ date('d-M-Y h:i:s') }}</p>
-
-                                            <input class="input-field" type="text" name="next_review_date_comment">
-                                        </div>
-                                        <div class="button">Add Comment</div>
-                                    </div>
-                                @endif
-
-                            </div>
-
-
-                            <div class="col-md-6">
-                                <div class="group-input">
-                                    <label for="draft-doc">Attach Draft document</label>
-                                    <input type="file" name="attach_draft_doocument"  style="height: 100% !important; margin-bottom: 0px !important;" {{Helpers::isRevised($document->stage)}} 
-                                        value="{{ $document->attach_draft_doocument }}">
-                                        @if($document->attach_draft_doocument)
-                                            <input type="hidden" name="attach_draft_doocument" value="{{ $document->attach_draft_doocument }}">
-                                            <p>Current file: {{ basename($document->attach_draft_doocument) }}</p>
-                                        @endif
-
-                                        {{-- @if($document->attach_draft_doocument)
-                                            <input type="hidden" name="attach_draft_doocument" value="{{ $document->attach_draft_doocument }}">
-                                            @php
-                                                $draftDocumentUrl = asset('upload/document/' . basename($document->attach_draft_doocument));
-                                            @endphp
-                                            @if(pathinfo($document->attach_draft_doocument, PATHINFO_EXTENSION) == 'pdf')
-                                                <iframe src="{{ $draftDocumentUrl }}" width="100%" height="600"></iframe>
-                                            @elseif(in_array(pathinfo($document->attach_draft_doocument, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif']))
-                                                <img src="{{ $draftDocumentUrl }}" alt="Draft document" style="max-width: 100%;">
-                                            @else
-                                                <p>Preview not available for this file type.</p>
-                                            @endif
-                                        @endif --}}
-
-                                    @foreach ($history as $tempHistory)
-                                        @if (
-                                            $tempHistory->activity_type == 'Draft Document' &&
-                                                !empty($tempHistory->comment)  &&
-                                                $tempHistory->user_id == Auth::user()->id)
-                                            @php
-                                                $users_name = DB::table('users')
-                                                    ->where('id', $tempHistory->user_id)
-                                                    ->value('name');
-                                            @endphp
-                                            <p style="color: blue">Modify by {{ $users_name }} at
-                                                {{ $tempHistory->created_at }}
-                                            </p>
-                                            <input class="input-field"
-                                                style="background: #ffff0061;
-                                        color: black;"
-                                                type="text" value="{{ $tempHistory->comment }}" disabled>
-                                        @endif
-                                    @endforeach
-                                </div>
-
-                                @if (Auth::user()->role != 3 && $document->stage < 8)
-                                    {{-- Add Comment  --}}
-                                    <div class="comment">
-                                        <div>
-                                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                                                at {{ date('d-M-Y h:i:s') }}</p>
-
-                                            <input class="input-field" type="text"
-                                                name="attach_draft_doocument_comment">
-                                        </div>
-                                        <div class="button">Add Comment</div>
-                                    </div>
-                                @endif
-
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="group-input">
-                                    <label for="effective-doc">Attach Effective document</label>
-                                    <input type="file" name="attach_effective_docuement"  style="height: 100% !important; margin-bottom: 0px !important;" {{Helpers::isRevised($document->stage)}} 
-                                        value="{{ $document->attach_effective_docuement }}">
-                                        @if($document->attach_effective_docuement)
-                                            <input type="hidden" name="attach_effective_docuement" value="{{ $document->attach_effective_docuement }}">
-                                            <p>Current file: {{ basename($document->attach_effective_docuement) }}</p>
-                                        @endif
-                                    @foreach ($history as $tempHistory)
-                                        @if (
-                                            $tempHistory->activity_type == 'Effective Document' &&
-                                                !empty($tempHistory->comment)  &&
-                                                $tempHistory->user_id == Auth::user()->id)
-                                            @php
-                                                $users_name = DB::table('users')
-                                                    ->where('id', $tempHistory->user_id)
-                                                    ->value('name');
-                                            @endphp
-                                            <p style="color: blue">Modify by {{ $users_name }} at
-                                                {{ $tempHistory->created_at }}
-                                            </p>
-                                            <input class="input-field"
-                                                style="background: #ffff0061;
-                                        color: black;"
-                                                type="text" value="{{ $tempHistory->comment }}" disabled>
-                                        @endif
-                                    @endforeach
-                                </div>
-
-                                @if (Auth::user()->role != 3 && $document->stage < 8)
-                                    {{-- Add Comment  --}}
-                                    <div class="comment">
-                                        <div>
-                                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                                                at {{ date('d-M-Y h:i:s') }}</p>
-
-                                            <input class="input-field" type="text"
-                                                name="attach_effective_docuement_comment">
-                                        </div>
-                                        <div class="button">Add Comment</div>
-                                    </div>
-                                @endif
-
-                            </div>
+                            @endif --}}
 
                         </div>
                     </div>
@@ -1183,128 +451,6 @@
                     <div class="input-fields">
                         <div class="row">
 
-                            <div class="col-md-6">
-                                <div class="group-input">
-                                    <label for="reviewers">Reviewers</label>
-                                    <select   @if($document->stage != 1 && !Helpers::userIsQA() ) disabled @endif id="choices-multiple-remove-button" class="choices-multiple-reviewer" {{ !Helpers::userIsQA() ? Helpers::isRevised($document->stage) : ''}} 
-                                        name="reviewers[]" placeholder="Select Reviewers" multiple>
-                                        @if (!empty($reviewer))
-                                            @foreach ($reviewer as $lan)
-                                            @if(Helpers::checkUserRolesreviewer($lan))
-                                                <option value="{{ $lan->id }}"
-                                                    @if ($document->reviewers) @php
-                                                   $data = explode(",",$document->reviewers);
-                                                    $count = count($data);
-                                                    $i=0;
-                                                @endphp
-                                                @for ($i = 0; $i < $count; $i++)
-                                                    @if ($data[$i] == $lan->id)
-                                                     selected @endif
-                                                    @endfor
-                                            @endif>
-                                            {{ $lan->name }}
-                                            </option>
-                                            @endif
-                                        @endforeach
-                                        @endif
-                                    </select>
-                                    @foreach ($history as $tempHistory)
-                                        @if (
-                                            $tempHistory->activity_type == 'Reviewers' &&
-                                                !empty($tempHistory->comment)  &&
-                                                $tempHistory->user_id == Auth::user()->id)
-                                            @php
-                                                $users_name = DB::table('users')
-                                                    ->where('id', $tempHistory->user_id)
-                                                    ->value('name');
-                                            @endphp
-                                            <p style="color: blue">Modify by {{ $users_name }} at
-                                                {{ $tempHistory->created_at }}
-                                            </p>
-                                            <input class="input-field"
-                                                style="background: #ffff0061;
-                                    color: black;"
-                                                type="text" value="{{ $tempHistory->comment }}" disabled>
-                                        @endif
-                                    @endforeach
-                                </div>
-                                <p id="reviewerError" style="color:red">**Reviewers are required</p>
-
-                                @if (Auth::user()->role != 3 && $document->stage < 8)
-                                    {{-- Add Comment  --}}
-                                    <div class="comment">
-                                        <div>
-                                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                                                at {{ date('d-M-Y h:i:s') }}</p>
-
-                                            <input class="input-field" type="text" name="reviewers_comment">
-                                        </div>
-                                        <div class="button">Add Comment</div>
-                                    </div>
-                                @endif
-
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="group-input">
-                                    <label for="approvers">Approvers</label>
-                                    <select   @if($document->stage != 1 && !Helpers::userIsQA()) disabled @endif id="choices-multiple-remove-button" class="choices-multiple-approver" {{ !Helpers::userIsQA() ? Helpers::isRevised($document->stage) : ''}} 
-                                        name="approvers[]" placeholder="Select Approvers" multiple>
-                                        @if (!empty($approvers))
-                                            @foreach ($approvers as $lan)
-                                            @if(Helpers::checkUserRolesApprovers($lan))
-                                                <option value="{{ $lan->id }}"
-                                                    @if ($document->approvers) @php
-                                                   $data = explode(",",$document->approvers);
-                                                    $count = count($data);
-                                                    $i=0;
-                                                @endphp
-                                                @for ($i = 0; $i < $count; $i++)
-                                                    @if ($data[$i] == $lan->id)
-                                                     selected @endif
-                                                    @endfor
-                                            @endif>
-                                            {{ $lan->name }}
-                                            </option>
-                                            @endif
-                                        @endforeach
-                                        @endif
-                                    </select>
-                                    @foreach ($history as $tempHistory)
-                                        @if (
-                                            $tempHistory->activity_type == 'Approvers' &&
-                                                !empty($tempHistory->comment)  &&
-                                                $tempHistory->user_id == Auth::user()->id)
-                                            @php
-                                                $users_name = DB::table('users')
-                                                    ->where('id', $tempHistory->user_id)
-                                                    ->value('name');
-                                            @endphp
-                                            <p style="color: blue">Modify by {{ $users_name }} at
-                                                {{ $tempHistory->created_at }}
-                                            </p>
-                                            <input class="input-field"
-                                                style="background: #ffff0061;
-                                    color: black;"
-                                                type="text" value="{{ $tempHistory->comment }}" disabled>
-                                        @endif
-                                    @endforeach
-                                </div>
-                                <p id="approverError" style="color:red">**Approvers are required</p>
-
-                                @if (Auth::user()->role != 3 && $document->stage < 8)
-                                    {{-- Add Comment  --}}
-                                    <div class="comment">
-                                        <div>
-                                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                                                at {{ date('d-M-Y h:i:s') }}</p>
-
-                                            <input class="input-field" type="text" name="approvers_comment">
-                                        </div>
-                                        <div class="button">Add Comment</div>
-                                    </div>
-                                @endif
-                            </div>
                             <div class="col-md-6">
                                 <div class="group-input">
                                     <label for="drafter">Drafter</label>
@@ -1424,9 +570,7 @@
                                 @endif
 
                             </div>
-
-   
-
+                            
                             <div class="col-md-6">
                                 <div class="group-input">
                                     <label for="hods">QA's</label>
@@ -1485,16 +629,17 @@
 
                             </div>
 
-                            {{-- <div class="col-md-6">
+                            <div class="col-md-6">
                                 <div class="group-input">
-                                    <label for="reviewers-group">Reviewers Group</label>
-                                    <select id="choices-multiple-remove-button" name="reviewers_group[]" {{Helpers::isRevised($document->stage)}} 
-                                        placeholder="Select Reviewers" multiple>
-                                        @if (!empty($reviewergroup))
-                                            @foreach ($reviewergroup as $lan)
+                                    <label for="reviewers">Reviewers</label>
+                                    <select   @if($document->stage != 1 && !Helpers::userIsQA() ) disabled @endif id="choices-multiple-remove-button" class="choices-multiple-reviewer" {{ !Helpers::userIsQA() ? Helpers::isRevised($document->stage) : ''}} 
+                                        name="reviewers[]" placeholder="Select Reviewers" multiple>
+                                        @if (!empty($reviewer))
+                                            @foreach ($reviewer as $lan)
+                                            @if(Helpers::checkUserRolesreviewer($lan))
                                                 <option value="{{ $lan->id }}"
-                                                    @if ($document->reviewers_group) @php
-                                                   $data = explode(",",$document->reviewers_group);
+                                                    @if ($document->reviewers) @php
+                                                   $data = explode(",",$document->reviewers);
                                                     $count = count($data);
                                                     $i=0;
                                                 @endphp
@@ -1505,12 +650,13 @@
                                             @endif>
                                             {{ $lan->name }}
                                             </option>
+                                            @endif
                                         @endforeach
                                         @endif
                                     </select>
                                     @foreach ($history as $tempHistory)
                                         @if (
-                                            $tempHistory->activity_type == 'Reviewers Group' &&
+                                            $tempHistory->activity_type == 'Reviewers' &&
                                                 !empty($tempHistory->comment)  &&
                                                 $tempHistory->user_id == Auth::user()->id)
                                             @php
@@ -1528,32 +674,34 @@
                                         @endif
                                     @endforeach
                                 </div>
+                                <p id="reviewerError" style="color:red">**Reviewers are required</p>
 
                                 @if (Auth::user()->role != 3 && $document->stage < 8)
-                                    <!-- Add Comment  -->
+                                    {{-- Add Comment  --}}
                                     <div class="comment">
                                         <div>
                                             <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
                                                 at {{ date('d-M-Y h:i:s') }}</p>
 
-                                            <input class="input-field" type="text" name="reviewers_group_comment">
+                                            <input class="input-field" type="text" name="reviewers_comment">
                                         </div>
                                         <div class="button">Add Comment</div>
                                     </div>
                                 @endif
 
-                            </div> --}}
+                            </div>
 
-                            {{-- <div class="col-md-6">
+                            <div class="col-md-6">
                                 <div class="group-input">
-                                    <label for="approvers-group">Approvers Group</label>
-                                    <select id="choices-multiple-remove-button" name="approver_group[]" {{Helpers::isRevised($document->stage)}} 
-                                        placeholder="Select Approvers" multiple>
-                                        @if (!empty($approversgroup))
-                                            @foreach ($approversgroup as $lan)
+                                    <label for="approvers">Approvers</label>
+                                    <select   @if($document->stage != 1 && !Helpers::userIsQA()) disabled @endif id="choices-multiple-remove-button" class="choices-multiple-approver" {{ !Helpers::userIsQA() ? Helpers::isRevised($document->stage) : ''}} 
+                                        name="approvers[]" placeholder="Select Approvers" multiple>
+                                        @if (!empty($approvers))
+                                            @foreach ($approvers as $lan)
+                                            @if(Helpers::checkUserRolesApprovers($lan))
                                                 <option value="{{ $lan->id }}"
-                                                    @if ($document->approver_group) @php
-                                                   $data = explode(",",$document->approver_group);
+                                                    @if ($document->approvers) @php
+                                                   $data = explode(",",$document->approvers);
                                                     $count = count($data);
                                                     $i=0;
                                                 @endphp
@@ -1564,12 +712,13 @@
                                             @endif>
                                             {{ $lan->name }}
                                             </option>
+                                            @endif
                                         @endforeach
                                         @endif
                                     </select>
                                     @foreach ($history as $tempHistory)
                                         @if (
-                                            $tempHistory->activity_type == 'Approvers Group' &&
+                                            $tempHistory->activity_type == 'Approvers' &&
                                                 !empty($tempHistory->comment)  &&
                                                 $tempHistory->user_id == Auth::user()->id)
                                             @php
@@ -1587,89 +736,7 @@
                                         @endif
                                     @endforeach
                                 </div>
-
-
-                                @if (Auth::user()->role != 3 && $document->stage < 8)
-                                    <!-- Add Comment  -->
-                                    <div class="comment">
-                                        <div>
-                                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                                                at {{ date('d-M-Y h:i:s') }}</p>
-
-                                            <input class="input-field" type="text" name="approver_group_comment">
-                                        </div>
-                                        <div class="button">Add Comment</div>
-                                    </div>
-                                @endif
-
-                            </div> --}}
-                            
-                            <div class="col-12">
-                                <div class="group-input">
-                                    <label for="revision-type">Revision Type</label>
-                                    <select  name="revision_type" {{Helpers::isRevised($document->stage)}} >
-                                        <option  value="0">-- Select --</option>
-                                        <option @if ($document->revision_type =='minor') selected @endif
-                                            value="minor">Minor</option>
-                                            <option @if ($document->revision_type =='major') selected @endif
-                                                value="major">Major</option>
-                                        <option @if ($document->revision_type =='NA') selected @endif
-                                            value="NA">NA</option>
-                                    </select>
-                                    @foreach ($history as $tempHistory)
-                                    @if ($tempHistory->activity_type == 'Revision Type' && !empty($tempHistory->comment) )
-                                        @php
-                                            $users_name = DB::table('users')
-                                                ->where('id', $tempHistory->user_id)
-                                                ->value('name');
-                                        @endphp
-                                        <p style="color: blue">Modify by {{ $users_name }} at
-                                            {{ $tempHistory->created_at }}
-                                        </p>
-                                        <input class="input-field"
-                                            style="background: #ffff0061;
-                                color: black;"
-                                            type="text" value="{{ $tempHistory->comment }}" disabled>
-                                    @endif
-                                @endforeach
-                                </div>
-                                @if (Auth::user()->role != 3 && $document->stage < 8)
-                                    {{-- Add Comment  --}}
-                                    <div class="comment">
-                                        <div>
-                                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                                                at {{ date('d-M-Y h:i:s') }}</p>
-
-                                            <input class="input-field" type="text" name="revision_type_comment">
-                                        </div>
-                                        <div class="button">Add Comment</div>
-                                    </div>
-                                @endif
-
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="group-input">
-                                    <label for="summary">Revision Summary</label>
-
-                                    <textarea name="revision_summary" {{Helpers::isRevised($document->stage)}} >{{ $document->revision_summary }}</textarea>
-                                    @foreach ($history as $tempHistory)
-                                        @if ($tempHistory->activity_type == 'Revision Summary' && !empty($tempHistory->comment) )
-                                            @php
-                                                $users_name = DB::table('users')
-                                                    ->where('id', $tempHistory->user_id)
-                                                    ->value('name');
-                                            @endphp
-                                            <p style="color: blue">Modify by {{ $users_name }} at
-                                                {{ $tempHistory->created_at }}
-                                            </p>
-                                            <input class="input-field"
-                                                style="background: #ffff0061;
-                                    color: black;"
-                                                type="text" value="{{ $tempHistory->comment }}" disabled>
-                                        @endif
-                                    @endforeach
-                                </div>
+                                {{-- <p id="approverError" style="color:red">**Approvers are required</p> --}}
 
                                 @if (Auth::user()->role != 3 && $document->stage < 8)
                                     {{-- Add Comment  --}}
@@ -1678,16 +745,70 @@
                                             <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
                                                 at {{ date('d-M-Y h:i:s') }}</p>
 
-                                            <input class="input-field" type="text" name="revision_summary_comment">
+                                            <input class="input-field" type="text" name="approvers_comment">
                                         </div>
                                         <div class="button">Add Comment</div>
                                     </div>
                                 @endif
-
                             </div>
-
                         </div>
                     </div>
+                    <div class="orig-head">
+                        Initiator Information
+                    </div>
+                    <div class="input-fields row">
+                        <div class="col-12">
+                            <div class="group-input">
+                                <label for="QA Initial Attachments">Initiatal Attachments</label>
+                                <div><small class="text-primary">Please Attach all relevant or supporting
+                                        documents</small></div>
+                                <div class="file-attachment-field">
+                                    <div disabled class="file-attachment-list" id="initial_attachments">
+                                        @if ($document->initial_attachments)
+                                            @foreach (json_decode($document->initial_attachments) as $file)
+                                                <h6 type="button" class="file-container text-dark"
+                                                    style="background-color: rgb(243, 242, 240);">
+                                                    <b>{{ $file }}</b>
+                                                    <a href="{{ asset('upload/' . $file) }}"
+                                                        target="_blank"><i class="fa fa-eye text-primary"
+                                                            style="font-size:20px; margin-right:-10px;"></i></a>
+                                                    <a type="button" class="remove-file"
+                                                    data-remove-id="initial_attachmentsFile-{{ $loop->index }}"
+
+                                                        data-file-name="{{ $file }}"><i
+                                                            class="fa-solid fa-circle-xmark"
+                                                            style="color:red; font-size:20px;"></i></a>
+                                                </h6>
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                    <div class="add-btn">
+                                        <div>Add</div>
+                                        <input type="file" id="myfile"
+                                            name="initial_attachments[]" {{Helpers::isRevised($document->stage)}}
+                                            oninput="addMultipleFiles(this, 'initial_attachments')" multiple>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3 warehouse">
+                            <div class="group-input">
+                                <label for="Warehousefeedback">Initiated By</label>
+                                <input readonly type="text" name="initiated_by" value="{{Helpers::getInitiatorName($document->initiated_by)}}" id="initiated_by">
+
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 new-date-data-field warehouse">
+                            <div class="group-input input-date">
+                                <label for="initiated On" style="font-weight: 100">Initiated On</label>
+                                <div class="calenderauditee">
+                                    <input type="text" id="initiated_on" value="{{Helpers::getdateFormat($document->initiated_on)}}" readonly placeholder="DD-MM-YYYY" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="button-block">
                         <button type="submit" name="submit" value="save" id="DocsaveButton"
                             class="saveButton">Save</button>
@@ -1695,7 +816,376 @@
                     </div>
                 </div>
 <!-- ------------------------------------------------------------------------------------------------------------- -->
+                <div id="drafters" class="tabcontent">
+                    <div class="orig-head">
+                        Drafter Input
+                    </div>
+                    <div class="input-fields">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="group-input">
+                                    <label for="comments">Drafter Remarks <span @if (in_array(Auth::user()->id, explode(",", $document->drafters)) && $document->stage == 2)  @else style="display: none" @endif class="text-danger">*</span></label>
+                                    <textarea {{Helpers::isRevised($document->stage)}} @if (in_array(Auth::user()->id, explode(",", $document->drafters)) && $document->stage == 2) required @else readonly @endif name="drafter_remarks">{{$document->drafter_remarks}}</textarea>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="group-input">
+                                    <label for="QA Initial Attachments">Drafter Attachments</label>
+                                    <div><small class="text-primary">Please Attach all relevant or supporting
+                                            documents</small></div>
+                                    <div class="file-attachment-field">
+                                        <div disabled class="file-attachment-list" id="drafter_attachments">
+                                            @if ($document->drafter_attachments)
+                                                @foreach (json_decode($document->drafter_attachments) as $file)
+                                                    <h6 type="button" class="file-container text-dark"
+                                                        style="background-color: rgb(243, 242, 240);">
+                                                        <b>{{ $file }}</b>
+                                                        <a href="{{ asset('upload/' . $file) }}"
+                                                            target="_blank"><i class="fa fa-eye text-primary"
+                                                                style="font-size:20px; margin-right:-10px;"></i></a>
+                                                        <a type="button" class="remove-file"
+                                                        data-remove-id="drafter_attachmentsFile-{{ $loop->index }}"
 
+                                                            data-file-name="{{ $file }}"><i
+                                                                class="fa-solid fa-circle-xmark"
+                                                                style="color:red; font-size:20px;"></i></a>
+                                                    </h6>
+                                                @endforeach
+                                            @endif
+                                        </div>
+                                        <div class="add-btn">
+                                            <div>Add</div>
+                                            <input type="file" id="myfile"
+                                                name="drafter_attachments[]" {{Helpers::isRevised($document->stage)}}
+                                                oninput="addMultipleFiles(this, 'drafter_attachments')" multiple>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3 warehouse">
+                                <div class="group-input">
+                                    <label for="Warehousefeedback">Drafted By</label>
+                                    <input readonly type="text" name="drafted_by" id="drafted_by" value="{{Helpers::getInitiatorName($document->drafted_by)}}">
+
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 new-date-data-field warehouse">
+                                <div class="group-input input-date">
+                                    <label for="Drafted On" style="font-weight: 100;">Drafted On</label>
+                                    <div class="calenderauditee">
+                                        <input type="text" id="drafted_on" value="{{Helpers::getdateFormat($document->drafted_on)}}" disabled placeholder="DD-MM-YYYY" />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="button-block">
+                        <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
+                        <button type="button" class="backButton" onclick="previousStep()">Back</button>
+                        <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
+                        <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white" > Exit </a>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="123" class="tabcontent">
+                    <div class="orig-head">
+                        Approver Input
+                    </div>
+                    <div class="input-fields">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="group-input">
+                                    <label for="comments">Approver Remarks <span @if (in_array(Auth::user()->id, explode(",", $document->approvers)) && $document->stage == 6)  @else style="display: none" @endif class="text-danger">*</span></label>
+                                    <textarea {{Helpers::isRevised($document->stage)}} @if (in_array(Auth::user()->id, explode(",", $document->approvers)) && $document->stage == 6) required @else readonly @endif  name="approver_remarks">{{$document->approver_remarks}}</textarea>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="group-input">
+                                    <label for="QA Initial Attachments">approver Attachments</label>
+                                    <div><small class="text-primary">Please Attach all relevant or supporting
+                                            documents</small></div>
+                                    <div class="file-attachment-field">
+                                        <div disabled class="file-attachment-list" id="approver_attachments">
+                                            @if ($document->approver_attachments)
+                                                @foreach (json_decode($document->approver_attachments) as $file)
+                                                    <h6 type="button" class="file-container text-dark"
+                                                        style="background-color: rgb(243, 242, 240);">
+                                                        <b>{{ $file }}</b>
+                                                        <a href="{{ asset('upload/' . $file) }}"
+                                                            target="_blank"><i class="fa fa-eye text-primary"
+                                                                style="font-size:20px; margin-right:-10px;"></i></a>
+                                                        <a type="button" class="remove-file"
+                                                        data-remove-id="approver_attachmentsFile-{{ $loop->index }}"
+
+                                                            data-file-name="{{ $file }}"><i
+                                                                class="fa-solid fa-circle-xmark"
+                                                                style="color:red; font-size:20px;"></i></a>
+                                                    </h6>
+                                                @endforeach
+                                            @endif
+                                        </div>
+                                        <div class="add-btn">
+                                            <div>Add</div>
+                                            <input type="file" id="myfile"
+                                                name="approver_attachments[]"{{ $document->stage == 0 || $document->stage == 13 ? 'disabled' : '' }}
+                                                oninput="addMultipleFiles(this, 'approver_attachments')" multiple>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3 warehouse">
+                                <div class="group-input">
+                                    <label for="Warehousefeedback">Approver Completed By</label>
+                                    <input readonly type="text" name="approver_by" id="approver_by"  value="{{Helpers::getInitiatorName($document->approver_by)}}">
+
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 new-date-data-field warehouse">
+                                <div class="group-input input-date">
+                                    <label for="QA Completed On"  style="font-weight: 100;">Approver Completed On</label>
+                                    <div class="calenderauditee">
+                                        <input type="text" id="approver_on" value="{{Helpers::getdateFormat($document->approver_on)}}" disabled placeholder="DD-MM-YYYY" />  
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="button-block">
+                        <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
+                        <button type="button" class="backButton" onclick="previousStep()">Back</button>
+                        <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
+                        <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white" > Exit </a>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="456" class="tabcontent">
+                    <div class="orig-head">
+                        Reviewer Input
+                    </div>
+                    <div class="input-fields">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="group-input">
+                                    <label for="comments">Reviewer Remarks <span @if (in_array(Auth::user()->id, explode(",", $document->reviewers)) && $document->stage == 5)  @else style="display: none" @endif class="text-danger">*</span></label>
+                                    <textarea {{Helpers::isRevised($document->stage)}} @if (in_array(Auth::user()->id, explode(",", $document->reviewers)) && $document->stage == 5) required @else readonly @endif  name="reviewer_remarks">{{$document->reviewer_remarks}}</textarea>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="group-input">
+                                    <label for="QA Initial Attachments">Reviewer Attachments</label>
+                                    <div><small class="text-primary">Please Attach all relevant or supporting
+                                            documents</small></div>
+                                    <div class="file-attachment-field">
+                                        <div disabled class="file-attachment-list" id="reviewer_attachments">
+                                            @if ($document->reviewer_attachments)
+                                                @foreach (json_decode($document->reviewer_attachments) as $file)
+                                                    <h6 type="button" class="file-container text-dark"
+                                                        style="background-color: rgb(243, 242, 240);">
+                                                        <b>{{ $file }}</b>
+                                                        <a href="{{ asset('upload/' . $file) }}"
+                                                            target="_blank"><i class="fa fa-eye text-primary"
+                                                                style="font-size:20px; margin-right:-10px;"></i></a>
+                                                        <a type="button" class="remove-file"
+                                                        data-remove-id="reviewer_attachmentsFile-{{ $loop->index }}"
+
+                                                            data-file-name="{{ $file }}"><i
+                                                                class="fa-solid fa-circle-xmark"
+                                                                style="color:red; font-size:20px;"></i></a>
+                                                    </h6>
+                                                @endforeach
+                                            @endif
+                                        </div>
+                                        <div class="add-btn">
+                                            <div>Add</div>
+                                            <input type="file" id="myfile"
+                                                name="reviewer_attachments[]"{{ $document->stage == 0 || $document->stage == 13 ? 'disabled' : '' }}
+                                                oninput="addMultipleFiles(this, 'reviewer_attachments')" multiple>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3 warehouse">
+                                <div class="group-input">
+                                    <label for="Warehousefeedback">Reviewer Completed By</label>
+                                    <input readonly type="text" name="reviewer_by" id="reviewer_by"  value="{{Helpers::getInitiatorName($document->reviewer_by)}}">
+
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 new-date-data-field warehouse">
+                                <div class="group-input input-date">
+                                    <label for="QA Completed On"  style="font-weight: 100;">Reviewer Completed On</label>
+                                    <div class="calenderauditee">
+                                        <input type="text" id="reviewer_on" value="{{Helpers::getdateFormat($document->reviewer_on)}}" readonly placeholder="DD-MM-YYYY" />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="button-block">
+                        <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
+                        <button type="button" class="backButton" onclick="previousStep()">Back</button>
+                        <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
+                        <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white" > Exit </a>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="hodcft" class="tabcontent">
+                    <div class="orig-head">
+                        HOD/CFTs Input
+                    </div>
+                    <div class="input-fields">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="group-input">
+                                    <label for="comments">HOD/CFTs Remarks <span @if (in_array(Auth::user()->id, explode(",", $document->hods)) && $document->stage == 3)  @else style="display: none" @endif class="text-danger">*</span></label>
+                                    <textarea {{Helpers::isRevised($document->stage)}} @if (in_array(Auth::user()->id, explode(",", $document->hods)) && $document->stage == 3) required @else readonly @endif  name="hod_remarks">{{$document->hod_remarks}}</textarea>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="group-input">
+                                    <label for="QA Initial Attachments">HOD/CFTs Attachments</label>
+                                    <div><small class="text-primary">Please Attach all relevant or supporting
+                                            documents</small></div>
+                                    <div class="file-attachment-field">
+                                        <div disabled class="file-attachment-list" id="hod_attachments">
+                                            @if ($document->hod_attachments)
+                                                @foreach (json_decode($document->hod_attachments) as $file)
+                                                    <h6 type="button" class="file-container text-dark"
+                                                        style="background-color: rgb(243, 242, 240);">
+                                                        <b>{{ $file }}</b>
+                                                        <a href="{{ asset('upload/' . $file) }}"
+                                                            target="_blank"><i class="fa fa-eye text-primary"
+                                                                style="font-size:20px; margin-right:-10px;"></i></a>
+                                                        <a type="button" class="remove-file"
+                                                        data-remove-id="hod_attachmentsFile-{{ $loop->index }}"
+
+                                                            data-file-name="{{ $file }}"><i
+                                                                class="fa-solid fa-circle-xmark"
+                                                                style="color:red; font-size:20px;"></i></a>
+                                                    </h6>
+                                                @endforeach
+                                            @endif
+                                        </div>
+                                        <div class="add-btn">
+                                            <div>Add</div>
+                                            <input type="file" id="myfile"
+                                                name="hod_attachments[]"{{ $document->stage == 0 || $document->stage == 13 ? 'disabled' : '' }}
+                                                oninput="addMultipleFiles(this, 'hod_attachments')" multiple>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3 warehouse">
+                                <div class="group-input">
+                                    <label for="Warehousefeedback">HOD/CFTs Completed By</label>
+                                    <input readonly type="text" name="hod_by" id="hod_by"  value="{{Helpers::getInitiatorName($document->hod_by)}}">
+
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 new-date-data-field warehouse">
+                                <div class="group-input input-date">
+                                    <label for="HOD/CFTs Completed On"  style="font-weight: 100;">HOD/CFTs Completed On</label>
+                                    <div class="calenderauditee">
+                                        <input type="text" id="hod_on" readonly value="{{Helpers::getdateFormat($document->hod_on)}}" placeholder="DD-MM-YYYY" />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="button-block">
+                        <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
+                        <button type="button" class="backButton" onclick="previousStep()">Back</button>
+                        <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
+                        <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white" > Exit </a>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="qa" class="tabcontent">
+                    <div class="orig-head">
+                        QA Input
+                    </div>
+                    <div class="input-fields">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="group-input">
+                                    <label for="comments">QA Remarks <span @if (in_array(Auth::user()->id, explode(",", $document->qa)) && $document->stage == 4)  @else style="display: none" @endif class="text-danger">*</span></label>
+                                    <textarea {{Helpers::isRevised($document->stage)}} @if (in_array(Auth::user()->id, explode(",", $document->qa)) && $document->stage == 4) required @else readonly @endif  name="qa_remarks">{{$document->qa_remarks}}</textarea>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="group-input">
+                                    <label for="QA Initial Attachments">QA Attachments</label>
+                                    <div><small class="text-primary">Please Attach all relevant or supporting
+                                            documents</small></div>
+                                    <div class="file-attachment-field">
+                                        <div disabled class="file-attachment-list" id="qa_attachments">
+                                            @if ($document->qa_attachments)
+                                                @foreach (json_decode($document->qa_attachments) as $file)
+                                                    <h6 type="button" class="file-container text-dark"
+                                                        style="background-color: rgb(243, 242, 240);">
+                                                        <b>{{ $file }}</b>
+                                                        <a href="{{ asset('upload/' . $file) }}"
+                                                            target="_blank"><i class="fa fa-eye text-primary"
+                                                                style="font-size:20px; margin-right:-10px;"></i></a>
+                                                        <a type="button" class="remove-file"
+                                                        data-remove-id="qa_attachmentsFile-{{ $loop->index }}"
+
+                                                            data-file-name="{{ $file }}"><i
+                                                                class="fa-solid fa-circle-xmark"
+                                                                style="color:red; font-size:20px;"></i></a>
+                                                    </h6>
+                                                @endforeach
+                                            @endif
+                                        </div>
+                                        <div class="add-btn">
+                                            <div>Add</div>
+                                            <input type="file" id="myfile"
+                                                name="qa_attachments[]" {{ $document->stage == 0 || $document->stage == 13 ? 'disabled' : '' }}
+                                                oninput="addMultipleFiles(this, 'qa_attachments')" multiple>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3 warehouse">
+                                <div class="group-input">
+                                    <label for="Warehousefeedback">QA Completed By</label>
+                                    <input readonly type="text" name="qa_by" id="qa_by"  value="{{Helpers::getInitiatorName($document->qa_by)}}">
+
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 new-date-data-field warehouse">
+                                <div class="group-input input-date">
+                                    <label for="QA Completed On"  style="font-weight: 100;">QA Completed On</label>
+                                    <div class="calenderauditee">
+                                        <input type="text" id="qa_on" readonly value="{{Helpers::getdateFormat($document->qa_on)}}" placeholder="DD-MM-YYYY" />
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="button-block">
+                        <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
+                        <button type="button" class="backButton" onclick="previousStep()">Back</button>
+                        <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
+                        <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white" > Exit </a>
+                        </button>
+                    </div>
+                </div>
+
+                
  <!-- ------------------------------------------------------------------------------------------------------------- -->
                 <div id="add-doc" class="tabcontent">
                     <div class="orig-head">

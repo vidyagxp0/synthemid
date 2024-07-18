@@ -433,6 +433,8 @@ class DocumentDetailsController extends Controller
                   }
                 } else {
                   $document->stage = 3;
+                  $document->drafted_by = Auth::user()->id;
+                  $document->drafted_on = now();
                   $document->status = Stage::where('id', 3)->value('name');
                   try {
                     Mail::send(
@@ -454,6 +456,8 @@ class DocumentDetailsController extends Controller
               if ($document->approver_group) {
                 if ($reviewersDataforgroup == 1 && $reviewersData == 1) {
                   $document->stage = 3;
+                  $document->drafted_by = Auth::user()->id;
+                  $document->drafted_on = now();
                     $document->status = Stage::where('id', 3)->value('name');
                   try {
                     Mail::send(
@@ -472,6 +476,8 @@ class DocumentDetailsController extends Controller
               } else {
                 if ($reviewersData == 1) {
                     $document->stage = 3;
+                    $document->drafted_by = Auth::user()->id;
+                    $document->drafted_on = now();
                     $document->status = Stage::where('id', 3)->value('name');
                   try {
                     Mail::send(
@@ -570,6 +576,8 @@ class DocumentDetailsController extends Controller
                 if ($document->reviewers) {
                   if ($reviewersData == 1) {
                     $document->stage = 4;
+                    $document->hod_by = Auth::user()->id;
+                    $document->hod_on = now();
                     $document->status = Stage::where('id', 4)->value('name');
                     try {
                       Mail::send(
@@ -587,6 +595,8 @@ class DocumentDetailsController extends Controller
                   }
                 } else {
                   $document->stage = 4;
+                  $document->hod_by = Auth::user()->id;
+                    $document->hod_on = now();
                   $document->status = Stage::where('id', 4)->value('name');
                   try {
                     Mail::send(
@@ -608,6 +618,8 @@ class DocumentDetailsController extends Controller
               if ($document->approver_group) {
                 if ($reviewersDataforgroup == 1 && $reviewersData == 1) {
                   $document->stage = 4;
+                  $document->hod_by = Auth::user()->id;
+                    $document->hod_on = now();
                     $document->status = Stage::where('id', 4)->value('name');
                   try {
                     Mail::send(
@@ -626,6 +638,8 @@ class DocumentDetailsController extends Controller
               } else {
                 if ($reviewersData == 1) {
                   $document->stage = 4;
+                  $document->hod_by = Auth::user()->id;
+                    $document->hod_on = now();
                   $document->status = Stage::where('id', 4)->value('name');
                   try {
                     Mail::send(
@@ -724,6 +738,8 @@ class DocumentDetailsController extends Controller
                 if ($document->reviewers) {
                   if ($reviewersData == 1) {
                     $document->stage = 5;
+                    $document->qa_by = Auth::user()->id;
+                    $document->qa_on = now();
                     $document->status = Stage::where('id', 5)->value('name');
                     try {
                       Mail::send(
@@ -741,6 +757,8 @@ class DocumentDetailsController extends Controller
                   }
                 } else {
                   $document->stage = 5;
+                  $document->qa_by = Auth::user()->id;
+                    $document->qa_on = now();
                   $document->status = Stage::where('id', 5)->value('name');
                   try {
                     Mail::send(
@@ -762,6 +780,8 @@ class DocumentDetailsController extends Controller
               if ($document->approver_group) {
                 if ($reviewersDataforgroup == 1 && $reviewersData == 1) {
                   $document->stage = 5;
+                  $document->qa_by = Auth::user()->id;
+                    $document->qa_on = now();
                     $document->status = Stage::where('id', 5)->value('name');
                   try {
                     Mail::send(
@@ -780,6 +800,8 @@ class DocumentDetailsController extends Controller
               } else {
                 if ($reviewersData == 1) {
                   $document->stage = 5;
+                  $document->qa_by = Auth::user()->id;
+                    $document->qa_on = now();
                   $document->status = Stage::where('id', 5)->value('name');
                   try {
                     Mail::send(
@@ -872,6 +894,8 @@ class DocumentDetailsController extends Controller
                 if ($document->reviewers) {
                   if ($reviewersData == 1) {
                       $document->stage = 6;
+                      $document->reviewer_by = Auth::user()->id;
+                    $document->reviewer_on = now();
                       $document->status = Stage::where('id', 6)->value('name');
                     try {
                       Mail::send(
@@ -888,6 +912,8 @@ class DocumentDetailsController extends Controller
                   }
                 } else {
                   $document->stage = 6;
+                  $document->reviewer_by = Auth::user()->id;
+                  $document->reviewer_on = now();
                       $document->status = Stage::where('id', 6)->value('name');
                   try {
                     Mail::send(
@@ -908,6 +934,8 @@ class DocumentDetailsController extends Controller
               if ($document->reviewers_group) {
                 if ($reviewersDataforgroup == 1 && $reviewersData = 1) {
                   $document->stage = 6;
+                  $document->reviewer_by = Auth::user()->id;
+                  $document->reviewer_on = now();
                       $document->status = Stage::where('id', 6)->value('name');
                   try {
                     Mail::send(
@@ -925,6 +953,8 @@ class DocumentDetailsController extends Controller
               } else {
                 if ($reviewersData == 1) {
                   $document->stage = 6;
+                  $document->reviewer_by = Auth::user()->id;
+                  $document->reviewer_on = now();
                       $document->status = Stage::where('id', 6)->value('name');
                   try {
                     Mail::send(
@@ -1022,6 +1052,8 @@ class DocumentDetailsController extends Controller
                 $reviewersDataforgroup = 1;
                 if ($document->reviewers) {
                   if ($reviewersData == 1) {
+                    $document->approver_by = Auth::user()->id;
+                    $document->approver_on = now();
                     $document->stage = $document->training_required == 'yes' ? 7 : 9;
                     $document->status = $document->training_required == 'yes' ? Stage::where('id', 7)->value('name') : Stage::where('id', 9)->value('name');
                     try {
@@ -1040,6 +1072,8 @@ class DocumentDetailsController extends Controller
                   }
                 } else {
                     $document->stage = $document->training_required == 'yes' ? 7 : 9;
+                    $document->approver_by = Auth::user()->id;
+                    $document->approver_on = now();
                     $document->status = $document->training_required == 'yes' ? Stage::where('id', 7)->value('name') : Stage::where('id', 9)->value('name');
                   try {
                     Mail::send(
@@ -1061,6 +1095,8 @@ class DocumentDetailsController extends Controller
               if ($document->approver_group) {
                 if ($reviewersDataforgroup == 1 && $reviewersData == 1) {
                   $document->stage = $document->training_required == 'yes' ? 7 : 9;
+                  $document->approver_by = Auth::user()->id;
+                    $document->approver_on = now();
                     $document->status = $document->training_required == 'yes' ? Stage::where('id', 7)->value('name') : Stage::where('id', 9)->value('name');
                   try {
                     Mail::send(
@@ -1079,6 +1115,8 @@ class DocumentDetailsController extends Controller
               } else {
                 if ($reviewersData == 1) {
                   $document->stage = $document->training_required == 'yes' ? 7 : 9;
+                  $document->approver_by = Auth::user()->id;
+                    $document->approver_on = now();
                     $document->status = $document->training_required == 'yes' ? Stage::where('id', 7)->value('name') : Stage::where('id', 9)->value('name');
                   try {
                     Mail::send(

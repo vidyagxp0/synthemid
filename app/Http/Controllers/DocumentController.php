@@ -507,15 +507,27 @@ class DocumentController extends Controller
             $document->minor = $request->minor;
             $document->sop_type = $request->sop_type;
             $document->notify_to = json_encode($request->notify_to);
-            //$document->purpose = $request->purpose;
+
+            $document->initiated_by = Auth::user()->id;
+            $document->initiated_on = now();
+
+            if (!empty ($request->initial_attachments)) {
+                $files = [];
+                if ($request->hasfile('initial_attachments')) {
+                    foreach ($request->file('initial_attachments') as $file) {
+                        $name = $request->name . 'initial_attachments' . rand(1, 100) . '.' . $file->getClientOriginalExtension();
+                        $file->move('upload/', $name);
+                        $files[] = $name;
+                    }
+                }
+                $document->initial_attachments = json_encode($files);
+            }
+
 
             if ($request->keywords) {
                 $document->keywords = implode(',', $request->keywords);
             }
 
-            // if ($request->notify_to) {
-            //     $document->notify_to = implode(',', $request->notify_to);
-            // }
             if ($request->reference_record) {
                 $document->reference_record = implode(',', $request->reference_record);
             }
@@ -856,14 +868,6 @@ class DocumentController extends Controller
                 $document->document_type_id = $request->document_type_id;
                 $document->document_subtype_id = $request->document_subtype_id;
                 $document->document_language_id = $request->document_language_id;
-                // $document->effective_date = $request->effective_date ? $request->effective_date : $document->effectve_date;
-                // try {
-                //     $next_review_date = Carbon::parse($request->effective_date)->addYears($request->review_period)->format('Y-m-d');
-                //     $document->next_review_date = $next_review_date;
-                // } catch (\Exception $e) {
-                //     // 
-                // }
-                // $document->review_period = $request->review_period;
                 $document->training_required = $request->training_required;
                 $document->attach_draft_doocument = $request->attach_draft_doocument;
                 $document->notify_to = json_encode($request->notify_to);
@@ -910,6 +914,107 @@ class DocumentController extends Controller
                 $document->revision_type = $request->revision_type;
                 $document->major = $request->major;
                 $document->minor = $request->minor;
+
+                if($document->stage == 2){
+                    $document->drafter_remarks = $request->drafter_remarks;
+                    if (!empty ($request->drafter_attachments)) {
+                        $files = [];
+                        if ($document->drafter_attachments) {
+                            $existingFiles = json_decode($document->drafter_attachments, true); // Convert to associative array
+                            if (is_array($existingFiles)) {
+                                $files = $existingFiles;
+                            }
+                        }
+                        if ($request->hasfile('drafter_attachments')) {
+                            foreach ($request->file('drafter_attachments') as $file) {
+                                $name = $request->name . 'drafter_attachments' . rand(1, 100) . '.' . $file->getClientOriginalExtension();
+                                $file->move('upload/', $name);
+                                $files[] = $name;
+                            }
+                        }
+                        $document->drafter_attachments = json_encode($files);
+                    }
+                }
+                if($document->stage == 3){
+                    $document->hod_remarks = $request->hod_remarks;
+                    if (!empty ($request->hod_attachments)) {
+                        $files = [];
+                        if ($document->hod_attachments) {
+                            $existingFiles = json_decode($document->hod_attachments, true); // Convert to associative array
+                            if (is_array($existingFiles)) {
+                                $files = $existingFiles;
+                            }
+                        }
+                        if ($request->hasfile('hod_attachments')) {
+                            foreach ($request->file('hod_attachments') as $file) {
+                                $name = $request->name . 'hod_attachments' . rand(1, 100) . '.' . $file->getClientOriginalExtension();
+                                $file->move('upload/', $name);
+                                $files[] = $name;
+                            }
+                        }
+                        $document->hod_attachments = json_encode($files);
+                    }
+                }
+                if($document->stage == 4){
+                    $document->qa_remarks = $request->qa_remarks;
+                    if (!empty ($request->qa_attachments)) {
+                        $files = [];
+                        if ($document->qa_attachments) {
+                            $existingFiles = json_decode($document->qa_attachments, true); // Convert to associative array
+                            if (is_array($existingFiles)) {
+                                $files = $existingFiles;
+                            }
+                        }
+                        if ($request->hasfile('qa_attachments')) {
+                            foreach ($request->file('qa_attachments') as $file) {
+                                $name = $request->name . 'qa_attachments' . rand(1, 100) . '.' . $file->getClientOriginalExtension();
+                                $file->move('upload/', $name);
+                                $files[] = $name;
+                            }
+                        }
+                        $document->qa_attachments = json_encode($files);
+                    }
+                }
+                if($document->stage == 5){
+                    $document->reviewer_remarks = $request->reviewer_remarks;
+                    if (!empty ($request->reviewer_attachments)) {
+                        $files = [];
+                        if ($document->reviewer_attachments) {
+                            $existingFiles = json_decode($document->reviewer_attachments, true); // Convert to associative array
+                            if (is_array($existingFiles)) {
+                                $files = $existingFiles;
+                            }
+                        }
+                        if ($request->hasfile('reviewer_attachments')) {
+                            foreach ($request->file('reviewer_attachments') as $file) {
+                                $name = $request->name . 'reviewer_attachments' . rand(1, 100) . '.' . $file->getClientOriginalExtension();
+                                $file->move('upload/', $name);
+                                $files[] = $name;
+                            }
+                        }
+                        $document->reviewer_attachments = json_encode($files);
+                    }
+                }
+                if($document->stage == 6){
+                    $document->approver_remarks = $request->approver_remarks;
+                    if (!empty ($request->approver_attachments)) {
+                        $files = [];
+                        if ($document->approver_attachments) {
+                            $existingFiles = json_decode($document->approver_attachments, true); // Convert to associative array
+                            if (is_array($existingFiles)) {
+                                $files = $existingFiles;
+                            }
+                        }
+                        if ($request->hasfile('approver_attachments')) {
+                            foreach ($request->file('approver_attachments') as $file) {
+                                $name = $request->name . 'approver_attachments' . rand(1, 100) . '.' . $file->getClientOriginalExtension();
+                                $file->move('upload/', $name);
+                                $files[] = $name;
+                            }
+                        }
+                        $document->approver_attachments = json_encode($files);
+                    }
+                }
                 
 
                 if (! empty($request->reviewers)) {
