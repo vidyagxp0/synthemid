@@ -91,6 +91,7 @@ class PrintRequestController extends Controller
         $documentTypes = DocumentType::all();
         $documentsubTypes = DocumentSubtype::all();
         $documentLanguages = DocumentLanguage::all();
+        $documentList = Document::all();
 
         $hods = DB::table('user_roles')
             ->join('users', 'user_roles.user_id', '=', 'users.id')
@@ -131,6 +132,7 @@ class PrintRequestController extends Controller
             'users',
             'recordNumber',
             'division',
+            'documentList',
             'qa',
             'documentsubTypes'
         ));
@@ -141,7 +143,7 @@ class PrintRequestController extends Controller
         $printRequest = new PrintRequest();
         $printRequest->originator_id = Auth::id();
         $printRequest->division_id = $request->division_id;
-        $printRequest->short_desc = $request->short_desc;
+        $printRequest->short_description = $request->short_desc;
         $printRequest->due_date = $request->due_dateDoc;
         $printRequest->permission_user_id = $request->permission_user_id;
         $printRequest->initiated_by = Auth::user()->id;
@@ -163,6 +165,10 @@ class PrintRequestController extends Controller
         $printRequest->stage = 1;
         $printRequest->status = 'Initiation';
 
+        if (! empty($request->reference_records)) {
+            $printRequest->reference_records = implode(',', $request->reference_records);
+        }
+
         $printRequest->save();
         toastr()->success('Print Request Created');
         return redirect()->route('documents.index');
@@ -171,6 +177,7 @@ class PrintRequestController extends Controller
     public function show($id)
     {
         $print_history = PrintRequest::find($id);
+        $documentList = Document::all();
         $hods = DB::table('user_roles')
             ->join('users', 'user_roles.user_id', '=', 'users.id')
             ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
@@ -190,7 +197,7 @@ class PrintRequestController extends Controller
 
         $usersValue = User::get();
         // dd($print_history);
-        return view('frontend.documents.print_request.edit', compact('usersValue', 'qa', 'hods', 'print_history'));
+        return view('frontend.documents.print_request.edit', compact('usersValue', 'qa', 'hods','documentList', 'print_history'));
     }
 
     public function update(Request $request, $id)
@@ -198,13 +205,15 @@ class PrintRequestController extends Controller
         // dd($request->all());
         $printRequest = PrintRequest::find($id);
         $printRequest->division_id = $request->division_id;
-        $printRequest->short_desc = $request->short_desc;
+        $printRequest->short_description = $request->short_description;
         $printRequest->due_date = $request->due_dateDoc;
         $printRequest->permission_user_id = $request->permission_user_id;
         // $printRequest->initiated_by = Auth::user()->id;
         // $printRequest->initiated_on = Carbon::now()->format('d-M-Y');
-        // $printRequest->hods = $request->hods;
-        // $printRequest->qa = $request->qa;
+        if($printRequest->stage == 2){
+            $printRequest->hods = $request->hods;
+            $printRequest->qa = $request->qa;
+        }
         if (!empty($request->initial_attachments)) {
             $files = [];
             if ($request->hasfile('initial_attachments')) {
@@ -216,6 +225,11 @@ class PrintRequestController extends Controller
             }
             $printRequest->initial_attachments = json_encode($files);
         }
+
+        if (! empty($request->reference_records)) {
+            $printRequest->reference_records = implode(',', $request->reference_records);
+        }
+        
         if($printRequest->stage == 2){
                     $printRequest->hod_remarks = $request->hod_remarks;
                     $printRequest->hod_on = Carbon::now()->format('d-M-Y');
@@ -469,6 +483,48 @@ class PrintRequestController extends Controller
             else {
             toastr()->error('E-signature Not match');
             return back();
+        }
+    }
+
+    public function singleReport($id){
+        $data = PrintRequest::find($id);
+        if (!empty($data)) {
+            $data->originator = User::where('id', $data->originator_id)->value('name'); 
+            $ids = explode(',', $data->reference_records);  
+            $relatedRecords = Document::whereIn('id', $ids)->pluck('document_name')->toArray();    
+
+            $pdf = App::make('dompdf.wrapper');
+            $time = Carbon::now();
+            $pdf = PDF::loadview('frontend.documents.print_request.single-report', compact(
+                'data',
+                'relatedRecords'
+            ))
+                ->setOptions([
+                    'defaultFont' => 'sans-serif',
+                    'isHtml5ParserEnabled' => true,
+                    'isRemoteEnabled' => true,
+                    'isPhpEnabled' => true,
+                ]);
+            $pdf->setPaper('A4');
+            $pdf->render();
+            $canvas = $pdf->getDomPDF()->getCanvas();
+            $height = $canvas->get_height();
+            $width = $canvas->get_width();
+
+            $canvas->page_script('$pdf->set_opacity(0.1,"Multiply");');
+
+            $canvas->page_text(
+                $width / 4,
+                $height / 2,
+                $data->status,
+                null,
+                25,
+                [0, 0, 0],
+                2,
+                6,
+                -20
+            );
+            return $pdf->stream('Print Request' . $id . '.pdf');
         }
     }
 }
