@@ -12,6 +12,7 @@ use App\Http\Controllers\RiskManagementController;
 use App\Http\Controllers\ChangeControlController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\DocumentDetailsController;
+use App\Http\Controllers\PrintRequestController;
 use App\Http\Controllers\rcms\DesktopController;
 use App\Http\Controllers\UserLoginController;
 use App\Http\Controllers\MytaskController;
@@ -578,3 +579,16 @@ Route::get('trainer_qualification', [TrainerController::class, 'index'])->name('
 
 //=====================================================================
 // >>>>>>> B-backup
+
+//=====================  Print Request ================================================
+// Route::resource('print-request', PrintRequestController::class);
+Route::get('print-request', [PrintRequestController::class, 'index']);
+Route::get('print-request/create', [PrintRequestController::class, 'create'])->name('print_request.create');
+Route::post('print-request/store', [PrintRequestController::class, 'store'])->name('print-request.store');
+Route::get('print-request/edit/{id}', [PrintRequestController::class, 'show']);
+Route::post('print-request/update/{id}', [PrintRequestController::class, 'update'])->name('print-request.update');
+Route::post('print-request/stage/{id}',[PrintRequestController::class, 'stageChange'])->name('print-request.stage');
+Route::post('print-request/stage-reject/{id}',[PrintRequestController::class, 'stageReject'])->name('print-request.stagereject');
+Route::post('print-request/stage-cancel/{id}',[PrintRequestController::class, 'erratacancelstage'])->name('print-request.cancel');
+
+

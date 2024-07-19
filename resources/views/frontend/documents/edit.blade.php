@@ -220,35 +220,6 @@
 
                             @endif
 
-                            {{-- <div class="col-12">
-                                <div class="group-input">
-                                    <label for="sop_type">SOP Type</label>
-                                    
-                                    <select name="sop_type" required>
-                                            <option value="" disabled selected {{ $document->sop_type == '' ? 'selected' : '' }}>Enter your selection</option>
-                                            <option 
-                                            value="SOP (Standard Operating procedure)" 
-                                            {{ $document->sop_type == 'SOP (Standard Operating procedure)' ? 'selected' : '' }}>SOP (Standard Operating procedure)</option>
-                                            <option 
-                                            value="EOP (Equipment Operating procedure)" 
-                                            {{ $document->sop_type == 'EOP (Equipment Operating procedure)' ? 'selected' : '' }}>EOP (Equipment Operating procedure)</option>
-                                            <option 
-                                            value="IOP (Instrument Operating Procedure)" 
-                                            {{ $document->sop_type == 'IOP (Instrument Operating Procedure)' ? 'selected' : '' }}>IOP (Instrument Operating Procedure)</option>
-                                    </select>
-                                </div>
-                                @if (Auth::user()->role != 3 && $document->stage < 8)
-                                <div class="comment">
-                                    <div>
-                                        <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                                            at {{ date('d-M-Y h:i:s') }}</p>
-
-                                        <input class="input-field" type="text" name="sop_type_comment">
-                                    </div>
-                                    <div class="button">Add Comment</div>
-                                </div>
-                            @endif
-                            </div> --}}
                             <div class="col-md-6">
                                 <div class="group-input">
                                     <label for="doc-type">Department Type</label>
@@ -342,8 +313,6 @@
                                 <p id="due_dateDocError" style="color:red">**Due Date is required</p>
 
                                 @if (Auth::user()->role != 3 && $document->stage < 8)
-
-                                    {{-- Add Comment  --}}
                                     <div class="comment">
                                         <div>
                                             <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at
@@ -356,93 +325,6 @@
                                     </div>
                                 @endif
                             </div>
-
-                            {{-- <div class="col-md-8">
-                                <div class="group-input">
-                                    <label for="notify_to">Notify To</label>
-                                    <select multiple name="notify_to[]" placeholder="Select Persons" data-search="false"
-                                        data-silent-initial-value-set="true" id="notify_to" {{Helpers::isRevised($document->stage)}} >
-                                        @php
-                                            $notify_user_id = explode(',', $document->notify_to); 
-                                        @endphp
-                                        @foreach ($users as $data)
-                                            <option value="{{ $data->id }}" {{ in_array($data->id, $notify_user_id) ? 'selected' : '' }}>{{ $data->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @foreach ($history as $tempHistory)
-                                        @if (
-                                            $tempHistory->activity_type == 'Notify To' &&
-                                                !empty($tempHistory->comment)  &&
-                                                $tempHistory->user_id == Auth::user()->id)
-                                            @php
-                                                $users_name = DB::table('users')
-                                                    ->where('id', $tempHistory->user_id)
-                                                    ->value('name');
-                                            @endphp
-                                            <p style="color: blue">Modify by {{ $users_name }} at
-                                                {{ $tempHistory->created_at }}
-                                            </p>
-                                            <input class="input-field"
-                                                style="background: #ffff0061;
-                                    color: black;"
-                                                type="text" value="{{ $tempHistory->comment }}" disabled>
-                                        @endif
-                                    @endforeach
-                                </div>
-
-                                @if (Auth::user()->role != 3 && $document->stage < 8)
-
-                                    <div class="comment">
-                                        <div>
-                                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                                                at {{ date('d-M-Y h:i:s') }}</p>
-
-                                            <input class="input-field" type="text" name="notify_to_comment">
-                                        </div>
-                                        <div class="button">Add Comment</div>
-                                    </div>
-                                @endif
-
-                            </div>
-                            <div class="col-md-12">
-                                <div class="group-input">
-                                    <label for="description">Description</label>
-                                    <textarea name="description" {{Helpers::isRevised($document->stage)}} >{{ $document->description }}</textarea>
-                                    @foreach ($history as $tempHistory)
-                                        @if (
-                                            $tempHistory->activity_type == 'Description' &&
-                                                !empty($tempHistory->comment)  &&
-                                                $tempHistory->user_id == Auth::user()->id)
-                                            @php
-                                                $users_name = DB::table('users')
-                                                    ->where('id', $tempHistory->user_id)
-                                                    ->value('name');
-                                            @endphp
-                                            <p style="color: blue">Modify by {{ $users_name }} at
-                                                {{ $tempHistory->created_at }}
-                                            </p>
-                                            <input class="input-field"
-                                                style="background: #ffff0061;
-                                    color: black;"
-                                                type="text" value="{{ $tempHistory->comment }}" disabled>
-                                        @endif
-                                    @endforeach
-                                </div>
-                            </div>
-                            @if (Auth::user()->role != 3 && $document->stage < 8)
-
-                                <div class="comment">
-                                    <div>
-                                        <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at
-                                            {{ date('d-M-Y h:i:s') }}</p>
-
-                                        <input class="input-field" type="text" name="description_comment">
-                                    </div>
-                                    <div class="button">Add Comment</div>
-                                </div>
-                            @endif --}}
-
                         </div>
                     </div>
                     <div class="orig-head">
@@ -763,7 +645,7 @@
                                 <div><small class="text-primary">Please Attach all relevant or supporting
                                         documents</small></div>
                                 <div class="file-attachment-field">
-                                    <div disabled class="file-attachment-list" id="initial_attachments">
+                                    <div class="file-attachment-list" id="initial_attachments">
                                         @if ($document->initial_attachments)
                                             @foreach (json_decode($document->initial_attachments) as $file)
                                                 <h6 type="button" class="file-container text-dark"
@@ -783,7 +665,7 @@
                                         @endif
                                     </div>
                                     <div class="add-btn">
-                                        <div>Add</div>
+                                        <div onclick="document.getElementById('myfile').click()">Add</div>
                                         <input type="file" id="myfile"
                                             name="initial_attachments[]" {{Helpers::isRevised($document->stage)}}
                                             oninput="addMultipleFiles(this, 'initial_attachments')" multiple>
@@ -815,7 +697,6 @@
                         <button type="button" class="nextButton" id="DocnextButton">Next</button>
                     </div>
                 </div>
-<!-- ------------------------------------------------------------------------------------------------------------- -->
                 <div id="drafters" class="tabcontent">
                     <div class="orig-head">
                         Drafter Input
@@ -834,7 +715,7 @@
                                     <div><small class="text-primary">Please Attach all relevant or supporting
                                             documents</small></div>
                                     <div class="file-attachment-field">
-                                        <div disabled class="file-attachment-list" id="drafter_attachments">
+                                        <div class="file-attachment-list" id="drafter_attachments">
                                             @if ($document->drafter_attachments)
                                                 @foreach (json_decode($document->drafter_attachments) as $file)
                                                     <h6 type="button" class="file-container text-dark"
@@ -854,8 +735,8 @@
                                             @endif
                                         </div>
                                         <div class="add-btn">
-                                            <div>Add</div>
-                                            <input type="file" id="myfile"
+                                            <div onclick="document.getElementById('myfile1').click()">Add</div>
+                                            <input {{ $document->stage == 2 ? '' : 'disabled'}} type="file" id="myfile1"
                                                 name="drafter_attachments[]" {{Helpers::isRevised($document->stage)}}
                                                 oninput="addMultipleFiles(this, 'drafter_attachments')" multiple>
                                         </div>
@@ -908,7 +789,7 @@
                                     <div><small class="text-primary">Please Attach all relevant or supporting
                                             documents</small></div>
                                     <div class="file-attachment-field">
-                                        <div disabled class="file-attachment-list" id="approver_attachments">
+                                        <div class="file-attachment-list" id="approver_attachments">
                                             @if ($document->approver_attachments)
                                                 @foreach (json_decode($document->approver_attachments) as $file)
                                                     <h6 type="button" class="file-container text-dark"
@@ -928,8 +809,8 @@
                                             @endif
                                         </div>
                                         <div class="add-btn">
-                                            <div>Add</div>
-                                            <input type="file" id="myfile"
+                                            <div onclick="document.getElementById('myfile5').click()">Add</div>
+                                            <input {{ $document->stage == 6 ? '' : 'disabled'}} type="file" id="myfile5"
                                                 name="approver_attachments[]"{{ $document->stage == 0 || $document->stage == 13 ? 'disabled' : '' }}
                                                 oninput="addMultipleFiles(this, 'approver_attachments')" multiple>
                                         </div>
@@ -982,7 +863,7 @@
                                     <div><small class="text-primary">Please Attach all relevant or supporting
                                             documents</small></div>
                                     <div class="file-attachment-field">
-                                        <div disabled class="file-attachment-list" id="reviewer_attachments">
+                                        <div class="file-attachment-list" id="reviewer_attachments">
                                             @if ($document->reviewer_attachments)
                                                 @foreach (json_decode($document->reviewer_attachments) as $file)
                                                     <h6 type="button" class="file-container text-dark"
@@ -1002,8 +883,8 @@
                                             @endif
                                         </div>
                                         <div class="add-btn">
-                                            <div>Add</div>
-                                            <input type="file" id="myfile"
+                                            <div onclick="document.getElementById('myfile4').click()">Add</div>
+                                            <input type="file" id="myfile4" {{ $document->stage == 5 ? '' : 'disabled'}}
                                                 name="reviewer_attachments[]"{{ $document->stage == 0 || $document->stage == 13 ? 'disabled' : '' }}
                                                 oninput="addMultipleFiles(this, 'reviewer_attachments')" multiple>
                                         </div>
@@ -1056,7 +937,7 @@
                                     <div><small class="text-primary">Please Attach all relevant or supporting
                                             documents</small></div>
                                     <div class="file-attachment-field">
-                                        <div disabled class="file-attachment-list" id="hod_attachments">
+                                        <div class="file-attachment-list" id="hod_attachments">
                                             @if ($document->hod_attachments)
                                                 @foreach (json_decode($document->hod_attachments) as $file)
                                                     <h6 type="button" class="file-container text-dark"
@@ -1076,8 +957,8 @@
                                             @endif
                                         </div>
                                         <div class="add-btn">
-                                            <div>Add</div>
-                                            <input type="file" id="myfile"
+                                            <div onclick="document.getElementById('myfile2').click()">Add</div>
+                                            <input type="file" id="myfile2" {{ $document->stage == 3 ? '' : 'disabled'}}
                                                 name="hod_attachments[]"{{ $document->stage == 0 || $document->stage == 13 ? 'disabled' : '' }}
                                                 oninput="addMultipleFiles(this, 'hod_attachments')" multiple>
                                         </div>
@@ -1130,7 +1011,7 @@
                                     <div><small class="text-primary">Please Attach all relevant or supporting
                                             documents</small></div>
                                     <div class="file-attachment-field">
-                                        <div disabled class="file-attachment-list" id="qa_attachments">
+                                        <div class="file-attachment-list" id="qa_attachments">
                                             @if ($document->qa_attachments)
                                                 @foreach (json_decode($document->qa_attachments) as $file)
                                                     <h6 type="button" class="file-container text-dark"
@@ -1150,8 +1031,8 @@
                                             @endif
                                         </div>
                                         <div class="add-btn">
-                                            <div>Add</div>
-                                            <input type="file" id="myfile"
+                                            <div onclick="document.getElementById('myfile3').click()">Add</div>
+                                            <input type="file" id="myfile3" {{ $document->stage == 4 ? '' : 'disabled'}}
                                                 name="qa_attachments[]" {{ $document->stage == 0 || $document->stage == 13 ? 'disabled' : '' }}
                                                 oninput="addMultipleFiles(this, 'qa_attachments')" multiple>
                                         </div>
@@ -1171,6 +1052,7 @@
                                     <label for="QA Completed On"  style="font-weight: 100;">QA Completed On</label>
                                     <div class="calenderauditee">
                                         <input type="text" id="qa_on" readonly value="{{Helpers::getdateFormat($document->qa_on)}}" placeholder="DD-MM-YYYY" />
+                                    </div>
                                 </div>
                             </div>
                             

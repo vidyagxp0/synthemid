@@ -55,13 +55,11 @@ class DocumentController extends Controller
      */
     public function division(Request $request)
     {
-        
-
+        if ($request->process_id == 'print-request') {
+            return redirect()->route('print_request.create');
+        }
         $new = new SetDivision;
         $new->division_id = $request->division_id;
-      
-       
-       
         $new->process_id = $request->process_id;
         $new->user_id = Auth::user()->id;
         $new->save();
@@ -177,7 +175,7 @@ class DocumentController extends Controller
     {
         $res = [];
 
-        $query = Document::query();
+        $query = Document::query(); 
 
         if ($request->status && !empty($request->status))
         {
@@ -871,6 +869,18 @@ class DocumentController extends Controller
                 $document->training_required = $request->training_required;
                 $document->attach_draft_doocument = $request->attach_draft_doocument;
                 $document->notify_to = json_encode($request->notify_to);
+
+                if (!empty ($request->initial_attachments)) {
+                    $files = [];
+                    if ($request->hasfile('initial_attachments')) {
+                        foreach ($request->file('initial_attachments') as $file) {
+                            $name = $request->name . 'initial_attachments' . rand(1, 100) . '.' . $file->getClientOriginalExtension();
+                            $file->move('upload/', $name);
+                            $files[] = $name;
+                        }
+                    }
+                    $document->initial_attachments = json_encode($files);
+                }
 
                 if ($request->keywords) {
                     $document->keywords = implode(',', $request->keywords);

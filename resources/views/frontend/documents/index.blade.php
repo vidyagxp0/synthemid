@@ -12,7 +12,7 @@
                         <div class="inner-block create-block">
                             <div class="head text-right mb-0">
                                 <a href="#" id="set-division">
-                                    <i class="fa-solid fa-plus"></i> Create Document
+                                    <i class="fa-solid fa-plus"></i> Create
                                 </a>
                                 {{-- <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                         Import Data
@@ -117,6 +117,10 @@
                             <div class="record-body">
                                 @include('frontend.documents.comps.record_table')
                             </div>
+
+                            <div class="record-body">
+                                @include('frontend.documents.print_request.print_request_record')
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -203,17 +207,17 @@
                 <div class="division-tabs">
                     <div class="tab">
                         @php
-                        // Get the user's roles
-                        $userRoles = DB::table('user_roles')->where('user_id', Auth::user()->id)->get();
-                        // Initialize an empty array to store division IDs
-                        $divisionIds = [];
-                        // Loop through user's roles
-                        foreach($userRoles as $role) {
-                        // Store division IDs from user's roles
-                        $divisionIds[] = $role->q_m_s_divisions_id;
-                        }
-                        // Retrieve divisions where status = 1 and the division ID is in the array of division IDs
-                        $divisions = DB::table('q_m_s_divisions')->where('status', 1)->whereIn('id', $divisionIds)->get();
+                            // Get the user's roles
+                            $userRoles = DB::table('user_roles')->where('user_id', Auth::user()->id)->get();
+                            // Initialize an empty array to store division IDs
+                            $divisionIds = [];
+                            // Loop through user's roles
+                            foreach($userRoles as $role) {
+                            // Store division IDs from user's roles
+                            $divisionIds[] = $role->q_m_s_divisions_id;
+                            }
+                            // Retrieve divisions where status = 1 and the division ID is in the array of division IDs
+                            $divisions = DB::table('q_m_s_divisions')->where('status', 1)->whereIn('id', $divisionIds)->get();
                         @endphp
                         <style>
                             #division-modal .tab a.active {
@@ -222,33 +226,36 @@
                             }
                         </style>
                         @foreach ($divisions as $temp)
-                        <input type="hidden" value="{{ $temp->id }}" name="division_id" required>
-                        <a style="display: block;
-                                background-color: inherit;
-                                color: black;
-                                padding: 5px 10px;
-                                width: 100%;
-                                border: none;
-                                outline: none;
-                                text-align: left;
-                                cursor: pointer;
-                                transition: 0.3s;" class="divisionlinks" onclick="openDivision(event, {{ $temp->id }})">{{ $temp->name }}</a>
+                            <input type="hidden" value="{{ $temp->id }}" name="division_id" required>
+                            <a style="display: block;
+                                    background-color: inherit;
+                                    color: black;
+                                    padding: 5px 10px;
+                                    width: 100%;
+                                    border: none;
+                                    outline: none;
+                                    text-align: left;
+                                    cursor: pointer;
+                                    transition: 0.3s;" class="divisionlinks" onclick="openDivision(event, {{ $temp->id }})">{{ $temp->name }}</a>
                         @endforeach
                     </div>
                     @php
-                    $process = DB::table('processes')->get();
+                        $process = DB::table('processes')->get();
                     @endphp
                     @foreach ($process as $temp)
                     <div id="{{ $temp->division_id }}" class="divisioncontent">
                         @php
-                        $pro = DB::table('processes')
-                        ->where('division_id', $temp->division_id)
-                        ->get();
+                            $pro = DB::table('processes')
+                            ->where('division_id', $temp->division_id)
+                            ->get();
                         @endphp
                         @foreach ($pro as $test)
-                        <label for="process">
-                            <input type="radio" class="process_id_reset" for="process" value="{{ $test->id }}" name="process_id" required> {{ $test->process_name }}
-                        </label>
+                            <label for="process">
+                                <input type="radio" class="process_id_reset" for="process" value="{{ $test->id }}" name="process_id" required> {{ $test->process_name }}
+                            </label>
+                            <label for="process">
+                                <input type="radio" class="process_id_reset" for="process" value="print-request" name="process_id" required> Print Request
+                            </label>
                         @endforeach
                     </div>
                     @endforeach

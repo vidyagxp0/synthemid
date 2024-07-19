@@ -241,199 +241,7 @@
                                     </div>
                                 </div> --}}
                             </div>
-                        </div>
-                        {{-- <div class="orig-head">
-                            Document Information
-                        </div> --}}
-                        <div class="input-fields">
-                            <div class="row">
-                                {{-- <div class="col-md-6">
-                                    <div class="group-input">
-                                        <label for="doc-num">Document Number</label>
-                                        <div class="default-name">Not available</div>
-                                    </div>
-                                </div> --}}
-                                
-                                {{-- <div class="col-md-6">
-                                    <div class="group-input">
-                                        <label for="legacy_number">Legacy Document Number</label>
-                                        <input type="text" id="legacy_number" name="legacy_number" maxlength="255">
-                                    </div>
-                                </div> --}}
-
-                                {{-- <div class="col-md-12">
-                                    <div class="group-input">
-                                        <label for="link-doc">Reference Record</label>
-                                        <select multiple name="reference_record[]" placeholder="Select Reference Records"
-                                            data-search="false" data-silent-initial-value-set="true" id="reference_record">
-                                            @if (!empty($document))
-                                                @foreach ($document as $temp)
-                                                    <option value="{{ $temp->id }}">
-                                                        {{ Helpers::getDivisionName($temp->division_id) }}/{{ $temp->typecode }}/{{ $temp->year }}/000{{ $temp->id }}/R{{$temp->major}}.{{$temp->minor}}/{{$temp->document_name}}
-                                                    </option>
-                                                @endforeach
-                                            @endif
-                                        </select>
-                                    </div>
-                                </div> --}}
-                                
-                                {{-- <div class="col-md-12">
-                                    <div class="group-input">
-                                        <label for="depart-name">Department Name<span class="text-danger">*</span></label>
-                                        <select name="department_id" id="depart-name" required>
-                                            <option value="" selected>Enter your Selection</option>
-                                            @foreach (Helpers::getDepartments() as $code => $department)
-                                                <option value="{{ $code }}">{{ $department }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <p id="depart-nameError" style="color:red">** Department is required</p>
-                                </div> --}}
-                                {{-- <div class="col-md-6">
-                                    <div class="group-input">
-                                        <label for="depart-code">Department Code</label>
-                                        <div class="default-name"> <span id="department-code">Not selected</span></div>
-                                    </div>
-                                </div> --}}
-                                <div class="col-6">
-                                    <div class="group-input">
-                                        {{-- <label for="major">Document Version <small>(Major)</small> <span class="text-danger">*</span> 
-                                        <span  class="text-primary" data-bs-toggle="modal"
-                                        data-bs-target="#document-management-system-modal"
-                                        style="font-size: 0.8rem; font-weight: 400;">
-                                        (Launch Instruction)
-                                        </span>
-                                    </label>--}}
-                                    <input type="number"  name="major" id="major" min="0" hidden value="1" required>
-                                    </div>
-                                    {{-- <p id="majorError" style="color:red">** Department is required</p> --}}
-                                </div>
-
-                                <div class="col-6">
-                                    <div class="group-input">
-                                        {{-- <label for="minor">Document Version <small>(Minor)</small><span class="text-danger">*</span> 
-                                            <span  class="text-primary" data-bs-toggle="modal"
-                                            data-bs-target="#document-management-system-modal-minor"
-                                            style="font-size: 0.8rem; font-weight: 400;">
-                                            (Launch Instruction)
-                                            </span>
-                                        </label> --}}
-                                        <input type="number" name="minor" id="minor" min="0" max="9"  hidden value="0" required>
-                                       
-                                    </div>
-                                    {{-- <p id="minorError" style="color:red">** Department is required</p> --}}
-                                </div>
-                                
-                                {{-- <div class="col-md-6">
-                                    <div class="group-input">
-                                        <label for="doc-type">Document Sub Type<span class="text-danger">*</span></label>
-                                        <select name="document_subtype_id" id="doc-subtype">
-                                            <option value="" selected>Enter your Selection</option>
-                                            @foreach ($documentsubTypes as $type)
-                                                <option data-id="{{ $type->code }}" value="{{ $type->id }}">
-                                                    {{ $type->docSubtype }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div> --}}
-                                {{-- <div class="col-md-6">
-                                    <div class="group-input">
-                                        <label for="doc-code">Document SubType Code</label>
-                                        <div class="default-name"> <span id="document_subtype_code">Not selected</span>
-                                        </div>
-                                    </div>
-                                </div> --}}
-                                {{-- <div class="col-md-6">
-                                    <div class="group-input">
-                                        <label for="doc-lang">Document Language</label>
-                                        <select name="document_language_id" id="doc-lang">
-                                            <option value="" selected>Enter your Selection</option>
-                                            @foreach ($documentLanguages as $lan)
-                                                <option data-id="{{ $lan->lcode }}" value="{{ $lan->id }}">
-                                                    {{ $lan->lname }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="group-input">
-                                        <label for="doc-lang">Document Language Code</label>
-                                        <div class="default-name"><span id="document_language">Not selected</span></div>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="group-input">
-                                        <label for="keyword">Keywords</label>
-                                        <div class="add-keyword">
-                                            <input type="text" id="sourceField" class="mb-0" maxlength="15">
-                                            <button id="addButton" type="button">ADD</button>
-                                        </div>
-                                        <ul id="displayField"></ul>
-                                        <select name="keywords[]" class="targetField" multiple id="keywords" style="display: none">
-
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-5 new-date-data-field">
-                                    <div class="group-input input-date">
-                                        <label for="effective-date">Effective Date</label>
-                                        <div> <small class="text-primary">The effective date will be automatically populated once the record becomes effective</small></div>
-                                        <div class="calenderauditee"> 
-                                        <input type="text" name="effective_date" id="effective_date"  placeholder="DD-MMM-YYYY" />
-                                        <input 
-                                        type="date" name="effective_date" id="effective_date" 
-                                        class="hide-input"
-                                        min="{{ Carbon\Carbon::today()->format('Y-m-d') }}"
-                                        oninput="handleDateInput(this, 'effective_date')"
-                                        />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-2 new-date-data-field">
-                                    <div class="group-input "> 
-                                        <label for="review-period">Review Period (in years)</label>
-
-                                        <input type="number" name="review_period" id="review_period" style="margin-top: 25px;" value="3" min="0" oninput="validateInput(this)">
-                                    </div>
-                                </div>
-                                <script>
-                                    function validateInput(input) {
-                                        if (input.value < 0) {
-                                            input.value = 0;
-                                        }
-                                    }
-                                </script>
-
-                                <div class="col-md-5 new-date-data-field">
-                                    <div class="group-input input-date">
-                                        <label for="next_review_date">Next Review Date</label>
-                                        <div class="calenderauditee"> 
-                                            <input type="text" name="next_review_date" id="next_review_date"  style="margin-top: 25px;"  class="new_review_date_show"  readonly placeholder="DD-MMM-YYYY" />
-                                        <input type="date" name="next_review_date" id="next_review_date"
-                                        class="hide-input new_review_date_hide" readonly
-                                        min="{{ Carbon\Carbon::today()->format('Y-m-d') }}"
-                                        oninput="handleDateInput(this, 'next_review_date')"/>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="group-input">
-                                        <label for="draft-doc">Attach Draft document</label>
-                                        <input type="file" name="attach_draft_doocument">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="group-input">
-                                        <label for="effective-doc">Attach Effective document</label>
-                                        <input type="file" name="attach_effective_docuement">
-                                    </div>
-                                </div>
-                            </div>
-                        </div> --}}
+                        </div>                                
                         <div class="orig-head">
                             Other Information
                         </div>
@@ -581,404 +389,53 @@
                             </button> 
                         </div>
                     </div>
-
-
-<!-- ---------------------------------------------------------------------------------------------------------------------------- -->
-            <div id="drafters" class="tabcontent">
-                <div class="orig-head">
-                    Drafter Input
-                </div>
-                <div class="input-fields">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="group-input">
-                                <label for="comments">Drafter Remarks</label>
-                                <textarea disabled name="drafter_remarks"></textarea>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="group-input">
-                                <label for="Audit Attachments">Drafter Attachments</label>
-                                <div><small class="text-primary">Please Attach all relevant or supporting
-                                        documents</small></div>
-                                <div class="file-attachment-field">
-                                    <div class="file-attachment-list" id="drafter_attachments"></div>
-                                    <div class="add-btn">
-                                        <div>Add</div>
-                                        <input disabled type="file" id="drafter_attachments" name="drafter_attachments[]"
-                                            onclick="addMultipleFiles(this, 'drafter_attachments')" multiple>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3 warehouse">
-                            <div class="group-input">
-                                <label for="Warehousefeedback">Drafted By</label>
-                                <input readonly type="text" name="drafted_by" id="drafted_by">
-
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6 new-date-data-field warehouse">
-                            <div class="group-input input-date">
-                                <label for="Drafted On">Drafted On</label>
-                                <div class="calenderauditee">
-                                    <input type="text" id="drafted_on" readonly placeholder="DD-MM-YYYY" />
-                                    <input type="date" name="drafted_on"
-                                        min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" class="hide-input"
-                                        oninput="handleDateInput(this, 'drafted_on')" />
-                                </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-                </div>
-                <div class="button-block">
-                    <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
-                    <button type="button" class="backButton" onclick="previousStep()">Back</button>
-                    <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
-                    <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white" > Exit </a>
-                    </button>
-                </div>
-            </div>
-
-            <div id="hodcft" class="tabcontent">
-                <div class="orig-head">
-                    HOD/CFTs Input
-                </div>
-                <div class="input-fields">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="group-input">
-                                <label for="comments">HOD/CFTs Remarks</label>
-                                <textarea disabled name="hod_remarks"></textarea>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="group-input">
-                                <label for="Audit Attachments">HOD/CFTs Attachments</label>
-                                <div><small class="text-primary">Please Attach all relevant or supporting
-                                        documents</small></div>
-                                <div class="file-attachment-field">
-                                    <div class="file-attachment-list" id="hod_attachments"></div>
-                                    <div class="add-btn">
-                                        <div>Add</div>
-                                        <input disabled type="file" id="hod_attachments" name="hod_attachments[]"
-                                            onclick="addMultipleFiles(this, 'hod_attachments')" multiple>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3 warehouse">
-                            <div class="group-input">
-                                <label for="Warehousefeedback">HOD/CFTs Completed By</label>
-                                <input readonly type="text" name="hod_by" id="hod_by">
-
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6 new-date-data-field warehouse">
-                            <div class="group-input input-date">
-                                <label for="HOD/CFTs Completed On">HOD/CFTs Completed On</label>
-                                <div class="calenderauditee">
-                                    <input type="text" id="hod_on" readonly placeholder="DD-MM-YYYY" />
-                                    <input type="date" name="hod_on"
-                                        min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" class="hide-input"
-                                        oninput="handleDateInput(this, 'hod_on')" />
-                                </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-                </div>
-                <div class="button-block">
-                    <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
-                    <button type="button" class="backButton" onclick="previousStep()">Back</button>
-                    <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
-                    <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white" > Exit </a>
-                    </button>
-                </div>
-            </div>
-
-            <div id="qa" class="tabcontent">
-                <div class="orig-head">
-                    QA Input
-                </div>
-                <div class="input-fields">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="group-input">
-                                <label for="comments">QA Remarks</label>
-                                <textarea disabled name="qa_remarks"></textarea>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="group-input">
-                                <label for="Audit Attachments">QA Attachments</label>
-                                <div><small class="text-primary">Please Attach all relevant or supporting
-                                        documents</small></div>
-                                <div class="file-attachment-field">
-                                    <div class="file-attachment-list" id="qa_attachments"></div>
-                                    <div class="add-btn">
-                                        <div>Add</div>
-                                        <input disabled type="file" id="qa_attachments" name="qa_attachments[]"
-                                            onclick="addMultipleFiles(this, 'qa_attachments')" multiple>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3 warehouse">
-                            <div class="group-input">
-                                <label for="Warehousefeedback">QA Completed By</label>
-                                <input readonly type="text" name="qa_by" id="qa_by">
-
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6 new-date-data-field warehouse">
-                            <div class="group-input input-date">
-                                <label for="QA Completed On">QA Completed On</label>
-                                <div class="calenderauditee">
-                                    <input type="text" id="qa_on" readonly placeholder="DD-MM-YYYY" />
-                                    <input type="date" name="qa_on"
-                                        min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" class="hide-input"
-                                        oninput="handleDateInput(this, 'qa_on')" />
-                                </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-                </div>
-                <div class="button-block">
-                    <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
-                    <button type="button" class="backButton" onclick="previousStep()">Back</button>
-                    <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
-                    <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white" > Exit </a>
-                    </button>
-                </div>
-            </div>
-
-            <div id="reviewers" class="tabcontent">
-                <div class="orig-head">
-                    Reviewer Input
-                </div>
-                <div class="input-fields">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="group-input">
-                                <label for="comments">Reviewer Remarks</label>
-                                <textarea disabled name="reviewer_remarks"></textarea>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="group-input">
-                                <label for="Audit Attachments">Reviewer Attachments</label>
-                                <div><small class="text-primary">Please Attach all relevant or supporting
-                                        documents</small></div>
-                                <div class="file-attachment-field">
-                                    <div class="file-attachment-list" id="reviewer_attachments"></div>
-                                    <div class="add-btn">
-                                        <div>Add</div>
-                                        <input disabled type="file" id="reviewer_attachments" name="reviewer_attachments[]"
-                                            onclick="addMultipleFiles(this, 'reviewer_attachments')" multiple>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3 warehouse">
-                            <div class="group-input">
-                                <label for="Warehousefeedback">Reviewer Completed By</label>
-                                <input readonly type="text" name="reviewer_by" id="reviewer_by">
-
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6 new-date-data-field warehouse">
-                            <div class="group-input input-date">
-                                <label for="QA Completed On">Reviewer Completed On</label>
-                                <div class="calenderauditee">
-                                    <input type="text" id="reviewer_on" readonly placeholder="DD-MM-YYYY" />
-                                    <input type="date" name="reviewer_on"
-                                        min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" class="hide-input"
-                                        oninput="handleDateInput(this, 'reviewer_on')" />
-                                </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-                </div>
-                <div class="button-block">
-                    <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
-                    <button type="button" class="backButton" onclick="previousStep()">Back</button>
-                    <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
-                    <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white" > Exit </a>
-                    </button>
-                </div>
-            </div>
-
-            <div id="approvers" class="tabcontent">
-                <div class="orig-head">
-                    Approver Input
-                </div>
-                <div class="input-fields">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="group-input">
-                                <label for="comments">Approver Remarks</label>
-                                <textarea disabled name="approver_remarks"></textarea>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="group-input">
-                                <label for="Audit Attachments">Approver Attachments</label>
-                                <div><small class="text-primary">Please Attach all relevant or supporting
-                                        documents</small></div>
-                                <div class="file-attachment-field">
-                                    <div class="file-attachment-list" id="approver_attachments"></div>
-                                    <div class="add-btn">
-                                        <div>Add</div>
-                                        <input disabled type="file" id="approver_attachments" name="approver_attachments[]"
-                                            onclick="addMultipleFiles(this, 'approver_attachments')" multiple>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3 warehouse">
-                            <div class="group-input">
-                                <label for="Warehousefeedback">Approver Completed By</label>
-                                <input readonly type="text" name="approver_by" id="approver_by">
-
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6 new-date-data-field warehouse">
-                            <div class="group-input input-date">
-                                <label for="QA Completed On">Approver Completed On</label>
-                                <div class="calenderauditee">
-                                    <input type="text" id="approver_on" readonly placeholder="DD-MM-YYYY" />
-                                    <input type="date" name="approver_on"
-                                        min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" class="hide-input"
-                                        oninput="handleDateInput(this, 'approver_on')" />
-                                </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-                </div>
-                <div class="button-block">
-                    <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
-                    <button type="button" class="backButton" onclick="previousStep()">Back</button>
-                    <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
-                    <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white" > Exit </a>
-                    </button>
-                </div>
-            </div>
-<!-- ---------------------------------------------------------------------------------------------------------------------------- -->
-
-                    <div id="add-doc" class="tabcontent">
+                    <div id="drafters" class="tabcontent">
                         <div class="orig-head">
-                            Training Information
+                            Drafter Input
                         </div>
                         <div class="input-fields">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-lg-12">
                                     <div class="group-input">
-                                        <label for="train-require">Training Required?</label>
-                                        <select name="training_required" required>
-                                            <option value="">Enter your Selection</option>
-                                            <option value="yes">Yes</option>
-                                            <option value="no" selected>No</option>
-                                        </select>
+                                        <label for="comments">Drafter Remarks</label>
+                                        <textarea disabled name="drafter_remarks"></textarea>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-lg-12">
                                     <div class="group-input">
-                                        <label for="link-doc">Trainer</label>
-                                        <select name="trainer">
-                                            <option value="" selected>Enter your Selection</option>
-                                            @foreach ($trainer as $temp)
-                                            @if(Helpers::checkUserRolestrainer($temp))
-                                                <option value="{{ $temp->id }}">{{ $temp->name }}</option>
-                                            @endif
-                                            @endforeach
-                                        </select>
+                                        <label for="Audit Attachments">Drafter Attachments</label>
+                                        <div><small class="text-primary">Please Attach all relevant or supporting
+                                                documents</small></div>
+                                        <div class="file-attachment-field">
+                                            <div class="file-attachment-list" id="drafter_attachments"></div>
+                                            <div class="add-btn">
+                                                <div>Add</div>
+                                                <input disabled type="file" id="drafter_attachments" name="drafter_attachments[]"
+                                                    onclick="addMultipleFiles(this, 'drafter_attachments')" multiple>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                {{-- <div class="col-md-6">
-                                <div class="group-input">
-                                    <label for="launch-cbt">Launch CBT</label>
-                                    <select name="cbt">
-                                        <option value="" selected>Enter your Selection</option>
-                                        <option value="1`">Lorem, ipsum.</option>
-                                        <option value="1`">Lorem, ipsum.</option>
-                                        <option value="1`">Lorem, ipsum.</option>
-                                        <option value="1`">Lorem, ipsum.</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="group-input">
-                                    <label for="training-type">Type</label>
-                                    <select name="training-type">
-                                        <option value="" selected>Enter your Selection</option>
-                                        <option value="">Lorem, ipsum.</option>
-                                        <option value="1`">Lorem, ipsum.</option>
-                                        <option value="1`">Lorem, ipsum.</option>
-                                    </select>
-                                </div>
-                            </div> --}}
-                                {{-- <div class="col-md-12">
+                                <div class="col-md-6 mb-3 warehouse">
                                     <div class="group-input">
-                                        <label for="test">
-                                            Test(0)<button type="button" name="test"
-                                                onclick="addTrainRow('test')">+</button>
-                                        </label>
-                                        <table class="table-bordered table" id="test">
-                                            <thead>
-                                                <tr>
-                                                    <th class="row-num">Row No.</th>
-                                                    <th class="question">Question</th>
-                                                    <th class="answer">Answer</th>
-                                                    <th class="result">Result</th>
-                                                    <th class="comment">Comment</th>
-                                                    <th class="comment">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div> --}}
-                                {{-- <div class="col-md-12">
-                                    <div class="group-input">
-                                        <label for="test">
-                                            Survey(0)<button type="button" name="reporting1"
-                                                onclick="addTrainRow('survey')">+</button>
-                                        </label>
-                                        <table class="table-bordered table" id="survey">
-                                            <thead>
-                                                <tr>
-                                                    <th class="row-num">Row No.</th>
-                                                    <th class="question">Subject</th>
-                                                    <th class="answer">Topic</th>
-                                                    <th class="result">Rating</th>
-                                                    <th class="comment">Comment</th>
-                                                    <th class="comment">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div> --}}
-                                <div class="col-md-12">
-                                    <div class="group-input">
-                                        <label for="comments">Comments</label>
-                                        <textarea name="comments"></textarea>
+                                        <label for="Warehousefeedback">Drafted By</label>
+                                        <input readonly type="text" name="drafted_by" id="drafted_by">
+        
                                     </div>
                                 </div>
+        
+                                <div class="col-lg-6 new-date-data-field warehouse">
+                                    <div class="group-input input-date">
+                                        <label for="Drafted On">Drafted On</label>
+                                        <div class="calenderauditee">
+                                            <input type="text" id="drafted_on" readonly placeholder="DD-MM-YYYY" />
+                                            <input type="date" name="drafted_on"
+                                                min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" class="hide-input"
+                                                oninput="handleDateInput(this, 'drafted_on')" />
+                                        </div>
+                                    </div>
+                                </div>
+                                
                             </div>
                         </div>
                         <div class="button-block">
@@ -989,6 +446,235 @@
                             </button>
                         </div>
                     </div>
+                    <div id="hodcft" class="tabcontent">
+                        <div class="orig-head">
+                            HOD/CFTs Input
+                        </div>
+                        <div class="input-fields">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="group-input">
+                                        <label for="comments">HOD/CFTs Remarks</label>
+                                        <textarea disabled name="hod_remarks"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="group-input">
+                                        <label for="Audit Attachments">HOD/CFTs Attachments</label>
+                                        <div><small class="text-primary">Please Attach all relevant or supporting
+                                                documents</small></div>
+                                        <div class="file-attachment-field">
+                                            <div class="file-attachment-list" id="hod_attachments"></div>
+                                            <div class="add-btn">
+                                                <div>Add</div>
+                                                <input disabled type="file" id="hod_attachments" name="hod_attachments[]"
+                                                    onclick="addMultipleFiles(this, 'hod_attachments')" multiple>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3 warehouse">
+                                    <div class="group-input">
+                                        <label for="Warehousefeedback">HOD/CFTs Completed By</label>
+                                        <input readonly type="text" name="hod_by" id="hod_by">
+        
+                                    </div>
+                                </div>
+        
+                                <div class="col-lg-6 new-date-data-field warehouse">
+                                    <div class="group-input input-date">
+                                        <label for="HOD/CFTs Completed On">HOD/CFTs Completed On</label>
+                                        <div class="calenderauditee">
+                                            <input type="text" id="hod_on" readonly placeholder="DD-MM-YYYY" />
+                                            <input type="date" name="hod_on"
+                                                min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" class="hide-input"
+                                                oninput="handleDateInput(this, 'hod_on')" />
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="button-block">
+                            <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
+                            <button type="button" class="backButton" onclick="previousStep()">Back</button>
+                            <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
+                            <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white" > Exit </a>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="qa" class="tabcontent">
+                        <div class="orig-head">
+                            QA Input
+                        </div>
+                        <div class="input-fields">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="group-input">
+                                        <label for="comments">QA Remarks</label>
+                                        <textarea disabled name="qa_remarks"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="group-input">
+                                        <label for="Audit Attachments">QA Attachments</label>
+                                        <div><small class="text-primary">Please Attach all relevant or supporting
+                                                documents</small></div>
+                                        <div class="file-attachment-field">
+                                            <div class="file-attachment-list" id="qa_attachments"></div>
+                                            <div class="add-btn">
+                                                <div>Add</div>
+                                                <input disabled type="file" id="qa_attachments" name="qa_attachments[]"
+                                                    onclick="addMultipleFiles(this, 'qa_attachments')" multiple>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3 warehouse">
+                                    <div class="group-input">
+                                        <label for="Warehousefeedback">QA Completed By</label>
+                                        <input readonly type="text" name="qa_by" id="qa_by">
+        
+                                    </div>
+                                </div>
+        
+                                <div class="col-lg-6 new-date-data-field warehouse">
+                                    <div class="group-input input-date">
+                                        <label for="QA Completed On">QA Completed On</label>
+                                        <div class="calenderauditee">
+                                            <input type="text" id="qa_on" readonly placeholder="DD-MM-YYYY" />
+                                            <input type="date" name="qa_on"
+                                                min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" class="hide-input"
+                                                oninput="handleDateInput(this, 'qa_on')" />
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="button-block">
+                            <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
+                            <button type="button" class="backButton" onclick="previousStep()">Back</button>
+                            <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
+                            <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white" > Exit </a>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="reviewers" class="tabcontent">
+                        <div class="orig-head">
+                            Reviewer Input
+                        </div>
+                        <div class="input-fields">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="group-input">
+                                        <label for="comments">Reviewer Remarks</label>
+                                        <textarea disabled name="reviewer_remarks"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="group-input">
+                                        <label for="Audit Attachments">Reviewer Attachments</label>
+                                        <div><small class="text-primary">Please Attach all relevant or supporting
+                                                documents</small></div>
+                                        <div class="file-attachment-field">
+                                            <div class="file-attachment-list" id="reviewer_attachments"></div>
+                                            <div class="add-btn">
+                                                <div>Add</div>
+                                                <input disabled type="file" id="reviewer_attachments" name="reviewer_attachments[]"
+                                                    onclick="addMultipleFiles(this, 'reviewer_attachments')" multiple>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3 warehouse">
+                                    <div class="group-input">
+                                        <label for="Warehousefeedback">Reviewer Completed By</label>
+                                        <input readonly type="text" name="reviewer_by" id="reviewer_by">
+        
+                                    </div>
+                                </div>
+        
+                                <div class="col-lg-6 new-date-data-field warehouse">
+                                    <div class="group-input input-date">
+                                        <label for="QA Completed On">Reviewer Completed On</label>
+                                        <div class="calenderauditee">
+                                            <input type="text" id="reviewer_on" readonly placeholder="DD-MM-YYYY" />
+                                            <input type="date" name="reviewer_on"
+                                                min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" class="hide-input"
+                                                oninput="handleDateInput(this, 'reviewer_on')" />
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="button-block">
+                            <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
+                            <button type="button" class="backButton" onclick="previousStep()">Back</button>
+                            <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
+                            <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white" > Exit </a>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="approvers" class="tabcontent">
+                        <div class="orig-head">
+                            Approver Input
+                        </div>
+                        <div class="input-fields">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="group-input">
+                                        <label for="comments">Approver Remarks</label>
+                                        <textarea disabled name="approver_remarks"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="group-input">
+                                        <label for="Audit Attachments">Approver Attachments</label>
+                                        <div><small class="text-primary">Please Attach all relevant or supporting
+                                                documents</small></div>
+                                        <div class="file-attachment-field">
+                                            <div class="file-attachment-list" id="approver_attachments"></div>
+                                            <div class="add-btn">
+                                                <div>Add</div>
+                                                <input disabled type="file" id="approver_attachments" name="approver_attachments[]"
+                                                    onclick="addMultipleFiles(this, 'approver_attachments')" multiple>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3 warehouse">
+                                    <div class="group-input">
+                                        <label for="Warehousefeedback">Approver Completed By</label>
+                                        <input readonly type="text" name="approver_by" id="approver_by">
+        
+                                    </div>
+                                </div>
+        
+                                <div class="col-lg-6 new-date-data-field warehouse">
+                                    <div class="group-input input-date">
+                                        <label for="QA Completed On">Approver Completed On</label>
+                                        <div class="calenderauditee">
+                                            <input type="text" id="approver_on" readonly placeholder="DD-MM-YYYY" />
+                                            <input type="date" name="approver_on"
+                                                min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" class="hide-input"
+                                                oninput="handleDateInput(this, 'approver_on')" />
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="button-block">
+                            <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
+                            <button type="button" class="backButton" onclick="previousStep()">Back</button>
+                            <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
+                            <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white" > Exit </a>
+                            </button>
+                        </div>
+                    </div>
+            
                    
                     <div id="doc-content" class="tabcontent">
                         <div class="orig-head">
@@ -1988,23 +1674,7 @@
 
         });
     })
-</script>
-
-    {{-- <script>
-        var editor = new FroalaEditor('.summernote', {
-            key: "uXD2lC7C4B4D4D4J4B11dNSWXf1h1MDb1CF1PLPFf1C1EESFKVlA3C11A8D7D2B4B4G2D3J3==",
-            imageUploadParam: 'image_param',
-            imageUploadMethod: 'POST',
-            imageMaxSize: 20 * 1024 * 1024,
-            imageUploadURL: "{{ route('api.upload.file') }}",
-            fileUploadParam: 'image_param',
-            fileUploadURL: "{{ route('api.upload.file') }}",
-            videoUploadParam: 'image_param',
-            videoUploadURL: "{{ route('api.upload.file') }}",
-            videoMaxSize: 500 * 1024 * 1024,
-        });
-    </script> --}}
-    
+</script>   
     <script>
         VirtualSelect.init({
             ele: '#reference_record, #notify_to'
@@ -2164,7 +1834,6 @@
             $(this).remove();
         });
     </script>
-
     <script>
         function openData(evt, cityName) {
             var i, cctabcontent, cctablinks;
