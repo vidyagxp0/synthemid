@@ -125,11 +125,9 @@ class DocumentController extends Controller
        }
     public function index(Request $request)
     {
-        $query = Document::join('users', 'documents.originator_id', 'users.id')
-                    // ->join('document_types', 'documents.document_type_id', 'document_types.id')
-                    ->join('divisions', 'documents.division_id', 'divisions.id')
-                    ->select('documents.*', 'users.name as originator_name', 'divisions.name as division_name')
-                    ->orderByDesc('documents.id');
+        $query = Document::query();
+        $query->where('originator_id', auth()->id());
+
 
         // Apply filters
         if ($request->has('status')) {
@@ -146,7 +144,7 @@ class DocumentController extends Controller
         }
         $count = $query->where('documents.originator_id', Auth::user()->id)->count();
         $documents = $query->paginate(10);
-        
+
         // dd($request->all(), $query->paginate(10));
         $divisions = QMSDivision::where('status', '1')->select('id', 'name')->get();
         // $divisions = QMSDivision::where('status', '1')->select('id', 'name')->get();
@@ -366,7 +364,7 @@ class DocumentController extends Controller
                 ->get();
 
 
-        //sdd($temp->division_id);
+        // dd($process->id);
         $approvers = DB::table('user_roles')
                 ->join('users', 'user_roles.user_id', '=', 'users.id')
                 ->select('user_roles.q_m_s_processes_id', 'users.id','users.role','users.name') // Include all selected columns in the select statement
@@ -392,13 +390,12 @@ class DocumentController extends Controller
             ->get();
 
         $qa = DB::table('user_roles')
-            ->join('users', 'user_roles.user_id', '=', 'users.id')
-            ->select('user_roles.q_m_s_processes_id', 'users.id','users.role','users.name') // Include all selected columns in the select statement
-            ->where('user_roles.q_m_s_processes_id', 89)
-            ->where('user_roles.q_m_s_roles_id', 7)
-            ->groupBy('user_roles.q_m_s_processes_id', 'users.id','users.role','users.name') // Include all selected columns in the group by clause
-            ->get();
-
+        ->join('users', 'user_roles.user_id', '=', 'users.id')
+        ->select('user_roles.q_m_s_processes_id', 'users.id','users.role','users.name') // Include all selected columns in the select statement
+        ->where('user_roles.q_m_s_processes_id', $process->id)
+        ->where('user_roles.q_m_s_roles_id', 7)
+        ->groupBy('user_roles.q_m_s_processes_id', 'users.id','users.role','users.name') // Include all selected columns in the group by clause
+        ->get();
 
         $trainer = User::get();
         
@@ -562,6 +559,9 @@ class DocumentController extends Controller
             }
             if (! empty($request->approvers)) {
                 $document->approvers = implode(',', $request->approvers);
+            }
+            if (! empty($request->qa)) {
+                $document->qa = implode(',', $request->qa);
             }
             if (! empty($request->hods)) {
                 $document->hods = implode(',', $request->hods);
@@ -742,9 +742,7 @@ class DocumentController extends Controller
             
         }
         $print_history = PrintHistory::join('users', 'print_histories.user_id', 'users.id')->select('print_histories.*', 'users.name as user_name')->where('document_id', $id)->get();
-        $document = Document::join('users', 'documents.originator_id', 'users.id')->leftjoin('document_types', 'documents.document_type_id', 'document_types.id')
-            ->join('divisions', 'documents.division_id', 'divisions.id')->leftjoin('departments', 'documents.department_id', 'departments.id')
-            ->select('documents.*', 'users.name as originator_name', 'document_types.name as document_type_name', 'divisions.name as division_name', 'departments.name as dept_name')->where('documents.id', $id)->first();
+        $document = Document::find($id);
         $document->date = Carbon::parse($document->created_at)->format('d-M-Y');
         $document['document_content'] = DocumentContent::where('document_id', $id)->first();
         $document_distribution_grid = DocumentGridData::where('document_id', $id)->get();
@@ -754,11 +752,6 @@ class DocumentController extends Controller
         $trainingDoc = DocumentTraining::where('document_id', $id)->first();
         $history = DocumentHistory::where('document_id', $id)->get();
         $documentsubTypes = DocumentSubtype::all();
-// dd($document_distribution_grid);
-        // $history = [];
-        // foreach($historydata as $temp){
-        //     array_push($history,$temp);
-        // }
         $keywords = Keyword::where('document_id', $id)->get();
         $annexure = Annexure::where('document_id', $id)->first();
 
@@ -767,7 +760,7 @@ class DocumentController extends Controller
         $reviewer = DB::table('user_roles')
                 ->join('users', 'user_roles.user_id', '=', 'users.id')
                 ->select('user_roles.q_m_s_processes_id', 'users.id','users.role','users.name') // Include all selected columns in the select statement
-                ->where('user_roles.q_m_s_processes_id', 89)
+                ->where('user_roles.q_m_s_processes_id', 24)
                 ->where('user_roles.q_m_s_roles_id', 2)
                 ->groupBy('user_roles.q_m_s_processes_id', 'users.id','users.role','users.name') // Include all selected columns in the group by clause
                 ->get();
@@ -775,7 +768,7 @@ class DocumentController extends Controller
         $approvers = DB::table('user_roles')
                 ->join('users', 'user_roles.user_id', '=', 'users.id')
                 ->select('user_roles.q_m_s_processes_id', 'users.id','users.role','users.name') // Include all selected columns in the select statement
-                ->where('user_roles.q_m_s_processes_id', 89)
+                ->where('user_roles.q_m_s_processes_id', 24)
                 ->where('user_roles.q_m_s_roles_id', 1)
                 ->groupBy('user_roles.q_m_s_processes_id', 'users.id','users.role','users.name') // Include all selected columns in the group by clause
                 ->get();
@@ -789,14 +782,14 @@ class DocumentController extends Controller
         $hods = DB::table('user_roles')
             ->join('users', 'user_roles.user_id', '=', 'users.id')
             ->select('user_roles.q_m_s_processes_id', 'users.id','users.role','users.name') // Include all selected columns in the select statement
-            ->where('user_roles.q_m_s_processes_id', 89)
+            ->where('user_roles.q_m_s_processes_id', 24)
             ->where('user_roles.q_m_s_roles_id', 4)
             ->groupBy('user_roles.q_m_s_processes_id', 'users.id','users.role','users.name') // Include all selected columns in the group by clause
             ->get();
             $qa = DB::table('user_roles')
             ->join('users', 'user_roles.user_id', '=', 'users.id')
             ->select('user_roles.q_m_s_processes_id', 'users.id','users.role','users.name') // Include all selected columns in the select statement
-            ->where('user_roles.q_m_s_processes_id', 89)
+            ->where('user_roles.q_m_s_processes_id', 24)
             ->where('user_roles.q_m_s_roles_id', 7)
             ->groupBy('user_roles.q_m_s_processes_id', 'users.id','users.role','users.name') // Include all selected columns in the group by clause
             ->get();
@@ -804,7 +797,7 @@ class DocumentController extends Controller
             $drafter = DB::table('user_roles')
             ->join('users', 'user_roles.user_id', '=', 'users.id')
             ->select('user_roles.q_m_s_processes_id', 'users.id','users.role','users.name') // Include all selected columns in the select statement
-            ->where('user_roles.q_m_s_processes_id', 89)
+            ->where('user_roles.q_m_s_processes_id', 24)
             ->where('user_roles.q_m_s_roles_id', 40)
             ->groupBy('user_roles.q_m_s_processes_id', 'users.id','users.role','users.name') // Include all selected columns in the group by clause
             ->get();
@@ -1035,6 +1028,9 @@ class DocumentController extends Controller
                 }
                 if (! empty($request->hods)) {
                     $document->hods = implode(',', $request->hods);
+                }
+                if (! empty($request->qa)) {
+                    $document->qa = implode(',', $request->qa);
                 }
                 if (! empty($request->drafters)) {
                     $document->drafters = implode(',', $request->drafters);

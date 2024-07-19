@@ -90,7 +90,7 @@
                 <button class="tablinks active" onclick="openData(event, 'doc-info')" id="defaultOpen">General information</button> 
                 <button class="tablinks" onclick="openData(event, 'hodcft')">HOD Input</button>
                 <button class="tablinks" onclick="openData(event, 'qa')">QA Input</button>
-                <button class="tablinks" onclick="openData(event, 'sign')">Signature</button>
+                {{-- <button class="tablinks" onclick="openData(event, 'sign')">Signature</button> --}}
             </div>
     
 
@@ -131,7 +131,7 @@
                                         <label for="short-desc">Short Description<span class="text-danger">*</span></label>
                                         <span id="new-rchars">255</span>
                                         characters remaining
-                                        <input type="text" id="short_desc" name="short_desc" maxlength="255">
+                                        <input type="text" id="short_description" name="short_description" maxlength="255">
                                     </div>
                                     <p id="short_descError" style="color:red">**Short description is required</p>
 
@@ -139,17 +139,16 @@
 
                                 <div class="col-md-6">
                                     <div class="group-input">
-                                        <label for="doc-type">Users<span class="text-danger">*</span></label>
-                                        <select name="permission_user_id" id="doc-type" required>
-                                            <option value="" selected>Enter your Selection</option>
-                                            @foreach ($usersValue as $me)
-                                                <option value="{{ $me->id }}">{{ $me->name }}</option>
+                                        <label for="reference_records">Reference Records<span class="text-danger">*</span></label>
+                                        <select id="choices-multiple-remove-button" class="choices-multiple-reviewer"
+                                            name="reference_records[]" placeholder="Select Reference Records" multiple required>
+                                            @foreach ($documentList as $document)
+                                                <option value="{{ $document->id }}">
+                                                    {{ $document->document_name }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
-                                    <p id="doc-typeError" style="color:red">** Users is required</p>
-
-                                </div>
 
                                 <div class="col-md-4 new-date-data-field">
                                     <div class="group-input input-date">

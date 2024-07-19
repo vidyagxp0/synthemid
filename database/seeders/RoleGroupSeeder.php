@@ -36,7 +36,7 @@ class RoleGroupSeeder extends Seeder
             'OOT' => ['Initiator', 'HOD/Designee', 'Approver', 'Reviewer', 'Drafter', 'View Only', 'FP'],
             'OOC' => ['Initiator', 'HOD/Designee', 'Approver', 'Reviewer', 'Drafter', 'View Only', 'FP'],
             'Deviation' => ['Initiator', 'HOD/Designee', 'Approver', 'Reviewer', 'Drafter', 'View Only', 'FP'],
-            'New Document' => ['Initiator', 'HOD/Designee', 'QA', 'Approver', 'Reviewer', 'Drafter', 'View Only', 'FP'],
+            'New Document' => ['Initiator', 'HOD/Designee', 'QA', 'Approver', 'Reviewer', 'Drafter', 'Trainer', 'View Only', 'FP'],
             'Market Complaint' => ['Initiator', 'HOD/Designee', 'Approver', 'Reviewer', 'Drafter', 'View Only', 'FP'],
             'Non Conformance' => ['Initiator', 'HOD/Designee', 'Approver', 'Reviewer', 'Drafter', 'View Only', 'FP'],
             'Incident' => ['Initiator', 'HOD/Designee', 'Approver', 'Reviewer', 'Drafter', 'View Only', 'FP'],

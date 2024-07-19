@@ -203,7 +203,7 @@
                     information</button>
                 <button class="tablinks" onclick="openData(event, 'hodcft')">HOD Input</button>
                 <button class="tablinks" onclick="openData(event, 'qa')">QA Input</button>
-                <button class="tablinks" onclick="openData(event, 'sign')">Signature</button>
+                {{-- <button class="tablinks" onclick="openData(event, 'sign')">Signature</button> --}}
             </div>
 
 
@@ -251,12 +251,28 @@
 
                                 <div class="col-md-6">
                                     <div class="group-input">
-                                        <label for="doc-type">Users<span class="text-danger">*</span></label>
-                                        <select name="permission_user_id" id="doc-type" required>
+                                        <label for="doc-type">Reference Records<span class="text-danger">*</span></label>
+                                            <select id="choices-multiple-remove-button" class="choices-multiple-approver" name="reference_records[]" placeholder="Select Reference Records" multiple>
+                                                @foreach ($documentList as $doc)
+                                                    <option value="{{ $doc->id }}" 
+                                                        @if ($print_history->reference_records) 
+                                                            @php $data = explode(",",$print_history->reference_records);
+                                                                $count = count($data);
+                                                                $i=0;
+                                                            @endphp
+                                                            @for ($i = 0; $i < $count; $i++)
+                                                                @if ($data[$i] == $doc->id)
+                                                                selected @endif
+                                                            @endfor
+                                                    >
+                                                    {{ $doc->document_name }}
+                                                    </option>
+                                                    @endif
+                                                @endforeach
+                                            </select>
                                             @foreach ($usersValue as $me)
                                                 <option value="{{ $me->id }}" {{ $print_history->permission_user_id == $me->id ? 'selected' : '' }}>{{ $me->name }}</option>
                                             @endforeach
-                                        </select>
                                     </div>
                                 </div>
 

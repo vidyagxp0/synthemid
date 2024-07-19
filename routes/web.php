@@ -591,4 +591,5 @@ Route::post('print-request/stage/{id}',[PrintRequestController::class, 'stageCha
 Route::post('print-request/stage-reject/{id}',[PrintRequestController::class, 'stageReject'])->name('print-request.stagereject');
 Route::post('print-request/stage-cancel/{id}',[PrintRequestController::class, 'erratacancelstage'])->name('print-request.cancel');
 
+Route::get('print-request/single-report/{id}', [PrintRequestController::class, 'singleReport']);
 
