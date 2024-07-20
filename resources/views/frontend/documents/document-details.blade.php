@@ -500,6 +500,72 @@
                                     <th>QAs</th>
                                     <th>Department</th>
                                     <th>Status</th>
+                                    <th>Audit Trail</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $rev_data = explode(',', $document->qa);
+                                @endphp
+                                @for ($i = 0; $i < count($rev_data); $i++)
+                                    @php
+                                        $user = DB::table('users')
+                                            ->where('id', $rev_data[$i])
+                                            ->first();
+                                    @endphp
+                    
+                                    @if ($user)
+                                        @php
+                                            $user->department = DB::table('departments')
+                                                ->where('id', $user->departmentid)
+                                                ->value('name');
+                                            
+                                            $user->status = DB::table('stage_manages')
+                                                ->where('user_id', $rev_data[$i])
+                                                ->where('document_id', $document->id)
+                                                ->where('stage', 'QA Review Complete')
+                                                ->where('deleted_at', null)
+                                                ->latest()
+                                                ->first();
+                                            
+                                            $user->statusReject = DB::table('stage_manages')
+                                                ->where('user_id', $rev_data[$i])
+                                                ->where('document_id', $document->id)
+                                                ->where('stage', 'Cancel-by-QA')
+                                                ->where('deleted_at', null)
+                                                ->latest()
+                                                ->first();
+                                        @endphp
+                    
+                                        <tr>
+                                            <td>{{ $user->name }}</td>
+                                            <td>{{ $user->department }}</td>
+                                            @if ($user->status)
+                                                <td>QA Review Complete <i class="fa-solid fa-circle-check text-success"></i></td>
+                                            @elseif($user->statusReject)
+                                                <td>Rejected <i class="fa-solid fa-circle-xmark text-danger"></i></td>
+                                            @else
+                                                <td>QA Review Pending</td>
+                                            @endif
+                                            <td><a href="{{ url('audit-individual/') }}/{{ $document->id }}/{{ $user->id }}"><button type="button">Audit Trail</button></a></td>
+                                        </tr>
+                                    @else
+                                        <tr>
+                                            <td colspan="4">User not found for ID: {{ $rev_data[$i] }}</td>
+                                        </tr>
+                                    @endif
+                                @endfor
+                            </tbody>
+                        </table>
+                    </div>
+                 
+                    {{--<div class="reviewer-table table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>QAs</th>
+                                    <th>Department</th>
+                                    <th>Status</th>
                                     <th>Audit Trial</th>
                                 </tr>
                             </thead>
@@ -549,7 +615,7 @@
 
                             </tbody>
                         </table>
-                    </div>
+                    </div>--}}
                     
             </div>
 

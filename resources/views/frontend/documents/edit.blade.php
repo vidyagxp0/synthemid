@@ -137,10 +137,9 @@
                                                 type="text" value="{{ $tempHistory->comment }}" disabled>
                                         @endif
                                     @endforeach
-
-
-
+                                    
                                 </div>
+
                                 <p id="docnameError" style="color:red">**Document Name is required</p>
 
                             </div>
@@ -763,7 +762,7 @@
                                 <div><small class="text-primary">Please Attach all relevant or supporting
                                         documents</small></div>
                                 <div class="file-attachment-field">
-                                    <div disabled class="file-attachment-list" id="initial_attachments">
+                                    <div class="file-attachment-list" id="initial_attachments">
                                         @if ($document->initial_attachments)
                                             @foreach (json_decode($document->initial_attachments) as $file)
                                                 <h6 type="button" class="file-container text-dark"
@@ -783,7 +782,7 @@
                                         @endif
                                     </div>
                                     <div class="add-btn">
-                                        <div>Add</div>
+                                        <div onclick="document.getElementById('myfile').click()">Add</div>
                                         <input type="file" id="myfile"
                                             name="initial_attachments[]" {{Helpers::isRevised($document->stage)}}
                                             oninput="addMultipleFiles(this, 'initial_attachments')" multiple>
@@ -791,6 +790,8 @@
                                 </div>
                             </div>
                         </div>
+
+                        
                         <div class="col-md-6 mb-3 warehouse">
                             <div class="group-input">
                                 <label for="Warehousefeedback">Initiated By</label>
@@ -828,13 +829,14 @@
                                     <textarea {{Helpers::isRevised($document->stage)}} @if (in_array(Auth::user()->id, explode(",", $document->drafters)) && $document->stage == 2) required @else readonly @endif name="drafter_remarks">{{$document->drafter_remarks}}</textarea>
                                 </div>
                             </div>
+
                             <div class="col-12">
                                 <div class="group-input">
                                     <label for="QA Initial Attachments">Drafter Attachments</label>
                                     <div><small class="text-primary">Please Attach all relevant or supporting
                                             documents</small></div>
                                     <div class="file-attachment-field">
-                                        <div disabled class="file-attachment-list" id="drafter_attachments">
+                                        <div class="file-attachment-list" id="drafter_attachments">
                                             @if ($document->drafter_attachments)
                                                 @foreach (json_decode($document->drafter_attachments) as $file)
                                                     <h6 type="button" class="file-container text-dark"
@@ -854,14 +856,15 @@
                                             @endif
                                         </div>
                                         <div class="add-btn">
-                                            <div>Add</div>
-                                            <input type="file" id="myfile"
-                                                name="drafter_attachments[]" {{Helpers::isRevised($document->stage)}}
+                                            <div onclick="document.getElementById('myfile1').click()">Add</div>
+                                            <input type="file" id="myfile1"
+                                                name="drafter_attachments[]" @if($document->stage == 2) @else disabled @endif  {{Helpers::isRevised($document->stage)}}
                                                 oninput="addMultipleFiles(this, 'drafter_attachments')" multiple>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            
                             <div class="col-md-6 mb-3 warehouse">
                                 <div class="group-input">
                                     <label for="Warehousefeedback">Drafted By</label>
@@ -928,10 +931,9 @@
                                             @endif
                                         </div>
                                         <div class="add-btn">
-                                            <div>Add</div>
-                                            <input type="file" id="myfile"
-                                                name="approver_attachments[]"{{ $document->stage == 0 || $document->stage == 13 ? 'disabled' : '' }}
-                                                oninput="addMultipleFiles(this, 'approver_attachments')" multiple>
+                                            <div onclick="document.getElementById('myfile5').click()">Add</div>
+                                            <input type="file" id="myfile5"
+                                                name="approver_attachments[]" @if($document->stage == 6) @else disabled @endif oninput="addMultipleFiles(this, 'approver_attachments')" multiple>
                                         </div>
                                     </div>
                                 </div>
@@ -1002,9 +1004,9 @@
                                             @endif
                                         </div>
                                         <div class="add-btn">
-                                            <div>Add</div>
-                                            <input type="file" id="myfile"
-                                                name="reviewer_attachments[]"{{ $document->stage == 0 || $document->stage == 13 ? 'disabled' : '' }}
+                                            <div onclick="document.getElementById('myfile4').click()">Add</div>
+                                            <input type="file" id="myfile4"
+                                                name="reviewer_attachments[]" @if($document->stage == 5) @else disabled @endif
                                                 oninput="addMultipleFiles(this, 'reviewer_attachments')" multiple>
                                         </div>
                                     </div>
@@ -1076,9 +1078,9 @@
                                             @endif
                                         </div>
                                         <div class="add-btn">
-                                            <div>Add</div>
-                                            <input type="file" id="myfile"
-                                                name="hod_attachments[]"{{ $document->stage == 0 || $document->stage == 13 ? 'disabled' : '' }}
+                                            <div onclick="document.getElementById('myfile2').click()">Add</div>
+                                            <input type="file" id="myfile2"
+                                                name="hod_attachments[]" @if($document->stage == 3) @else disabled @endif
                                                 oninput="addMultipleFiles(this, 'hod_attachments')" multiple>
                                         </div>
                                     </div>
@@ -1150,9 +1152,9 @@
                                             @endif
                                         </div>
                                         <div class="add-btn">
-                                            <div>Add</div>
-                                            <input type="file" id="myfile"
-                                                name="qa_attachments[]" {{ $document->stage == 0 || $document->stage == 13 ? 'disabled' : '' }}
+                                            <div onclick="document.getElementById('myfile3').click()">Add</div>
+                                            <input type="file" id="myfile3"
+                                                name="qa_attachments[]" @if($document->stage == 4) @else disabled @endif
                                                 oninput="addMultipleFiles(this, 'qa_attachments')" multiple>
                                         </div>
                                     </div>
@@ -2955,6 +2957,7 @@
             });
         });
     </script>
+
 
 <script src="https://cdn.tiny.cloud/1/5vbh0y1nq5y6uokc071mjvy9n4fnss5ctasrjft7x7ajm9fl/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 

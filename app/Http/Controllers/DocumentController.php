@@ -513,6 +513,12 @@ class DocumentController extends Controller
 
             if (!empty ($request->initial_attachments)) {
                 $files = [];
+                if ($document->initial_attachments) {
+                    $existingFiles = json_decode($document->initial_attachments, true); // Convert to associative array
+                    if (is_array($existingFiles)) {
+                        $files = $existingFiles;
+                    }
+                }
                 if ($request->hasfile('initial_attachments')) {
                     foreach ($request->file('initial_attachments') as $file) {
                         $name = $request->name . 'initial_attachments' . rand(1, 100) . '.' . $file->getClientOriginalExtension();
@@ -847,7 +853,7 @@ class DocumentController extends Controller
      */
     public function update($id, Request $request)
     {
-
+        // dd($request->all());
         if ($request->submit == 'save') {
             $lastDocument = Document::find($id);
             $lastContent = DocumentContent::firstOrNew([
@@ -871,6 +877,25 @@ class DocumentController extends Controller
                 $document->training_required = $request->training_required;
                 $document->attach_draft_doocument = $request->attach_draft_doocument;
                 $document->notify_to = json_encode($request->notify_to);
+
+                if (!empty ($request->initial_attachments)) {
+                    $files = [];
+                    if ($document->initial_attachments) {
+                        $existingFiles = json_decode($document->initial_attachments, true); // Convert to associative array
+                        if (is_array($existingFiles)) {
+                            $files = $existingFiles;
+                        }
+                    }
+                    if ($request->hasfile('initial_attachments')) {
+                        foreach ($request->file('initial_attachments') as $file) {
+                            $name = $request->name . 'initial_attachments' . rand(1, 100) . '.' . $file->getClientOriginalExtension();
+                            $file->move('upload/', $name);
+                            $files[] = $name;
+                        }
+                    }
+                    $document->initial_attachments = json_encode($files);
+                }
+
 
                 if ($request->keywords) {
                     $document->keywords = implode(',', $request->keywords);
@@ -935,6 +960,7 @@ class DocumentController extends Controller
                         $document->drafter_attachments = json_encode($files);
                     }
                 }
+                
                 if($document->stage == 3){
                     $document->hod_remarks = $request->hod_remarks;
                     if (!empty ($request->hod_attachments)) {
@@ -1492,18 +1518,18 @@ class DocumentController extends Controller
 
             $documentcontet->hod_comments = $request->hod_comments;
 
-            $files = $request->has('existing_hod_attachments') && is_array($request->existing_hod_attachments) ? array_keys($request->existing_hod_attachments) : [];
+            //$files = $request->has('existing_hod_attachments') && is_array($request->existing_hod_attachments) ? array_keys($request->existing_hod_attachments) : [];
 
-            if ($request->has('hod_attachments') && $request->hasFile('hod_attachments'))
-            {
-                foreach ($request->file('hod_attachments') as $file) {
-                    $name = 'hod_attachments-'. rand(1, 100) . '-' . time() . '.' . $file->getClientOriginalExtension();
-                    $file->move('upload/', $name);
-                    $files[] = $name;
-                }
-            }
+            //if ($request->has('hod_attachments') && $request->hasFile('hod_attachments'))
+            //{
+            //    foreach ($request->file('hod_attachments') as $file) {
+            //        $name = 'hod_attachments-'. rand(1, 100) . '-' . time() . '.' . $file->getClientOriginalExtension();
+            //        $file->move('upload/', $name);
+            //        $files[] = $name;
+            //    }
+            //}
 
-            $documentcontet->hod_attachments = json_encode($files);
+            //$documentcontet->hod_attachments = json_encode($files);
 
             // if ($request->hasfile('references')) {
 

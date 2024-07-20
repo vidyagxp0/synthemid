@@ -478,7 +478,7 @@
                                     <div class="group-input">
                                         <label for="hods">QAs<span class="text-danger">*</span></label>
                                         <select id="choices-multiple-remove-button" class="choices-multiple-reviewer"
-                                            name="qa[]" placeholder="Select QAs" multiple required>
+                                            name="qa[]" placeholder="Select QAs" multiple>
                                             @foreach ($qa as $hod)
                                                 <option value="{{ $hod->id }}">
                                                     {{ $hod->name }}
@@ -539,21 +539,54 @@
                         <div class="input-fields">
                             <div class="row">
 
-                                <div class="col-lg-12">
+                                {{--<div class="col-lg-12">
                                     <div class="group-input">
-                                        <label for="Audit Attachments">Initial Attachments</label>
-                                        <div><small class="text-primary">Please Attach all relevant or supporting
-                                                documents</small></div>
+                                        <label for="Initial_Attachments">Initial Attachments</label>
+                                        <div>
+                                            <small class="text-primary">
+                                                Please Attach all relevant or supporting documents
+                                             </small>
+                                        </div>
                                         <div class="file-attachment-field">
                                             <div class="file-attachment-list" id="initial_attachments"></div>
                                             <div class="add-btn">
-                                                <div>Add</div>
-                                                <input disabled type="file" id="initial_attachments" name="initial_attachments[]"
+                                                <div>
+                                                    Add
+                                                </div>
+                                                <input type="file" id="initial_attachments" name="initial_attachments[]"
                                                     onclick="addMultipleFiles(this, 'initial_attachments')" multiple>
                                             </div>
                                         </div>
                                     </div>
+                                </div>--}}
+                                {{--<div class="col-lg-12">
+                                    <div class="group-input">
+                                        <label for="Audit Attachments">Initial Attachments</label>
+                                        <div>
+                                            <small class="text-primary">
+                                                Please Attach all relevant or supporting documents
+                                             </small>
+                                        </div>
+                                        <input type="file" name="initial_attachments[]" onclick="addMultipleFiles(this, 'initial_attachments')" multiple>
+                                    </div>
                                 </div>
+                            --}}
+                            <div class="col-lg-12">
+                                <div class="group-input">
+                                    <label for="Audit Attachments">Initial Attachments</label>
+                                    <small class="text-primary">
+                                        Please Attach all relevant or supporting documents
+                                    </small>
+                                    <div class="file-attachment-field">
+                                        <div class="file-attachment-list" id="file_attach"></div>
+                                        <div class="add-btn">
+                                            <div onclick="document.getElementById('myfile').click()">Add</div>
+                                            <input type="file" id="myfile" name="initial_attachments[]" oninput="addMultipleFiles(this, 'file_attach')" multiple>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                                 <div class="col-lg-6 mb-3">
                                     <div class="group-input">
                                         <label for="Warehousefeedback">Initiated By</label>
@@ -581,7 +614,8 @@
                             </button> 
                         </div>
                     </div>
-
+</div>
+</div>
 
 <!-- ---------------------------------------------------------------------------------------------------------------------------- -->
             <div id="drafters" class="tabcontent">
@@ -596,6 +630,7 @@
                                 <textarea disabled name="drafter_remarks"></textarea>
                             </div>
                         </div>
+
                         <div class="col-lg-12">
                             <div class="group-input">
                                 <label for="Audit Attachments">Drafter Attachments</label>
@@ -611,6 +646,7 @@
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="col-md-6 mb-3 warehouse">
                             <div class="group-input">
                                 <label for="Warehousefeedback">Drafted By</label>
