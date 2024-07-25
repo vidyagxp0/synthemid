@@ -9,6 +9,7 @@ use App\Http\Controllers\rcms\DashboardController;
 use App\Http\Controllers\rcms\EffectivenessCheckController;
 use App\Http\Controllers\rcms\ExtensionController;
 use App\Http\Controllers\rcms\InternalauditController;
+use App\Http\Controllers\PrintRequestController;
 use App\Http\Controllers\rcms\LabIncidentController;
 use App\Http\Controllers\rcms\ObservationController;
 use App\Http\Controllers\rcms\IncidentController;
@@ -162,6 +163,8 @@ Route::group(['prefix' => 'rcms'], function () {
             Route::get('auditProgramAuditReport/{id}', [AuditProgramController::class, 'auditReport'])->name('auditProgramAuditReport');
 
 
+            
+            Route::get('print-histories/{id}', [PrintRequestController::class, 'printHistories'])->name('print-histories');
 
 
             Route::get('observationshow/{id}', [ObservationController::class, 'observationshow'])->name('showobservation');

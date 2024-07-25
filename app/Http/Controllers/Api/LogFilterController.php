@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Deviation;
+use App\Models\Document;
 use App\Models\CC;
 use App\Models\errata;
 use App\Models\FailureInvestigation;
@@ -796,6 +797,149 @@ class LogFilterController extends Controller
     return response()->json($res);
 }
 
+
+    public function documentFilter(Request $request)
+    {
+        $res = [
+            'status' => 'ok',
+            'message' => 'success',
+            'body' => []
+        ];
+
+        try {
+            $query = Document::query();
+
+            // if ($request->departmentDeviation) {
+            //     $query->where('Initiator_Group', $request->departmentDeviation);
+            // }
+
+            if ($request->division_idDocument) {
+                $query->where('division_id', $request->division_idDocument);
+            }
+
+            if ($request->audit_type) {
+                $query->where('audit_type', $request->audit_type);
+            }
+
+            if ($request->period) {
+                $currentDate = Carbon::now();
+                switch ($request->period) {
+                    case 'Yearly':
+                        $startDate = $currentDate->startOfYear();
+                        break;
+                    case 'Quarterly':
+                        $startDate = $currentDate->firstOfQuarter();
+                        break;
+                    case 'Monthly':
+                        $startDate = $currentDate->startOfMonth();
+                        break;
+                    default:
+                        $startDate = null;
+                        break;
+                }
+                if ($startDate) {
+                    $query->whereDate('initiated_on', '>=', $startDate);
+                    \Log::info("Filtering from period: {$request->period}, Start Date: {$startDate}");
+                }
+            }
+
+            if ($request->date_fromDocument) {
+                $dateFrom = Carbon::parse($request->date_fromDocument)->startOfDay();
+                $query->whereDate('initiated_on', '>=', $dateFrom);
+                \Log::info("Filtering from Date From: {$dateFrom}");
+            }
+
+            if ($request->date_toDocument) {
+                $dateTo = Carbon::parse($request->date_toDocument)->endOfDay();
+                $query->whereDate('initiated_on', '<=', $dateTo);
+                \Log::info("Filtering to Date To: {$dateTo}");
+            }
+
+            $document = $query->get();
+
+            $htmlData = view('frontend.forms.Logs.filterData.document_data', compact('document'))->render();
+
+            $res['body'] = $htmlData;
+        } catch (\Exception $e) {
+            $res['status'] = 'error';
+            $res['message'] = $e->getMessage();
+            \Log::error("Document Filter Error: {$e->getMessage()}");
+        }
+
+        return response()->json($res);
+    }
+
+
+    public function pendingApproverData(Request $request)
+    {
+        $res = [
+            'status' => 'ok',
+            'message' => 'success',
+            'body' => []
+        ];
+
+        try {
+            $query = Document::query();
+
+            // if ($request->departmentDeviation) {
+            //     $query->where('Initiator_Group', $request->departmentDeviation);
+            // }
+
+            if ($request->division_idPendingApprover) {
+                $query->where('division_id', $request->division_idPendingApprover);
+            }
+
+            if ($request->audit_type) {
+                $query->where('audit_type', $request->audit_type);
+            }
+
+            if ($request->period) {
+                $currentDate = Carbon::now();
+                switch ($request->period) {
+                    case 'Yearly':
+                        $startDate = $currentDate->startOfYear();
+                        break;
+                    case 'Quarterly':
+                        $startDate = $currentDate->firstOfQuarter();
+                        break;
+                    case 'Monthly':
+                        $startDate = $currentDate->startOfMonth();
+                        break;
+                    default:
+                        $startDate = null;
+                        break;
+                }
+                if ($startDate) {
+                    $query->whereDate('initiated_on', '>=', $startDate);
+                    \Log::info("Filtering from period: {$request->period}, Start Date: {$startDate}");
+                }
+            }
+
+            if ($request->date_fromPendingApprover) {
+                $dateFrom = Carbon::parse($request->date_fromPendingApprover)->startOfDay();
+                $query->whereDate('initiated_on', '>=', $dateFrom);
+                \Log::info("Filtering from Date From: {$dateFrom}");
+            }
+
+            if ($request->date_toPendingApprover) {
+                $dateTo = Carbon::parse($request->date_toPendingApprover)->endOfDay();
+                $query->whereDate('initiated_on', '<=', $dateTo);
+                \Log::info("Filtering to Date To: {$dateTo}");
+            }
+
+            $PendingApprover = $query->get();
+
+            $htmlData = view('frontend.forms.Logs.filterData.pending_approver_data', compact('PendingApprover'))->render();
+
+            $res['body'] = $htmlData;
+        } catch (\Exception $e) {
+            $res['status'] = 'error';
+            $res['message'] = $e->getMessage();
+            \Log::error("Document Filter Error: {$e->getMessage()}");
+        }
+
+        return response()->json($res);
+    }
     
 
 

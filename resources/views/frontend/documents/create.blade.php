@@ -95,7 +95,7 @@
                 <button class="tablinks" onclick="openData(event, 'approvers')">Approver Input</button>
 
                 <button class="tablinks" onclick="openData(event, 'doc-content')">Document Content</button>
-                <button class="tablinks" onclick="openData(event, 'hod-remarks-tab')">HOD Remarks</button>
+                <!-- <button class="tablinks" onclick="openData(event, 'hod-remarks-tab')">HOD Remarks</button> -->
                 <button class="tablinks" onclick="openData(event, 'annexures')">Annexures</button>
                 <button class="tablinks" onclick="openData(event, 'distribution-retrieval')">Distribution & Retrieval</button>
                 <button class="tablinks" onclick="openData(event, 'sign')">Signature</button>
@@ -159,6 +159,8 @@
                                     <p id="docnameError" style="color:red">**Document Name is required</p>
 
                                 </div>
+
+                                
                                 <div class="col-md-12">
                                     <div class="group-input">
                                         <label for="short-desc">Short Description<span class="text-danger">*</span></label>
@@ -167,7 +169,20 @@
                                         <input type="text" id="short_desc" name="short_desc" maxlength="255">
                                     </div>
                                     <p id="short_descError" style="color:red">**Short description is required</p>
-
+                                    
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="group-input">
+                                            <label for="cc_reference_record">Reference Records<span class="text-danger">*</span></label>
+                                            <select id="choices-multiple-remove-button" class="choices-multiple-reviewer"
+                                                name="cc_reference_record[]" placeholder="Select Reference Records" multiple required>
+                                                @foreach ($ccrecord as $document)
+                                                    <option value="{{ $document->id }}">
+                                                        {{ Helpers::getDivisionName($document->division_id)}}/CC/{{date('Y')}}/{{Helpers::recordFormat($document->record)}}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                 </div>
                                 {{-- <div class="col-md-12">
                                     <div class="group-input">
@@ -1677,7 +1692,7 @@
 </script>   
     <script>
         VirtualSelect.init({
-            ele: '#reference_record, #notify_to'
+            ele: '#reference_record, #notify_to, #cc_reference_record'
         });
 
         $('#summernote').summernote({

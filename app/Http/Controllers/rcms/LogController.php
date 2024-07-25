@@ -17,6 +17,7 @@ use App\Models\OutOfCalibration;
 use App\Models\RiskManagement;
 use App\Models\InternalAudit;
 use Illuminate\Http\Request;
+use App\Models\Document;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 
@@ -27,6 +28,16 @@ class LogController extends Controller
     public function index($slug)
     {
         switch ($slug) {
+            case 'pending-approver':
+                $approverPending = Document::where('stage','6')->get();               
+                return view('frontend.forms.logs.pending_approver_logs',compact('approverPending'));
+                break;
+
+            case 'document':
+                $document = Document::get();               
+                return view('frontend.forms.logs.document_logs',compact('document'));
+                break;
+
             case 'capa':
                 $capa = Capa::get();
                 

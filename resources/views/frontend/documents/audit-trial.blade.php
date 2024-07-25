@@ -225,6 +225,16 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <tr>
+                                    <td>
+                                        <a href="{{ url('print-histories', $document->id ) }}" target="_blank">Print History</a>                                        
+                                    </td>
+                                    <td>N/A</td>
+                                    <td>N/A</td>
+                                    <td>N/A</td>
+                                    <td>N/A</td>
+                                </tr>
+                                </tr>
                                 @foreach ($audit as $audits)
                                     <tr>
                                         <td class="viewdetails"><a

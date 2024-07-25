@@ -77,7 +77,7 @@
                 <button class="tablinks" onclick="openData(event, 'approvers')">Approver Input</button> --}}
                 <button class="tablinks" onclick="openData(event, 'add-doc')">Training Information</button>
                 <button class="tablinks" onclick="openData(event, 'doc-content')">Document Content</button>
-                <button class="tablinks" onclick="openData(event, 'hod-remarks-tab')">HOD Remarks</button>
+                <!-- <button class="tablinks" onclick="openData(event, 'hod-remarks-tab')">HOD Remarks</button> -->
                 <button class="tablinks" onclick="openData(event, 'annexures')">Annexures</button>
                 <button class="tablinks" onclick="openData(event, 'distribution-retrieval')">Distribution & Retrieval</button>
                 {{-- <button class="tablinks" onclick="openData(event, 'print-download')">Print and Download Control </button> --}}
@@ -196,29 +196,17 @@
                                 <p id="short_descError" style="color:red">**Short description is required</p>
 
                             </div>
+                            <div class="col-md-6">
+                                <label for="document_name-desc">Reference Record</label>
+                                <select multiple id="cc_reference_record" name="cc_reference_record[]">
+                                                    @foreach ($ccrecord as $new)
+                                                        <option value="{{ $new->id }}"{{ in_array($new->id, explode(',', $document->cc_reference_record)) ? 'selected' : '' }}>
+                                                            {{ Helpers::getDivisionName($new->division_id) }}/CC/{{ date('Y') }}/{{ Helpers::recordFormat($new->record) }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                            </div>
 
-                            <script>
-                                var maxLength = 255;
-                                $('#short_desc').keyup(function() {
-                                    var textlen = maxLength - $(this).val().length;
-                                    $('#editrchars').text(textlen);
-                                });
-                            </script>
-
-                            @if (Auth::user()->role != 3 && $document->stage < 8)
-
-                                {{-- Add Comment  --}}
-                                <div class="comment">
-                                    <div>
-                                        <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at
-                                            {{ date('d-M-Y h:i:s') }}</p>
-
-                                        <input class="input-field" type="text" name="short_desc_comment">
-                                    </div>
-                                    <div class="button">Add Comment</div>
-                                </div>
-
-                            @endif
 
                             <div class="col-md-6">
                                 <div class="group-input">
@@ -3011,7 +2999,7 @@
     </script> --}}
     <script>
         VirtualSelect.init({
-            ele: '#reference_record, #notify_to'
+            ele: '#reference_record, #notify_to, #cc_reference_record'
         });
 
         // $('#summernote').summernote({

@@ -59,6 +59,8 @@ Route::post('upload-files', [HelperController::class, 'upload_file'])->name('api
  Route::get('/charts/pending-training', [ChartController::class, 'document_pending_training_charts'])->name('api.document.pending.training.chart');
  
  Route::post('/filter-deviation', [LogFilterController::class, 'deviation_filter'])->name('api.deviation.filter');
+ Route::post('/filter-document', [LogFilterController::class, 'documentFilter'])->name('api.document.filter');
+ Route::post('/filter-pendingApprover', [LogFilterController::class, 'pendingApproverData'])->name('api.pendingApprover.filter');
  Route::post('/change-control', [LogFilterController::class, 'changecontrol_filter'])->name('api.cccontrol.filter');
  Route::post('/errata',[LogFilterController::class,'errata_filter'])->name('api.errata.filter');
  Route::post('/failure-investigation',[LogFilterController::class,'failureInv_filter'])->name('api.failure.filter');

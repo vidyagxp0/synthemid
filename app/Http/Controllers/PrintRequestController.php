@@ -527,4 +527,9 @@ class PrintRequestController extends Controller
             return $pdf->stream('Print Request' . $id . '.pdf');
         }
     }
+
+    public function printHistories($id){
+        $data = PrintHistory::where('document_id', $id)->get();
+        return view('frontend.documents.print_histories', compact('data'));
+    }
 }

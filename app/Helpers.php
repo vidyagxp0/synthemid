@@ -803,4 +803,90 @@ class Helpers
         return $status;
     }
 
+   public static function getFullNewDepartmentName($code)
+    {
+        $full_department_name = '';
+
+        switch ($code) {
+            case 'CLB':
+                $full_department_name = "Calibration Lab";
+                break;
+            case 'ENG':
+                $full_department_name = "Engineering";
+                break;
+            case 'FAC':
+                $full_department_name = "Facilities";
+                break;
+            case 'LAB':
+                $full_department_name = "LAB";
+                break;
+            case 'LABL':
+                $full_department_name = "Labeling";
+                break;
+            case 'MANU':
+                $full_department_name = "Manufacturing";
+                break;
+            case 'QA':
+                $full_department_name = "Quality Assurance";
+                break;
+            case 'QC':
+                $full_department_name = "Quality Control";
+                break;
+            case 'RA':
+                $full_department_name = "Regulatory Affairs";
+                break;
+            case 'SCR':
+                $full_department_name = "Security";
+                break;
+            case 'TR':
+                $full_department_name = "Training";
+                break;
+            case 'IT':
+                $full_department_name = "IT";
+                break;
+            case 'AE':
+                $full_department_name = "Application Engineering";
+                break;
+            case 'TRD':
+                $full_department_name = "Trading";
+                break;
+            case 'RSCH':
+                $full_department_name = "Research";
+                break;
+            case 'SAL':
+                $full_department_name = "Sales";
+                break;
+            case 'FIN':
+                $full_department_name = "Finance";
+                break;
+            case 'SYS':
+                $full_department_name = "Systems";
+                break;
+            case 'ADM':
+                $full_department_name = "Administrative";
+                break;
+            case 'M&A':
+                $full_department_name = "M&A";
+                break;
+            case 'R&D':
+                $full_department_name = "R&D";
+                break;
+            case 'HR':
+                $full_department_name = "Human Resource";
+                break;
+            case 'BNK':
+                $full_department_name = "Banking";
+                break;
+            case 'MRKT':
+                $full_department_name = "Marketing";
+                break;
+            default:
+                $full_department_name = "Unknown Department";
+                break;
+        }
+
+        return $full_department_name;
+    }
+
+
 }

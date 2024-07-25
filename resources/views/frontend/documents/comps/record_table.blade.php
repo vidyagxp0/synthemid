@@ -45,7 +45,7 @@
                     </a>
                 </td>
                 <td class="division">
-                    {{ $doc->document_type_name }}
+                    {{ Helpers::getFullNewDepartmentName($doc->document_type_id) }}
                 </td>
                 <td class="division">
                     {{ Helpers::getDivisionName($doc->division_id) }}
@@ -62,7 +62,7 @@
                     {{ $doc->created_at }}
                 </td>
                 <td class="assign-name">
-                    {{ $doc->originator_name }}
+                    {{ Helpers::getInitiatorName($doc->originator_id) }}
                 </td>
                 <td class="modify-date">
                     {{ $doc->updated_at }}

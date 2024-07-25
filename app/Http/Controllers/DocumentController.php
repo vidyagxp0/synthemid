@@ -17,6 +17,7 @@ use App\Models\DocumentHistory;
 use App\Models\DocumentLanguage;
 use App\Models\DocumentSubtype;
 use App\Models\DocumentTraining;
+use App\Models\CC;
 //use App\Models\DocumentTraningInformation;
 use App\Models\DocumentType;
 use App\Models\DownloadControl;
@@ -320,6 +321,7 @@ class DocumentController extends Controller
     {
         //
         $division = SetDivision::where('user_id', Auth::id())->latest()->first();
+        $ccrecord = CC::get();
        
         if(!empty( $division)){
             $division->dname = Division::where('id', $division->division_id)->value('name');
@@ -416,6 +418,7 @@ class DocumentController extends Controller
             'user',
             'reviewer',
             'drafter',
+            'ccrecord',
             'approvers',
             'hods',
             'reviewergroup',
@@ -481,6 +484,7 @@ class DocumentController extends Controller
             $document->document_subtype_id = $request->document_subtype_id;
             $document->document_language_id = $request->document_language_id;
             $document->effective_date = $request->effective_date;
+            $document->cc_reference_record = implode(',',$request->cc_reference_record);
             
             try {
                 if($request->effective_date){
@@ -723,7 +727,8 @@ class DocumentController extends Controller
      */
     public function edit($id)
     {
-
+        $ccrecord = CC::get();
+        // dd($ccrecord);
         $users = User::all();
         if (! empty($users)) {
             foreach ($users as $data) {
@@ -824,6 +829,7 @@ class DocumentController extends Controller
             'history',
             'keywords',
             'qa',
+            'ccrecord',
             'annexure',
             'documentsubTypes',
             'document_distribution_grid'
@@ -861,6 +867,7 @@ class DocumentController extends Controller
                 $document->document_language_id = $request->document_language_id;
                 $document->training_required = $request->training_required;
                 $document->attach_draft_doocument = $request->attach_draft_doocument;
+                $document->cc_reference_record = implode(',',$request->cc_reference_record);
                 $document->notify_to = json_encode($request->notify_to);
 
                 if (!empty ($request->initial_attachments)) {

@@ -11,6 +11,12 @@
                         <div class="document-left-block">
                             <div class="inner-block create-block">
                                 <div class="head text-right mb-0">
+                                    <a href="{{ route('rcms.logs.show', 'pending-approver') }}" target="_blank">
+                                        <i class="fa-solid fa-log"></i>Pending Approver Log
+                                    </a>
+                                    <a href="{{ route('rcms.logs.show', 'document') }}" target="_blank">
+                                        <i class="fa-solid fa-log"></i>Log
+                                    </a>
                                     <a href="#" id="set-division">
                                         <i class="fa-solid fa-plus"></i> Create
                                     </a>
