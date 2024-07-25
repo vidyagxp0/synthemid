@@ -19,6 +19,8 @@ return new class extends Migration
             $table->integer('division_id')->nullable();
             $table->longtext('short_description')->nullable();
             $table->longtext('reference_records')->nullable();
+            $table->longtext('print_reason')->nullable();
+            $table->string('request_for')->nullable();
             $table->string('due_date')->nullable();
             $table->longtext('permission_user_id')->nullable();
             $table->longtext('hods')->nullable();

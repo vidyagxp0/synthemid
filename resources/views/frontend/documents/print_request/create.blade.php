@@ -72,12 +72,12 @@
 <?php $division_id = isset($_GET['id'])?$_GET['id']:'';?>
     <div id="data-field-head">
         <div class="pr-id">
-            Print Request
+            Print / Download Request
         </div>
         @if(isset($_GET['id']))
         <div class="division-bar">
             <strong>Site Division/Project</strong> :
-            {{ Helpers::getDivisionName($_GET['id'])}} / Print Request 
+            {{ Helpers::getDivisionName($_GET['id'])}} / Print / Download Request 
             {{-- {{ $division->dname }} / {{ $division->pname }} --}}
         </div>
         @endif
@@ -104,7 +104,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="group-input">
-                                        <label for="originator">Administrator</label>
+                                        <label for="originator">Requested By</label>
                                         <div class="default-name">{{ Auth::user()->name }}</div>
                                     </div>
                                 </div>
@@ -117,11 +117,20 @@
 
                                 <div class="col-md-6">
                                     <div class="group-input">
-                                        <label for="doc-type">Sile/Location<span class="text-danger">*</span></label>
+                                        <label for="doc-type">Sile/Location <span class="text-danger">*</span></label>
                                         <select name="division_id" required>
                                             <option value="" selected>Enter your Selection</option>
                                             <option value="1" >Corporate</option>
                                             <option value="2" >Plant</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="group-input">
+                                        <label for="doc-type">Request For <span class="text-danger">*</span></label>
+                                        <select name="request_for" required>
+                                            <option value="Print" selected>Print</option>
+                                            <option value="Download" >Download</option>
                                         </select>
                                     </div>
                                 </div>
@@ -131,26 +140,26 @@
                                         <label for="short-desc">Short Description<span class="text-danger">*</span></label>
                                         <span id="new-rchars">255</span>
                                         characters remaining
-                                        <input type="text" id="short_description" name="short_description" maxlength="255">
+                                        <input type="text" id="short_desc" name="short_description" maxlength="255">
                                     </div>
                                     <p id="short_descError" style="color:red">**Short description is required</p>
 
                                 </div>
 
-                                <div class="col-md-6">
+                                <div class="col-lg-6">
                                     <div class="group-input">
                                         <label for="reference_records">Reference Records<span class="text-danger">*</span></label>
                                         <select id="choices-multiple-remove-button" class="choices-multiple-reviewer"
                                             name="reference_records[]" placeholder="Select Reference Records" multiple required>
                                             @foreach ($documentList as $document)
                                                 <option value="{{ $document->id }}">
-                                                    {{ $document->document_name }}
+                                                    {{ Helpers::getDivisionName($document->division_id) }}/Document/{{ date('Y') }}/{{ Helpers::recordFormat($document->record)}}/{{ $document->document_name }}
                                                 </option>
                                             @endforeach
                                         </select>
                                     </div>
-
-                                <div class="col-md-4 new-date-data-field">
+                                </div>
+                                <div class="col-lg-6 new-date-data-field">
                                     <div class="group-input input-date">
                                         <label for="due-date">Due Date <span class="text-danger">*</span></label>
                                         <div><small class="text-primary">Kindly Fill Target Date of Completion</small>
@@ -165,12 +174,15 @@
                                     </div>
                                     <p id="due_dateDocError" style="color:red">**Due Date is required</p>
                                 </div>
-                            </div>
-                        </div>                                
-                        <div class="orig-head">
-                            Other Information
+                                <div class="col-md-12">
+                                    <div class="group-input">
+                                        <label for="short-desc">Reason for Print <span class="text-danger">*</span></label>
+                                        <textarea id="print_reason" name="print_reason"></textarea>
+                                    </div>
+                                    {{-- <p id="short_descError" style="color:red">**Short description is required</p> --}}
+                                </div>
+                            
                         </div>
-                        <div class="input-fields">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="group-input">
@@ -185,7 +197,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="group-input">
-                                        <label for="hods">QAs<span class="text-danger">*</span></label>
+                                        <label for="hods">QA<span class="text-danger">*</span></label>
                                         <select name="qa" id="doc-type" required>
                                             <option value="" selected>Select QA</option>
                                             @foreach ($qa as $me)
@@ -195,7 +207,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         <div class="orig-head">
                             Initiator Information
                         </div>
@@ -242,6 +253,7 @@
                             <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white"> Exit </a>
                             </button> 
                         </div>
+                    </div>
                     </div>
                     <div id="hodcft" class="tabcontent">
                         <div class="orig-head">

@@ -56,20 +56,6 @@ class PrintRequestController extends Controller
 
     public function create()
     {
-        $division = SetDivision::where('user_id', Auth::id())->latest()->first();
-
-        if (!empty($division)) {
-            $division->dname = Division::where('id', $division->division_id)->value('name');
-            $division->pname = Process::where('id', $division->process_id)->value('process_name');
-            $process = QMSProcess::where([
-                'process_name' => 'New Document',
-                'division_id' => $division->division_id
-            ])->first();
-        } else {
-            return "Division not found";
-        }
-
-
         $users = User::all();
         if (!empty($users)) {
             foreach ($users as $data) {
@@ -96,7 +82,7 @@ class PrintRequestController extends Controller
         $hods = DB::table('user_roles')
             ->join('users', 'user_roles.user_id', '=', 'users.id')
             ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
-            ->where('user_roles.q_m_s_processes_id', $process->id)
+            ->where('user_roles.q_m_s_processes_id', 24) //id is q_m_s_process => New Document
             ->where('user_roles.q_m_s_roles_id', 4)
             ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
             ->get();
@@ -104,7 +90,7 @@ class PrintRequestController extends Controller
         $qa = DB::table('user_roles')
             ->join('users', 'user_roles.user_id', '=', 'users.id')
             ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
-            ->where('user_roles.q_m_s_processes_id', 89)
+            ->where('user_roles.q_m_s_processes_id', 24) //id is q_m_s_process => New Document
             ->where('user_roles.q_m_s_roles_id', 7)
             ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
             ->get();
@@ -131,7 +117,6 @@ class PrintRequestController extends Controller
             'document',
             'users',
             'recordNumber',
-            'division',
             'documentList',
             'qa',
             'documentsubTypes'
@@ -143,7 +128,9 @@ class PrintRequestController extends Controller
         $printRequest = new PrintRequest();
         $printRequest->originator_id = Auth::id();
         $printRequest->division_id = $request->division_id;
-        $printRequest->short_description = $request->short_desc;
+        $printRequest->short_description = $request->short_description;
+        $printRequest->request_for = $request->request_for;
+        $printRequest->print_reason = $request->print_reason;
         $printRequest->due_date = $request->due_dateDoc;
         $printRequest->permission_user_id = $request->permission_user_id;
         $printRequest->initiated_by = Auth::user()->id;
@@ -181,7 +168,7 @@ class PrintRequestController extends Controller
         $hods = DB::table('user_roles')
             ->join('users', 'user_roles.user_id', '=', 'users.id')
             ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
-            ->where('user_roles.q_m_s_processes_id', 89)
+            ->where('user_roles.q_m_s_processes_id', 24)
             ->where('user_roles.q_m_s_roles_id', 4)
             ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
             ->get();
@@ -189,7 +176,7 @@ class PrintRequestController extends Controller
         $qa = DB::table('user_roles')
             ->join('users', 'user_roles.user_id', '=', 'users.id')
             ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
-            ->where('user_roles.q_m_s_processes_id', 89)
+            ->where('user_roles.q_m_s_processes_id', 24)
             ->where('user_roles.q_m_s_roles_id', 7)
             ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
             ->get();
@@ -206,6 +193,7 @@ class PrintRequestController extends Controller
         $printRequest = PrintRequest::find($id);
         $printRequest->division_id = $request->division_id;
         $printRequest->short_description = $request->short_description;
+        $printRequest->request_for = $request->request_for;
         $printRequest->due_date = $request->due_dateDoc;
         $printRequest->permission_user_id = $request->permission_user_id;
         // $printRequest->initiated_by = Auth::user()->id;

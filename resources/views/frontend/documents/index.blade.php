@@ -147,16 +147,16 @@
                                                 Division
                                             </th>
                                             <th class="division">
-                                                Initiated By
+                                                Requested By
                                             </th>
                                             <th class="short-desc">
-                                                Short Description
+                                                Request for
                                             </th>
-                                            <th class="create-date">
-                                                Print Request for
+                                            <th class="short-desc">
+                                                Reason for Print
                                             </th>
                                             <th class="modify-date">
-                                                Created Date
+                                                Requested Date
                                             </th>
                                             <th class="modify-date">
                                                 Due Date
@@ -183,17 +183,16 @@
                                                         <td class="division">
                                                             {{ Helpers::getInitiatorName($doc->originator_id) }}
                                                         </td>
-
-                                                        <td style="display: inline-block;
-                width: 305px;
-                white-space: nowrap;
-                overflow: hidden !important;
-                text-overflow: ellipsis"
-                                                            class="short-desc">
-                                                            {{ $doc->short_description }}
+                                                        <td class="assign-name">
+                                                            {{ $doc->request_for }}
                                                         </td>
-                                                        <td class="create-date">
-                                                            {{ Helpers::getInitiatorName($doc->permission_user_id) }}
+                                                        <td style="
+                                                            width: 305px;
+                                                            white-space: nowrap;
+                                                            overflow: hidden !important;
+                                                            text-overflow: ellipsis"
+                                                            class="short-desc">
+                                                            {{ $doc->print_reason }}
                                                         </td>
                                                         <td class="assign-name">
                                                             {{ $doc->created_at }}
@@ -418,7 +417,7 @@ $divisions = DB::table('q_m_s_divisions')
                                     </label>
                                     <label for="process">
                                         <input type="radio" class="process_id_reset" for="process"
-                                            value="print-request" name="process_id" required> Print Request
+                                            value="print-request" name="process_id" required> Print / Download Request
                                     </label>
                                 @endforeach
                             </div>
