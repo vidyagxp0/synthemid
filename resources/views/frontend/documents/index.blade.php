@@ -273,6 +273,46 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="print-modal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Print Document</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('document.print.pdf.history') }}" method="POST" target="_blank">
+                    @csrf
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <div class="group-input mb-3">
+                            <label for="document-name" class="form-label">Document Name</label>
+                            <input type="text" id="document_name" class="form-control" disabled>
+                            <input type="hidden" id="hidden-document-name" name="document_name">
+                        </div>
+                        
+                        <div class="group-input mb-3">
+                            <label for="issue_copies">No. Of Copies <span class="text-danger">*</span></label>
+                            <input type="number" name="issue_copies" value="1" min="1" class="form-control w-100" required>
+                        </div>
+                        <div class="group-input mb-3">
+                            <label for="print_reason">Print Reason <span class="text-danger">*</span></label>
+                            <textarea name="print_reason" class="form-control w-100" maxlength="255" required></textarea>
+                        </div>
+                    </div>
+    
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary rounded">Submit</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
     <div class="modal fade" id="pdf-modal">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -282,40 +322,40 @@
                 </div>
                 <div class="modal-body mt-3">
                     <div class="group-input">
-                        <a href="{{ asset('pdf/Analysis_Protocol_Template.pdf') }}" target="_blank">Analysis Protocol Template</a>
+                        <a data-doc-name="Analysis Protocol Template" href="#" data-bs-toggle="modal" data-bs-target="#print-modal">Analysis Protocol Template</a>
                     </div>
                     <div class="group-input mt-3">
-                        <a href="{{ asset('pdf/BPR_Template.pdf') }}" target="_blank">BPR Template</a>
+                        <a data-doc-name="BPR Template" href="#" data-bs-toggle="modal" data-bs-target="#print-modal">BPR Template</a>
                     </div>
                     <div class="group-input mt-3">
-                        <a href="{{ asset('pdf/CC_Observations.pdf') }}" target="_blank">CC Observations</a>
+                        <a data-doc-name="CC Observations" href="#" data-bs-toggle="modal" data-bs-target="#print-modal">CC Observations</a>
                     </div>
                     <div class="group-input mt-3">
-                        <a href="{{ asset('pdf/ECR_Template.pdf') }}" target="_blank">ECR Template</a>
+                        <a data-doc-name="ECR Template" href="#" data-bs-toggle="modal" data-bs-target="#print-modal">ECR Template</a>
                     </div>
                     <div class="group-input mt-3">
-                        <a href="{{ asset('pdf/Format_Template 4.pdf') }}" target="_blank">Format Template 4</a>
+                        <a data-doc-name="Format Template 4" href="#" data-bs-toggle="modal" data-bs-target="#print-modal">Format Template 4</a>
                     </div>
                     <div class="group-input mt-3">
-                        <a href="{{ asset('pdf/Format_Template-3.pdf') }}" target="_blank">Format Template 3</a>
+                        <a data-doc-name="Format Template 3" href="#" data-bs-toggle="modal" data-bs-target="#print-modal">Format Template 3</a>
                     </div>
                     <div class="group-input mt-3">
-                        <a href="{{ asset(' pdf/grid_backu_CC.pdf') }}" target="_blank">Grid Backup CC</a>
+                        <a data-doc-name="Grid Backup CC" href="#" data-bs-toggle="modal" data-bs-target="#print-modal">Grid Backup CC</a>
                     </div>
                     <div class="group-input mt-3">
-                        <a href="{{ asset('pdf/Process_Flow_Chart_Template.pdf') }}" target="_blank">Process Flow Chart Template</a>
+                        <a data-doc-name="Process Flow Chart Template" href="#" data-bs-toggle="modal" data-bs-target="#print-modal">Process Flow Chart Template</a>
                     </div>
                     <div class="group-input mt-3">
-                        <a href="{{ asset('pdf/SDS_Template.pdf') }}" target="_blank">SDS Template</a>
+                        <a data-doc-name="SDS Template" href="#" data-bs-toggle="modal" data-bs-target="#print-modal">SDS Template</a>
                     </div>
                     <div class="group-input mt-3">
-                        <a href="{{ asset('pdf/SOP_Template.pdf') }}" target="_blank">SOP Template</a>
+                        <a data-doc-name="SOP Template" href="#" data-bs-toggle="modal" data-bs-target="#print-modal">SOP Template</a>
                     </div>
                     <div class="group-input mt-3">
-                        <a href="{{ asset('pdf/Specification_TP_Template.pdf') }}" target="_blank">Specification TP Template</a>
+                        <a data-doc-name="Specification TP Template" href="#" data-bs-toggle="modal" data-bs-target="#print-modal">Specification TP Template</a>
                     </div>
                     <div class="group-input mt-3">
-                        <a href="{{ asset('pdf/Specification_Template.pdf') }}" target="_blank">Specification Template</a>
+                        <a data-doc-name="Specification Template" href="#" data-bs-toggle="modal" data-bs-target="#print-modal">Specification Template</a>
                     </div>
                 </div>
                 </form>
@@ -469,6 +509,24 @@ $divisions = DB::table('q_m_s_divisions')
                 }
             })
         })
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        // Get all the links in the pdf-modal
+            var links = document.querySelectorAll('#pdf-modal .group-input a');
+
+            links.forEach(function(link) {
+                link.addEventListener('click', function() {
+                    // Get the document name from the data attribute
+                    var docName = this.getAttribute('data-doc-name');
+
+                    // Set the value in the hidden input field in the print-modal
+                    document.getElementById('document_name').value = docName;
+                    document.getElementById('hidden-document-name').value = docName;
+                });
+            });
+        });
     </script>
 
 @endsection

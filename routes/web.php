@@ -103,6 +103,7 @@ Route::middleware(['auth', 'prevent-back-history', 'user-activity'])->group(func
     Route::get('documents/reviseCreate/{id}', [DocumentController::class, 'revise_create']);
 
     Route::get('documents/printPDF/{id}', [DocumentController::class, 'printPDF'])->name('document.print.pdf');
+    Route::post('documents/pdfHistory/', [DocumentController::class, 'storePrintHistory'])->name('document.print.pdf.history');
     Route::get('documents/printAnnexure/{document}/{annexure}', [DocumentController::class, 'printAnnexure'])->name('document.print.annexure');
     Route::get('documents/viewpdf/{id}', [DocumentController::class, 'viewPdf']);
     Route::get('documents/revision-history/{id}', [DocumentController::class, 'revision_history'])->name('document.revision.history');
