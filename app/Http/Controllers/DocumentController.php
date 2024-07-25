@@ -56,7 +56,8 @@ class DocumentController extends Controller
     public function division(Request $request)
     {
         if ($request->process_id == 'print-request') {
-            return redirect()->route('print_request.create');
+            $division_Check = $request->division_id;
+            return redirect()->route('print_request.create',compact('division_Check'));
         }
         $new = new SetDivision;
         $new->division_id = $request->division_id;

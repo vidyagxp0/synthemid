@@ -51,7 +51,7 @@
                     {{ Helpers::getDivisionName($doc->division_id) }}
                 </td>
 
-                <td style="display: inline-block;
+                <td style="
                 width: 305px;
                 white-space: nowrap;
                 overflow: hidden !important;

@@ -218,7 +218,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="group-input">
-                                        <label for="originator">Administrator</label>
+                                        <label for="originator">Requested By</label>
                                         <div class="default-name">{{ Helpers::getInitiatorName($print_history->originator_id) }}</div>
                                     </div>
                                 </div>
@@ -230,10 +230,19 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="group-input">
-                                        <label for="doc-type">Sile/Location<span class="text-danger">*</span></label>
+                                        <label for="doc-type">Sile/Location <span class="text-danger">*</span></label>
                                         <select name="division_id" required>
                                             <option value="1" {{ $print_history->division_id == 1 ? 'selected' : '' }}>Corporate</option>
                                             <option value="2" {{ $print_history->division_id == 2 ? 'selected' : '' }}>Plant</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="group-input">
+                                        <label for="doc-type">Request For <span class="text-danger">*</span></label>
+                                        <select name="request_for" required>
+                                            <option value="Print" {{ $print_history->request_for == "Print" ? 'selected' : '' }}>Print</option>
+                                            <option value="Download" {{ $print_history->request_for == "Download" ? 'selected' : '' }}>Download</option>
                                         </select>
                                     </div>
                                 </div>
@@ -243,7 +252,7 @@
                                         <label for="short-desc">Short Description<span class="text-danger">*</span></label>
                                         <span id="new-rchars">255</span>
                                         characters remaining
-                                        <input type="text" id="short_desc" name="short_desc" value={{$print_history->short_desc}} maxlength="255">
+                                        <input type="text" id="short_desc" name="short_description" value="{{$print_history->short_description}}" maxlength="255">
                                     </div>
                                     <p id="short_descError" style="color:red">**Short description is required</p>
 
@@ -265,14 +274,14 @@
                                                                 selected @endif
                                                             @endfor
                                                     >
-                                                    {{ $doc->document_name }}
+                                                    {{ Helpers::getDivisionName($doc->division_id) }}/Document/{{ date('Y') }}/{{ Helpers::recordFormat($doc->record)}}/{{ $doc->document_name }}
                                                     </option>
                                                     @endif
                                                 @endforeach
                                             </select>
-                                            @foreach ($usersValue as $me)
+                                            {{-- @foreach ($usersValue as $me)
                                                 <option value="{{ $me->id }}" {{ $print_history->permission_user_id == $me->id ? 'selected' : '' }}>{{ $me->name }}</option>
-                                            @endforeach
+                                            @endforeach --}}
                                     </div>
                                 </div>
 
@@ -291,10 +300,14 @@
                                     </div>
                                     <p id="due_dateDocError" style="color:red">**Due Date is required</p>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="group-input">
+                                        <label for="short-desc">Reason for Print <span class="text-danger">*</span></label>
+                                        <textarea id="print_reason" name="print_reason">{{$print_history->print_reason}}</textarea>
+                                    </div>
+                                    {{-- <p id="short_descError" style="color:red">**Short description is required</p> --}}
+                                </div>
                             </div>
-                        </div>
-                        <div class="orig-head">
-                            Other Information
                         </div>
                         <div class="input-fields">
                             <div class="row">
