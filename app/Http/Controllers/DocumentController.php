@@ -8,6 +8,7 @@ use App\Models\Department;
 use App\Models\Division;
 use App\Models\Document;
 use App\Models\QMSDivision;
+use App\Models\PrintPdfHistory;
 
 use Helpers;
 use App\Models\DocumentContent;
@@ -45,6 +46,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
 use PDF;
 
 class DocumentController extends Controller
@@ -752,7 +754,8 @@ class DocumentController extends Controller
         $document = Document::find($id);
         $document->date = Carbon::parse($document->created_at)->format('d-M-Y');
         $document['document_content'] = DocumentContent::where('document_id', $id)->first();
-        $document_distribution_grid = DocumentGridData::where('document_id', $id)->get();
+        $document_distribution_grid = PrintHistory::where('document_id', $id)->leftjoin('documents','documents.id','print_histories.document_id')->get(['print_histories.*', 'documents.document_name']);
+        // dd($document_distribution_grid);
         $document['division'] = Division::where('id', $document->division_id)->value('name');
         $year = Carbon::parse($document->created_at)->format('Y');
         $trainer = User::get();
@@ -2409,4 +2412,51 @@ class DocumentController extends Controller
             return $e->getMessage();
         }
     }
+
+    public function storePrintHistory(Request $request)
+        {
+            // Store print history data
+            $print_history = new PrintPdfHistory();
+            $print_history->document_name = $request->document_name;
+            $print_history->issue_copies = $request->issue_copies;
+            $print_history->print_reason = $request->print_reason;
+            $print_history->printed_by = Auth::user()->id;
+            $print_history->printed_on = date('Y-m-d');
+            $print_history->save();
+
+            $documentToPdfMap = [
+                'Analysis Protocol Template' => 'pdf/Analysis_Protocol_Template.pdf',
+                'BPR Template' => 'pdf/BPR_Template.pdf',
+                'CC Observations' => 'pdf/CC_Observations.pdf',
+                'ECR Template' => 'pdf/ECR_Template.pdf',
+                'Format Template 4' => 'pdf/Format_Template 4.pdf',
+                'Format Template 3' => 'pdf/Format_Template-3.pdf',
+                'Grid Backup CC' => 'pdf/grid_backu_CC.pdf',
+                'Process Flow Chart Template' => 'pdf/Process_Flow_Chart_Template.pdf',
+                'SDS Template' => 'pdf/SDS_Template.pdf',
+                'SOP Template' => 'pdf/SOP_Template.pdf',
+                'Specification TP Template' => 'pdf/Specification_TP_Template.pdf',
+                'Specification Template' => 'pdf/Specification_Template.pdf',
+            ];           
+
+            $pdfFilePath = public_path($documentToPdfMap[$request->document_name]);
+            \Log::info('Checking file path: ' . $pdfFilePath);
+
+            if (file_exists($pdfFilePath)) {
+                return response()->file($pdfFilePath);
+            } else {
+                return response()->json(['status' => 'error', 'message' => 'File does not exist.']);
+            }
+
+            
+
+            // $documentName = $request->document_name;
+            // $pdfPath = $documentToPdfMap[$documentName] ?? null;
+
+            // if ($pdfPath && Storage::disk('public')->exists($pdfPath)) {
+            //     return response()->file(public_path($pdfPath));
+            // }
+
+            
+        }
 }

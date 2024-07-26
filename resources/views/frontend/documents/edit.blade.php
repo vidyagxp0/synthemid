@@ -2208,29 +2208,37 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @php        
+                                        $doc_number = '';                        
+                                            $doc_number = Helpers::getDivisionName($document->division_id)
+                                                        . '/' . ($document->document_type_name ? $temp . ' /' : '')
+                                                        . $document->created_at->format('Y')
+                                                        . '/000' . $document->id . 'R1.0';
+                                        @endphp
                                         @foreach ($document_distribution_grid as $grid)
                                             <tr>
                                                 <td>
                                                     {{ $loop->index + 1 }}
                                                     {{-- <input type="text" value="{{ $loop->index }}" name="distribution[{{ $loop->index }}][serial_number]"> --}}
                                                 </td>
-                                                <td><input  type="text" value="{{ $grid->document_title }}"  name="distribution[{{ $loop->index }}][document_title]">
+                                                <td><input  type="text" value="{{ $grid->document_name }}"  name="distribution[{{ $loop->index }}][document_name]"> 
                                                 </td>
-                                                <td><input type="text" value="{{ $grid->document_number }}" name="distribution[{{ $loop->index }}][document_number]">
+                                                
+                                                <td><input type="text" name="distribution[{{ $loop->index }}][document_name]" value="{{ $doc_number }}">
                                                 </td>
-                                                <td><input type="text" value="{{ $grid->document_printed_by }}" name="distribution[{{ $loop->index }}][document_printed_by]">
+                                                <td><input type="text" value="{{ Helpers::getInitiatorName($grid->user_id) }}" name="distribution[{{ $loop->index }}][Helpers::getInitiatorName($grid->user_id)]">
                                                 </td>
-                                                <td><input type="text" value="{{ $grid->document_printed_on }}" name="distribution[{{ $loop->index }}][document_printed_on]">
+                                                <td><input type="text" value="{{ Helpers::getdateFormat($grid->created_at) }}" name="distribution[{{ $loop->index }}][Helpers::getdateFormat($grid->created_at)]">
                                                 </td>
-                                                <td><input type="text" value="{{ $grid->document_printed_copies }}" name="distribution[{{ $loop->index }}][document_printed_copies]">
+                                                <td><input type="text" value="{{ $grid->issue_copies }}" name="distribution[{{ $loop->index }}][issue_copies]">
                                                 </td>
                                                 <td><div class="group-input new-date-document_distribution_grid-field mb-0">
                                                 <div class="input-date "><div
                                                     class="calenderauditee">
-                                                <input type="text" id="issuance_date' + serialNumber +'" readonly placeholder="DD-MMM-YYYY" value="{{ $grid->issuance_date }}"/>
+                                                <input type="text" id="issuance_date' + serialNumber +'" readonly placeholder="DD-MMM-YYYY" value="{{ Helpers::getdateFormat($grid->created_at) }}"/>
                                                 <input type="date" name="distribution[{{ $loop->index }}][issuance_date]" 
                                                 class="hide-input" style="position: absolute; top: 0; left: 0; opacity: 0;"
-                                                oninput="handleDateInput(this, `issuance_date' + serialNumber +'`)" value="{{ $grid->issuance_date }}"/></div></div></div>
+                                                oninput="handleDateInput(this, `issuance_date' + serialNumber +'`)" value="{{ Helpers::getdateFormat($grid->created_at) }}"/></div></div></div>
                                             </td>
                                             
                                                 <td>
@@ -2254,9 +2262,9 @@
                                                         @endforeach
                                                     </select>
                                                 </td>    
-                                            <td><input type="text" name="distribution[{{ $loop->index }}][issued_copies]" value="{{ $grid->issued_copies }}">
+                                            <td><input type="text" name="distribution[{{ $loop->index }}][issue_copies]" value="{{ $grid->issue_copies }}">
                                             </td>
-                                            <td><input type="text" name="distribution[{{ $loop->index }}][issued_reason]" value="{{ $grid->issued_reason }}">
+                                            <td><input type="text" name="distribution[{{ $loop->index }}][print_reason]" value="{{ $grid->print_reason }}">
                                             </td>
                                             <td><div class="group-input new-date-data-field mb-0">
                                                 <div class="input-date "><div

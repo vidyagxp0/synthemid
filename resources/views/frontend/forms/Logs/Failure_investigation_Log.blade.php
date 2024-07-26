@@ -166,7 +166,7 @@
                                     </thead>
                                         
                                         <tbody id="tableData">
-                                            @include('frontend.forms.logs.filterData.failureinvestigation_data');
+                                            @include('frontend.forms.Logs.filterData.failureinvestigation_data');
       
                                           </tbody>
                                     

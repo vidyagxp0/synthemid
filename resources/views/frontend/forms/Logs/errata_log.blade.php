@@ -155,7 +155,7 @@
                                         </tr>
                                     </thead>
                                     <tbody id="tableData">
-                                        @include('frontend.forms.logs.filterData.errata_data')
+                                        @include('frontend.forms.Logs.filterData.errata_data')
                                     </tbody>
                                     <div class="d-flex justify-content-center" style="margin-top: 10px;">
                                         <div class="spinner-border text-primary" role="status" id="spinner">
