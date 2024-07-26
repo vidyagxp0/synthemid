@@ -140,17 +140,17 @@
                                         <label for="short-desc">Short Description<span class="text-danger">*</span></label>
                                         <span id="new-rchars">255</span>
                                         characters remaining
-                                        <input type="text" id="short_desc" name="short_description" maxlength="255">
+                                        <input type="text" required id="short_desc" name="short_description" maxlength="255">
                                     </div>
-                                    <p id="short_descError" style="color:red">**Short description is required</p>
+                                    {{-- <p id="short_descError" style="color:red">**Short description is required</p> --}}
 
                                 </div>
 
                                 <div class="col-lg-6">
                                     <div class="group-input">
-                                        <label for="reference_records">Reference Records<span class="text-danger">*</span></label>
+                                        <label for="reference_records">Reference Records</label>
                                         <select id="choices-multiple-remove-button" class="choices-multiple-reviewer"
-                                            name="reference_records[]" placeholder="Select Reference Records" multiple required>
+                                            name="reference_records[]" placeholder="Select Reference Records" multiple >
                                             @foreach ($documentList as $document)
                                                 <option value="{{ $document->id }}">
                                                     {{ Helpers::getDivisionName($document->division_id) }}/Document/{{ date('Y') }}/{{ Helpers::recordFormat($document->record)}}/{{ $document->document_name }}
@@ -174,6 +174,22 @@
                                     </div>
                                     <p id="due_dateDocError" style="color:red">**Due Date is required</p>
                                 </div>
+                                <div class="col-lg-6 mb-3">
+                                    <div class="group-input">
+                                        <label for="No. of Copies">No. of Copies <span class="text-danger">*</span></label>
+                                        <input  required type="number" min="0" name="no_of_copies" id="no_of_copies">
+        
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <div class="group-input">
+                                        <label for="WaterMark">WaterMark</label>
+                                        <input  type="file" name="water_mark_attachment" id="water_mark_attachment">
+        
+                                    </div>
+                                </div>
+                               
+                                
                                 <div class="col-md-12">
                                     <div class="group-input">
                                         <label for="short-desc">Reason for Print <span class="text-danger">*</span></label>
@@ -248,7 +264,7 @@
 
 
                         <div class="button-block">
-                            <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
+                            <button type="submit" value="save" name="submit" class="saveButton">Save</button>
                             <button type="button" class="nextButton" id="DocnextButton">Next</button>
                             <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white"> Exit </a>
                             </button> 

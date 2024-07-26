@@ -130,6 +130,7 @@ class PrintRequestController extends Controller
         $printRequest->division_id = $request->division_id;
         $printRequest->short_description = $request->short_description;
         $printRequest->request_for = $request->request_for;
+        $printRequest->no_of_copies = $request->no_of_copies;
         $printRequest->print_reason = $request->print_reason;
         $printRequest->due_date = $request->due_dateDoc;
         $printRequest->permission_user_id = $request->permission_user_id;
@@ -195,6 +196,7 @@ class PrintRequestController extends Controller
         $printRequest->short_description = $request->short_description;
         $printRequest->request_for = $request->request_for;
         $printRequest->due_date = $request->due_dateDoc;
+        $printRequest->no_of_copies = $request->no_of_copies;
         $printRequest->permission_user_id = $request->permission_user_id;
         // $printRequest->initiated_by = Auth::user()->id;
         // $printRequest->initiated_on = Carbon::now()->format('d-M-Y');
