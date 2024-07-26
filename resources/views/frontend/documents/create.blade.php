@@ -136,12 +136,8 @@
                                         <label for="Division Code"><b>Site/Location Code</b></label>
                                         <input readonly type="text" name="division_id" value="{{ Helpers::getDivisionName($_GET['id'])}}">
                                         <input type="hidden" name="division_id" value="{{$_GET['id']}}">
-                                        {{-- <div class="static">{{ Helpers::getDivisionName(session()->get('division')) }}</div> --}}
                                         @else
                                         <label for="Division Code"><b>Site/Location Code </b></label>
-                                        {{-- <input readonly type="text" name="division_id"
-                                            value="">
-                                        <input type="hidden" name="division_id" value=""> --}}
                                         <input readonly type="text" name="division_code"
                                         value="{{ Helpers::getDivisionName(session()->get('division')) }}">
                                        <input type="hidden" name="division_id" value="{{ session()->get('division') }}">
@@ -173,9 +169,9 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="group-input">
-                                            <label for="cc_reference_record">Reference Records<span class="text-danger">*</span></label>
+                                            <label for="cc_reference_record">Change Control Reference Records</label>
                                             <select id="choices-multiple-remove-button" class="choices-multiple-reviewer"
-                                                name="cc_reference_record[]" placeholder="Select Reference Records" multiple required>
+                                                name="cc_reference_record[]" placeholder="Select Reference Records" multiple>
                                                 @foreach ($ccrecord as $document)
                                                     <option value="{{ $document->id }}">
                                                         {{ Helpers::getDivisionName($document->division_id)}}/CC/{{date('Y')}}/{{Helpers::recordFormat($document->record)}}
@@ -184,18 +180,6 @@
                                             </select>
                                         </div>
                                 </div>
-                                {{-- <div class="col-md-12">
-                                    <div class="group-input">
-                                        <label for="sop_type">SOP Type<span class="text-danger">*</span></label>
-                                        <select name="sop_type" required>
-                                            <option value="" disabled selected>Enter your selection</option>
-                                            <option value="SOP (Standard Operating procedure)">SOP (Standard Operating procedure)</option>
-                                            <option value="EOP (Equipment Operating procedure)">EOP (Equipment Operating procedure)</option>
-                                            <option value="IOP (Instrument Operating Procedure)">IOP (Instrument Operating Procedure)</option>
-                                        </select>
-                                    </div>
-
-                                </div> --}}
 
                                 <div class="col-md-6">
                                     <div class="group-input">
@@ -230,31 +214,10 @@
                                          class="hide-input" min="{{ Carbon\Carbon::today()->format('Y-m-d') }}"
                                          oninput="handleDateInput(this, 'due_dateDoc')"/>
                                         </div>
-
-                                            {{-- onchange="changeFormat(this,'due-dateDoc')"> --}}
                                     </div>
                                     <p id="due_dateDocError" style="color:red">**Due Date is required</p>
 
                                 </div>
-                                {{-- <div class="col-md-8">
-                                    <div class="group-input">
-                                        <label for="notify_to">Notify To</label>
-                                        <select multiple name="notify_to[]" placeholder="Select Persons" data-search="false"
-                                            data-silent-initial-value-set="true" id="notify_to">
-                                            @foreach ($users as $data)
-                                                <option value="{{ $data->id }}">{{ $data->name }}
-                                                </option>
-                                            @endforeach
-
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="group-input">
-                                        <label for="description">Description</label>
-                                        <textarea name="description"></textarea>
-                                    </div>
-                                </div> --}}
                             </div>
                         </div>                                
                         <div class="orig-head">
@@ -278,7 +241,6 @@
                                             @endif
                                         </select>
                                     </div>
-                                    {{-- <p id="approverError" style="color:red">** Drafters are required</p> --}}
 
                                 </div>
 
@@ -294,8 +256,6 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    {{-- <p id="hodError" style="color:red">** HOD's are required</p> --}}
-
                                 </div>
                                 <div class="col-md-6">
                                     <div class="group-input">
@@ -309,8 +269,6 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    {{-- <p id="hodError" style="color:red">** HOD's are required</p> --}}
-
                                 </div>
                                 <div class="col-md-6">
                                     <div class="group-input">
@@ -318,7 +276,6 @@
                                         <select id="choices-multiple-remove-button" class="choices-multiple-reviewer"
                                             name="reviewers[]" placeholder="Select Reviewers" multiple required>
                                             @if (!empty($reviewer))
-                                            
                                                 @foreach ($reviewer as $lan)
                                                     @if(Helpers::checkUserRolesreviewer($lan))
                                                         <option value="{{ $lan->id }}">
@@ -330,8 +287,7 @@
                                         </select>
 
                                     </div>
-                                    <p id="reviewerError" style="color:red">** Reviewers are required</p>
-
+                                    {{-- <p id="reviewerError" style="color:red">** Reviewers are required</p> --}}
                                 </div>
                                 <div class="col-md-6">
                                     <div class="group-input">
@@ -350,7 +306,6 @@
                                         </select>
                                     </div>
                                     <p id="approverError" style="color:red">** Approvers are required</p>
-
                                 </div>
                                 
 

@@ -668,7 +668,7 @@ $(document).ready(function () {
             due_dateDocError == true &&
             departnameError == true &&
             doctypeError == true &&
-            reviewerError == true &&
+            // reviewerError == true &&
             approverError == true
         ) {
             return true;
@@ -692,7 +692,7 @@ $(document).ready(function () {
                 due_dateDocError == true &&
                 departnameError == true &&
                 doctypeError == true &&
-                reviewerError == true &&
+                // reviewerError == true &&
                 approverError == true
             ) {
                 nextStep();

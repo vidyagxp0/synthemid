@@ -485,7 +485,8 @@ class DocumentController extends Controller
             $document->document_subtype_id = $request->document_subtype_id;
             $document->document_language_id = $request->document_language_id;
             $document->effective_date = $request->effective_date;
-            $document->cc_reference_record = implode(',',$request->cc_reference_record);
+
+            $document->cc_reference_record = $request->cc_reference_record == null ? null : implode(',',$request->cc_reference_record);
             
             try {
                 if($request->effective_date){
