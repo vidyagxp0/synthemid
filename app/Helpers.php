@@ -783,16 +783,19 @@ class Helpers
             case '7':
                 $status = 'Pending-Traning';
                 break;
-            case '8':
-                $status = 'Traning-Complete';
-                break;
+                case '8':
+                    $status = 'Traning Started';
+                    break;
             case '9':
-                $status = 'Effective';
+                $status = 'Traning Complete';
                 break;
             case '10':
-                $status = 'Obsolete';
+                $status = 'Effective';
                 break;
             case '11':
+                $status = 'Obsolete';
+                break;
+            case '12':
                 $status = 'Closed/Cancel';
                 break;
             default:
@@ -879,9 +882,6 @@ class Helpers
                 break;
             case 'MRKT':
                 $full_department_name = "Marketing";
-                break;
-            default:
-                $full_department_name = "Unknown Department";
                 break;
         }
 

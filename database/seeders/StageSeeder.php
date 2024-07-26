@@ -41,11 +41,15 @@ class StageSeeder extends Seeder
         $stage->save();
 
         $stage = new Stage();
-        $stage->name = "Under-Training";
+        $stage->name = "Training Pending";
         $stage->save();
 
         $stage = new Stage();
-        $stage->name = "Training-Complete";
+        $stage->name = "Training Started";
+        $stage->save();
+
+        $stage = new Stage();
+        $stage->name = "Training Complete";
         $stage->save();
 
         $stage = new Stage();

@@ -197,7 +197,7 @@
 
                             </div>
                             <div class="col-md-6">
-                                <label for="document_name-desc">Reference Record</label>
+                                <label for="document_name-desc">Change Control Reference Record</label>
                                 <select multiple id="cc_reference_record" name="cc_reference_record[]">
                                                     @foreach ($ccrecord as $new)
                                                         <option value="{{ $new->id }}"{{ in_array($new->id, explode(',', $document->cc_reference_record)) ? 'selected' : '' }}>
@@ -2546,9 +2546,9 @@
                         <div class="col-md-6">
                             <div class="review-names">
                                 <div class="orig-head">
-                                    Originated By 
+                                    Originated By : {{Helpers::getInitiatorName($document->originator_id)}}
                                 </div>
-                                @php
+                                {{-- @php
                                     $inreview = DB::table('stage_manages')
                                         ->join('users', 'stage_manages.user_id', '=', 'users.id')
                                         ->select('stage_manages.*', 'users.name as user_name')
@@ -2557,7 +2557,7 @@
                                         ->get();
 
                                 @endphp
-                                    <div class="name">{{ $document->originator ? $document->originator->name : 'null' }}</div>
+                                    <div class="name">{{ $document->originator ? $document->originator->name : 'null' }}</div> --}}
 
                             </div>
                         </div>

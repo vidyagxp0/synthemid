@@ -214,7 +214,7 @@ $divisions = DB::table('q_m_s_divisions')->select('id', 'name')->get();
                                 <td>{{ $temp->document_name }}</td>
                                 <td>{{ $traininerName ? $traininerName->name : ''}}</td>
                                 <td>{{ $temp->traningstatus->status }}</td>
-                                <td>{{ \Carbon\Carbon::parse($temp->due_dateDoc)->format('d M Y') }}</td>
+                                <td>{{ $trainingPlanName->training_end_date ? \Carbon\Carbon::parse($trainingPlanName->training_end_date)->format('d M Y H:i A') : '-' }}</td>
                                 <td>
                                     {{ $trainingStatusCheck ? \Carbon\Carbon::parse($trainingStatusCheck->created_at)->format('d M Y') : '-' }}
                                 </td>

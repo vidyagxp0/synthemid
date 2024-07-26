@@ -49,7 +49,7 @@ class InductionTrainingcontroller extends Controller
     public function edit($id)
     {
         $inductionTraining = Induction_training::find($id);
-        return view('frontend\TMS\Induction_training\induction_training_view', compact('inductionTraining'));
+        return view('frontend.TMS.Induction_training.induction_training_view', compact('inductionTraining'));
     }
 
 

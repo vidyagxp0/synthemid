@@ -52,7 +52,7 @@
                                                     </a>
                                                 </td>
                                                 <td class="division">
-                                                    {{ $temp->document_type_name }}
+                                                     {{ Helpers::getFullNewDepartmentName($temp->document_type_id) }}
                                                 </td>
 
                                                 <td class="short-desc">
@@ -62,7 +62,7 @@
                                                     {{$temp->created_at}}
                                                 </td>
                                                 <td class="assign-name">
-                                                    {{$temp->originator_name}}
+                                                    {{ Helpers::getInitiatorName($temp->originator_id) }}
                                                 </td>
                                                 <td class="modify-date">
                                                     {{$temp->updated_at}}
@@ -79,12 +79,27 @@
                                                                 $showEdit = false;
                                                             @endphp
                                                             @if(Helpers::checkRoles(2))
+                                                                @if($temp->stage <=5 )
+                                                                    @php $showEdit = true; @endphp
+                                                                @endif
+                                                            @endif
+                                                            @if(Helpers::checkRoles(4))
+                                                                @if($temp->stage <=3 )
+                                                                    @php $showEdit = true; @endphp
+                                                                @endif
+                                                            @endif
+                                                            @if(Helpers::checkRoles(40))
                                                                 @if($temp->stage <=2 )
                                                                     @php $showEdit = true; @endphp
                                                                 @endif
                                                             @endif
                                                             @if(Helpers::checkRoles(1))
-                                                                @if($temp->stage <=4 )
+                                                                @if($temp->stage <=6 )
+                                                                    @php $showEdit = true; @endphp
+                                                                @endif
+                                                            @endif
+                                                            @if(Helpers::checkRoles(7))
+                                                                @if($temp->stage <=5 )
                                                                     @php $showEdit = true; @endphp
                                                                 @endif
                                                             @endif

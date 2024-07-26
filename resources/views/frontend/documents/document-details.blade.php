@@ -42,7 +42,7 @@
                                     {{-- @if ($document->stage >= 7)
                                         <button data-bs-toggle="modal" data-bs-target="#child-modal">Child</button>
                                     @endif --}}
-                                    @if ($document->stage >= 9 && $document->status !== 'Obsolete')
+                                    @if ($document->stage >= 10 && $document->status !== 'Obsolete')
                                         {{-- <button type="button" class="btn btn-danger" id="obsolete-button">Obsolete</button> --}}
                                         <button  class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#signature-modal">
                                             Obsolete
@@ -111,7 +111,7 @@
                                 @endif
                                 @if ($document->training_required == 'yes')
                                     @if ($document->stage == 7)
-                                        <input type="hidden" name="stage_id" value="7" />
+                                        <input type="hidden" name="stage_id" value="8" />
                                         <button class="button_theme1" data-bs-toggle="modal" data-bs-target="#approve-sign">
                                             Send For Training<i class="fa-regular fa-paper-plane"></i>
                                         </button>
@@ -161,17 +161,22 @@
                                                 <div class="">Pending-Traning</div>
                                             @endif
                                             @if ($document->stage >= 8)
-                                                <div class="active">Traning-Complete</div>
+                                                <div class="active">Traning Started</div>
                                             @else
-                                                <div class="">Traning-Complete</div>
+                                                <div class="">Traning Started</div>
                                             @endif
+                                            @if ($document->stage >= 9)
+                                            <div class="active">Traning-Complete</div>
+                                        @else
+                                            <div class="">Traning-Complete</div>
                                         @endif
-                                        @if ($document->stage >= 9)
+                                        @endif
+                                        @if ($document->stage >= 10)
                                             <div class="active">Effective</div>
                                         @else
                                             <div class="">Effective</div>
                                         @endif
-                                        @if ($document->stage == 10)
+                                        @if ($document->stage == 11)
                                             <div class="active">Obsolete</div>
                                         @else
                                             <div class="">Obsolete</div>
@@ -1170,9 +1175,6 @@
                             <input type="hidden" name="stage_id" value="8" />
                         @endif
                     @else
-                        @if ($document->stage == 9)
-                            <input type="hidden" name="stage_id" value="10" />
-                        @endif
                     @endif
                     <!-- Modal footer -->
                     <div class="modal-footer">

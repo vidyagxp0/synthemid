@@ -1054,8 +1054,8 @@ class DocumentDetailsController extends Controller
                   if ($reviewersData == 1) {
                     $document->approver_by = Auth::user()->id;
                     $document->approver_on = now();
-                    $document->stage = $document->training_required == 'yes' ? 7 : 9;
-                    $document->status = $document->training_required == 'yes' ? Stage::where('id', 7)->value('name') : Stage::where('id', 9)->value('name');
+                    $document->stage = $document->training_required == 'yes' ? 7 : 10;
+                    $document->status = $document->training_required == 'yes' ? Stage::where('id', 7)->value('name') : Stage::where('id', 10)->value('name');
                     try {
                       Mail::send(
                         'mail.approved',
@@ -1071,10 +1071,10 @@ class DocumentDetailsController extends Controller
                     }
                   }
                 } else {
-                    $document->stage = $document->training_required == 'yes' ? 7 : 9;
+                    $document->stage = $document->training_required == 'yes' ? 7 : 10;
                     $document->approver_by = Auth::user()->id;
                     $document->approver_on = now();
-                    $document->status = $document->training_required == 'yes' ? Stage::where('id', 7)->value('name') : Stage::where('id', 9)->value('name');
+                    $document->status = $document->training_required == 'yes' ? Stage::where('id', 7)->value('name') : Stage::where('id', 10)->value('name');
                   try {
                     Mail::send(
                       'mail.approved',
@@ -1094,10 +1094,10 @@ class DocumentDetailsController extends Controller
             if ($document->approvers) {
               if ($document->approver_group) {
                 if ($reviewersDataforgroup == 1 && $reviewersData == 1) {
-                  $document->stage = $document->training_required == 'yes' ? 7 : 9;
+                  $document->stage = $document->training_required == 'yes' ? 7 : 10;
                   $document->approver_by = Auth::user()->id;
                     $document->approver_on = now();
-                    $document->status = $document->training_required == 'yes' ? Stage::where('id', 7)->value('name') : Stage::where('id', 9)->value('name');
+                    $document->status = $document->training_required == 'yes' ? Stage::where('id', 7)->value('name') : Stage::where('id', 10)->value('name');
                   try {
                     Mail::send(
                       'mail.approved',
@@ -1114,10 +1114,10 @@ class DocumentDetailsController extends Controller
                 }
               } else {
                 if ($reviewersData == 1) {
-                  $document->stage = $document->training_required == 'yes' ? 7 : 9;
+                  $document->stage = $document->training_required == 'yes' ? 7 : 10;
                   $document->approver_by = Auth::user()->id;
                     $document->approver_on = now();
-                    $document->status = $document->training_required == 'yes' ? Stage::where('id', 7)->value('name') : Stage::where('id', 9)->value('name');
+                    $document->status = $document->training_required == 'yes' ? Stage::where('id', 7)->value('name') : Stage::where('id', 10)->value('name');
                   try {
                     Mail::send(
                       'mail.approved',
@@ -1133,6 +1133,79 @@ class DocumentDetailsController extends Controller
                   }
                 }
               }
+            }
+          }
+        }
+
+        if (Helpers::checkRoles(3) && $document->originator_id == Auth::user()->id && $request->stage_id == 8 || $request->stage_id == 10  || $request->stage_id == 13 || $request->stage_id == 11) {
+          if ($request->stage_id) {
+            $document->stage = $request->stage_id;
+            $document->status = Stage::where('id', $request->stage_id)->value('name');
+           
+
+            if ($request->stage_id == 10) {
+              $document->effective_date = Carbon::now()->format('Y-m-d');
+              if ($document->revised == 'Yes')
+              {
+                $old_document = Document::where([
+                  'document_number' => $document->document_number,
+                  'status' => 'Effective'
+                ])->first();
+
+                if ($old_document) {
+                  $old_document->stage = 11;
+                  $old_document->status = 'Obsolete';
+                  $old_document->save();
+                }
+              }
+
+              try {
+                  $next_review_date = Carbon::parse($document->effective_date)->addYears($document->review_period)->format('Y-m-d');
+                  $document->next_review_date = $next_review_date;
+              } catch (\Exception $e) {
+                  // 
+              }
+            }
+            if ($request->stage_id == 11) { 
+                $document['stage'] = $request->stage_id;
+                $document['status'] = Stage::where('id', $request->stage_id)->value('name');
+            }
+            if ($request->stage_id == 12) { 
+              $document['stage'] = $request->stage_id;
+              $document['status'] = Stage::where('id', $request->stage_id)->value('name');
+              $history = new DocumentHistory();
+              $history->document_id = $request->document_id;
+              $history->activity_type = 'Send for Effective';
+              $history->previous = '';
+              $history->current = '';
+              $history->comment = $request->comment;
+              $history->action_name = 'Submit'; 
+              $history->change_from = Stage::where('id', $document->stage_id)->value('name');;
+              $history->change_to = 'Effective';
+              $history->user_id = Auth::user()->id;
+              $history->user_name = Auth::user()->name;
+              $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
+              $history->origin_state = 'Reviewed';
+              $history->save();
+            }
+            if ($request->stage_id == 13) { 
+              $document['stage'] = $request->stage_id;
+              $document['status'] = Stage::where('id', $request->stage_id)->value('name');
+
+              $history = new DocumentHistory();
+              $history->document_id = $request->document_id;
+              $history->activity_type = 'Send for Effective';
+              $history->previous = '';
+              $history->current = '';
+              $history->comment = $request->comment;
+              $history->action_name = 'Submit'; 
+              $history->change_from = Stage::where('id', $document->stage_id)->value('name');;
+              $history->change_to = 'Effective';
+              $history->user_id = Auth::user()->id;
+              $history->user_name = Auth::user()->name;
+              $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
+              $history->origin_state = 'Reviewed';
+              $history->save();
             }
           }
         }
