@@ -155,18 +155,15 @@
                         });
                     </script>
 
-                    @if (Auth::user()->role != 3 && $document->stage < 8) {{-- Add Comment  --}} <div class="comment">
+                    @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
                         <div>
-                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at
-                                {{ date('d-M-Y h:i:s') }}
-                            </p>
+                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
                             <input class="input-field" type="text" name="document_name_comment">
                         </div>
                         <div class="button">Add Comment</div>
                 </div>
-
                 @endif
-
+                @endif
 
                 <div class="col-md-12">
                     <div class="group-input">
@@ -196,15 +193,67 @@
                     });
                 </script>
 
-                @if (Auth::user()->role != 3 && $document->stage < 8) @if ($document->stage > 4 && $document->stage <= 9)<div class="comment">
-                        <div>
-                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
-                            <input class="input-field" type="text" name="short_desc_comment">
+
+                @if (Auth::user()->role != 3)
+                @if ($document->stage > 4 && $document->stage <= 10) <div class="comment-section">
+                    <div>
+                        <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
+                        <div id="comment-container">
+                            <input class="input-field" style="background: #ffff0061;" type="text" name="short_desc_comment[]">
                         </div>
-                        <div class="button">Add Comment</div>
+                        <div class="button-container">
+                            <div class="button" style=" display: inline-block;
+            padding: 2px 8px;
+            background-color:#fff;
+            color: black;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            box-sizing: border-box;
+            border: 2px solid black;" onclick="addCommentField()">+ Add Comment</div>
+                        </div>
+                    </div>
             </div>
+
+            <style>
+                .comment-section {
+                    margin-bottom: 20px;
+                }
+
+                .input-field {
+                    display: block;
+                    margin-bottom: 10px;
+                    padding: 8px;
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+
+                .button-container {
+                    margin-top: 10px;
+                }
+
+                .button:hover {
+                    background-color: #0056b3;
+                }
+            </style>
+
+            <script>
+                function addCommentField() {
+                    // Create a new input field
+                    var newInput = document.createElement("input");
+                    newInput.setAttribute("type", "text");
+                    newInput.setAttribute("name", "short_desc_comment[]");
+                    newInput.classList.add("input-field");
+
+                    document.getElementById("comment-container").appendChild(newInput);
+
+                }
+            </script>
             @endif
             @endif
+
+
+
 
             <div class="col-md-6">
                 <label for="document_name-desc">Change Control Reference Record</label>
@@ -248,16 +297,65 @@
                     @endforeach
                 </div>
 
-                @if (Auth::user()->role != 3 && $document->stage < 8) <div class="comment">
-                    <div>
-                        <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                            at {{ date('d-M-Y h:i:s') }}</p>
 
-                        <input class="input-field" type="text" name="document_type_id_comment">
+                @if (Auth::user()->role != 3)
+                @if ($document->stage > 4 && $document->stage <= 10) <div class="comment-section">
+                    <div>
+                        <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
+                        <div id="comment-container-new">
+                            <input class="input-field" style="background: #ffff0061;" type="text" name="document_type_id_comment[]">
+                        </div>
+                        <div class="button-container">
+                            <div class="button" style=" display: inline-block;
+            padding: 2px 8px;
+            background-color:#fff;
+            color: black;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            box-sizing: border-box;
+            border: 2px solid black;" onclick="addCommentField1()">+ Add Comment</div>
+                        </div>
                     </div>
-                    <div class="button">Add Comment</div>
             </div>
+
+            <style>
+                .comment-section {
+                    margin-bottom: 20px;
+                }
+
+                .input-field {
+                    display: block;
+                    margin-bottom: 10px;
+                    padding: 8px;
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+
+                .button-container {
+                    margin-top: 10px;
+                }
+
+                .button:hover {
+                    background-color: #0056b3;
+                }
+            </style>
+
+            <script>
+                function addCommentField1() {
+
+                    var newInput = document.createElement("input");
+                    newInput.setAttribute("type", "text");
+                    newInput.setAttribute("name", "document_type_id_comment[]");
+                    newInput.classList.add("input-field");
+
+                    document.getElementById("comment-container-new").appendChild(newInput);
+
+                }
+            </script>
             @endif
+            @endif
+
 
     </div>
 
@@ -303,17 +401,63 @@
         </div>
         <p id="due_dateDocError" style="color:red">**Due Date is required</p>
 
-        @if (Auth::user()->role != 3 && $document->stage < 8) <div class="comment">
+
+        @if (Auth::user()->role != 3)
+        @if ($document->stage > 4 && $document->stage <= 10) <div class="comment-section">
             <div>
-                <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at
-                    {{ date('d-M-Y h:i:s') }}
-                </p>
-
-                <input class="input-field" type="text" name="due_date_comment">
+                <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
+                <div id="comment-container-due-date">
+                    <input class="input-field" type="text" name="due_date_comment[]">
+                </div>
+                <div class="button-container">
+                    <div class="button" style=" display: inline-block;
+            padding: 2px 8px;
+            background-color:#fff;
+            color: black;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            box-sizing: border-box;
+            border: 2px solid black;" onclick="addCommentField2()">+ Add Comment</div>
+                </div>
             </div>
-
-            <div class="button">Add Comment</div>
     </div>
+
+    <style>
+        .comment-section {
+            margin-bottom: 20px;
+        }
+
+        .input-field {
+            display: block;
+            margin-bottom: 10px;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .button-container {
+            margin-top: 10px;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+
+    <script>
+        function addCommentField2() {
+
+            var newInput = document.createElement("input");
+            newInput.setAttribute("type", "text");
+            newInput.setAttribute("name", "due_date_comment[]");
+            newInput.classList.add("input-field");
+
+            document.getElementById("comment-container-due-date").appendChild(newInput);
+
+        }
+    </script>
+    @endif
     @endif
 </div>
 
@@ -348,19 +492,16 @@
         @endforeach
     </div>
 
-    @if (Auth::user()->role != 3)
-    {{-- Add Comment  --}}
-    <div class="comment">
+
+    @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
         <div>
-
-            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                at {{ date('d-M-Y h:i:s') }}</p>
-
+            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
             <input class="input-field" type="text" name="effective_date_comment">
         </div>
         <div class="button">Add Comment</div>
-    </div>
-    @endif
+</div>
+@endif
+@endif
 
 </div>
 <div class="col-md-2">
@@ -393,19 +534,16 @@
         }
     </script>
 
-    @if (Auth::user()->role != 3)
-    {{-- Add Comment  --}}
-    <div class="comment">
-        <div>
-            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                at {{ date('d-M-Y h:i:s') }}</p>
 
+    @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
+        <div>
+            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
             <input class="input-field" type="text" name="review_period_comment">
         </div>
         <div class="button">Add Comment</div>
-    </div>
-    @endif
-
+</div>
+@endif
+@endif
 </div>
 
 <div class="col-md-5 new-date-data-field">
@@ -439,18 +577,17 @@
         @endforeach
     </div>
 
-    @if (Auth::user()->role != 3)
-    {{-- Add Comment  --}}
-    <div class="comment">
-        <div>
-            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                at {{ date('d-M-Y h:i:s') }}</p>
 
+
+    @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
+        <div>
+            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
             <input class="input-field" type="text" name="next_review_date_comment">
         </div>
         <div class="button">Add Comment</div>
-    </div>
-    @endif
+</div>
+@endif
+@endif
 
 </div>
 
@@ -497,17 +634,16 @@
         @endforeach
     </div>
 
-    @if (Auth::user()->role != 3 && $document->stage < 8) {{-- Add Comment  --}} <div class="comment">
-        <div>
-            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                at {{ date('d-M-Y h:i:s') }}</p>
 
+    @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
+        <div>
+            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
             <input class="input-field" type="text" name="attach_draft_doocument_comment">
         </div>
         <div class="button">Add Comment</div>
 </div>
 @endif
-
+@endif
 </div>
 
 <div class="col-md-6">
@@ -537,15 +673,14 @@
         @endforeach
     </div>
 
-    @if (Auth::user()->role != 3 && $document->stage < 8) {{-- Add Comment  --}} <div class="comment">
+    @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
         <div>
-            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                at {{ date('d-M-Y h:i:s') }}</p>
-
+            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
             <input class="input-field" type="text" name="attach_effective_docuement_comment">
         </div>
         <div class="button">Add Comment</div>
 </div>
+@endif
 @endif
 
 </div>
@@ -602,15 +737,16 @@
             </div>
             <p id="approverError" style="color:red">**Drafter are required</p>
 
-            @if (Auth::user()->role != 3 && $document->stage < 8) {{-- Add Comment  --}} <div class="comment">
-                <div>
-                    <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                        at {{ date('d-M-Y h:i:s') }}</p>
 
+
+            @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
+                <div>
+                    <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
                     <input class="input-field" type="text" name="drafter_comment">
                 </div>
                 <div class="button">Add Comment</div>
         </div>
+        @endif
         @endif
 
     </div>
@@ -654,15 +790,16 @@
         </div>
         {{-- <p id="approverError" style="color:red">**Approvers are required</p> --}}
 
-        @if (Auth::user()->role != 3 && $document->stage < 8) {{-- Add Comment  --}} <div class="comment">
-            <div>
-                <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                    at {{ date('d-M-Y h:i:s') }}</p>
 
+
+        @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
+            <div>
+                <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
                 <input class="input-field" type="text" name="approvers_comment">
             </div>
             <div class="button">Add Comment</div>
     </div>
+    @endif
     @endif
 
 </div>
@@ -706,15 +843,16 @@
     </div>
     {{-- <p id="approverError" style="color:red">**Approvers are required</p> --}}
 
-    @if (Auth::user()->role != 3 && $document->stage < 8) {{-- Add Comment  --}} <div class="comment">
-        <div>
-            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                at {{ date('d-M-Y h:i:s') }}</p>
 
+
+    @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
+        <div>
+            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
             <input class="input-field" type="text" name="approvers_comment">
         </div>
         <div class="button">Add Comment</div>
 </div>
+@endif
 @endif
 
 </div>
@@ -762,16 +900,17 @@
     </div>
     <p id="reviewerError" style="color:red">**Reviewers are required</p>
 
-    @if (Auth::user()->role != 3 && $document->stage < 8) {{-- Add Comment  --}} <div class="comment">
+    @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
         <div>
-            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                at {{ date('d-M-Y h:i:s') }}</p>
-
+            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
             <input class="input-field" type="text" name="reviewers_comment">
         </div>
         <div class="button">Add Comment</div>
+
 </div>
 @endif
+@endif
+
 
 </div>
 
@@ -818,16 +957,18 @@
     </div>
     {{-- <p id="approverError" style="color:red">**Approvers are required</p> --}}
 
-    @if (Auth::user()->role != 3 && $document->stage < 8) {{-- Add Comment  --}} <div class="comment">
-        <div>
-            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
-                at {{ date('d-M-Y h:i:s') }}</p>
 
+
+    @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
+        <div>
+            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
             <input class="input-field" type="text" name="approvers_comment">
         </div>
         <div class="button">Add Comment</div>
 </div>
 @endif
+@endif
+
 </div>
 </div>
 </div>
@@ -894,56 +1035,66 @@
                     <textarea {{Helpers::isRevised($document->stage)}} @if (in_array(Auth::user()->id, explode(",", $document->drafters)) && $document->stage == 2) required @else readonly @endif name="drafter_remarks">{{$document->drafter_remarks}}</textarea>
                 </div>
             </div>
-            <div class="col-12">
-                <div class="group-input">
-                    <label for="QA Initial Attachments">Drafter Attachments</label>
-                    <div><small class="text-primary">Please Attach all relevant or supporting
-                            documents</small></div>
-                    <div class="file-attachment-field">
-                        <div class="file-attachment-list" id="drafter_attachments">
-                            @if ($document->drafter_attachments)
-                            @foreach (json_decode($document->drafter_attachments) as $file)
-                            <h6 type="button" class="file-container text-dark" style="background-color: rgb(243, 242, 240);">
-                                <b>{{ $file }}</b>
-                                <a href="{{ asset('upload/' . $file) }}" target="_blank"><i class="fa fa-eye text-primary" style="font-size:20px; margin-right:-10px;"></i></a>
-                                <a type="button" class="remove-file" data-remove-id="drafter_attachmentsFile-{{ $loop->index }}" data-file-name="{{ $file }}"><i class="fa-solid fa-circle-xmark" style="color:red; font-size:20px;"></i></a>
-                            </h6>
-                            @endforeach
-                            @endif
-                        </div>
-                        <div class="add-btn">
-                            <div onclick="document.getElementById('myfile1').click()">Add</div>
-                            <input {{ $document->stage == 2 ? '' : 'disabled'}} type="file" id="myfile1" name="drafter_attachments[]" {{Helpers::isRevised($document->stage)}} oninput="addMultipleFiles(this, 'drafter_attachments')" multiple>
-                        </div>
-                    </div>
+            @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
+                <div>
+                    <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
+                    <input class="input-field" type="text" name="drafter_remarks_comment">
                 </div>
-            </div>
-            <div class="col-md-6 mb-3 warehouse">
-                <div class="group-input">
-                    <label for="Warehousefeedback">Drafted By</label>
-                    <input readonly type="text" name="drafted_by" id="drafted_by" value="{{Helpers::getInitiatorName($document->drafted_by)}}">
-
-                </div>
-            </div>
-
-            <div class="col-lg-6 new-date-data-field warehouse">
-                <div class="group-input input-date">
-                    <label for="Drafted On" style="font-weight: 100;">Drafted On</label>
-                    <div class="calenderauditee">
-                        <input type="text" id="drafted_on" value="{{Helpers::getdateFormat($document->drafted_on)}}" disabled placeholder="DD-MM-YYYY" />
-                    </div>
-                </div>
-            </div>
+                <div class="button">Add Comment</div>
 
         </div>
+        @endif
+        @endif
+        <div class="col-12">
+            <div class="group-input">
+                <label for="QA Initial Attachments">Drafter Attachments</label>
+                <div><small class="text-primary">Please Attach all relevant or supporting
+                        documents</small></div>
+                <div class="file-attachment-field">
+                    <div class="file-attachment-list" id="drafter_attachments">
+                        @if ($document->drafter_attachments)
+                        @foreach (json_decode($document->drafter_attachments) as $file)
+                        <h6 type="button" class="file-container text-dark" style="background-color: rgb(243, 242, 240);">
+                            <b>{{ $file }}</b>
+                            <a href="{{ asset('upload/' . $file) }}" target="_blank"><i class="fa fa-eye text-primary" style="font-size:20px; margin-right:-10px;"></i></a>
+                            <a type="button" class="remove-file" data-remove-id="drafter_attachmentsFile-{{ $loop->index }}" data-file-name="{{ $file }}"><i class="fa-solid fa-circle-xmark" style="color:red; font-size:20px;"></i></a>
+                        </h6>
+                        @endforeach
+                        @endif
+                    </div>
+                    <div class="add-btn">
+                        <div onclick="document.getElementById('myfile1').click()">Add</div>
+                        <input {{ $document->stage == 2 ? '' : 'disabled'}} type="file" id="myfile1" name="drafter_attachments[]" {{Helpers::isRevised($document->stage)}} oninput="addMultipleFiles(this, 'drafter_attachments')" multiple>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3 warehouse">
+            <div class="group-input">
+                <label for="Warehousefeedback">Drafted By</label>
+                <input readonly type="text" name="drafted_by" id="drafted_by" value="{{Helpers::getInitiatorName($document->drafted_by)}}">
+
+            </div>
+        </div>
+
+        <div class="col-lg-6 new-date-data-field warehouse">
+            <div class="group-input input-date">
+                <label for="Drafted On" style="font-weight: 100;">Drafted On</label>
+                <div class="calenderauditee">
+                    <input type="text" id="drafted_on" value="{{Helpers::getdateFormat($document->drafted_on)}}" disabled placeholder="DD-MM-YYYY" />
+                </div>
+            </div>
+        </div>
+
     </div>
-    <div class="button-block">
-        <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
-        <button type="button" class="backButton" onclick="previousStep()">Back</button>
-        <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
-        <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white"> Exit </a>
-        </button>
-    </div>
+</div>
+<div class="button-block">
+    <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
+    <button type="button" class="backButton" onclick="previousStep()">Back</button>
+    <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
+    <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white"> Exit </a>
+    </button>
+</div>
 </div>
 
 <div id="123" class="tabcontent">
@@ -958,56 +1109,67 @@
                     <textarea {{Helpers::isRevised($document->stage)}} @if (in_array(Auth::user()->id, explode(",", $document->approvers)) && $document->stage == 6) required @else readonly @endif  name="approver_remarks">{{$document->approver_remarks}}</textarea>
                 </div>
             </div>
-            <div class="col-12">
-                <div class="group-input">
-                    <label for="QA Initial Attachments">approver Attachments</label>
-                    <div><small class="text-primary">Please Attach all relevant or supporting
-                            documents</small></div>
-                    <div class="file-attachment-field">
-                        <div class="file-attachment-list" id="approver_attachments">
-                            @if ($document->approver_attachments)
-                            @foreach (json_decode($document->approver_attachments) as $file)
-                            <h6 type="button" class="file-container text-dark" style="background-color: rgb(243, 242, 240);">
-                                <b>{{ $file }}</b>
-                                <a href="{{ asset('upload/' . $file) }}" target="_blank"><i class="fa fa-eye text-primary" style="font-size:20px; margin-right:-10px;"></i></a>
-                                <a type="button" class="remove-file" data-remove-id="approver_attachmentsFile-{{ $loop->index }}" data-file-name="{{ $file }}"><i class="fa-solid fa-circle-xmark" style="color:red; font-size:20px;"></i></a>
-                            </h6>
-                            @endforeach
-                            @endif
-                        </div>
-                        <div class="add-btn">
-                            <div onclick="document.getElementById('myfile5').click()">Add</div>
-                            <input {{ $document->stage == 6 ? '' : 'disabled'}} type="file" id="myfile5" name="approver_attachments[]" {{ $document->stage == 0 || $document->stage == 13 ? 'disabled' : '' }} oninput="addMultipleFiles(this, 'approver_attachments')" multiple>
-                        </div>
-                    </div>
+            @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
+                <div>
+                    <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
+                    <input class="input-field" type="text" name="approver_remarks_comment">
                 </div>
-            </div>
-            <div class="col-md-6 mb-3 warehouse">
-                <div class="group-input">
-                    <label for="Warehousefeedback">Approver Completed By</label>
-                    <input readonly type="text" name="approver_by" id="approver_by" value="{{Helpers::getInitiatorName($document->approver_by)}}">
-
-                </div>
-            </div>
-
-            <div class="col-lg-6 new-date-data-field warehouse">
-                <div class="group-input input-date">
-                    <label for="QA Completed On" style="font-weight: 100;">Approver Completed On</label>
-                    <div class="calenderauditee">
-                        <input type="text" id="approver_on" value="{{Helpers::getdateFormat($document->approver_on)}}" disabled placeholder="DD-MM-YYYY" />
-                    </div>
-                </div>
-            </div>
+                <div class="button">Add Comment</div>
 
         </div>
+        @endif
+        @endif
+
+        <div class="col-12">
+            <div class="group-input">
+                <label for="QA Initial Attachments">approver Attachments</label>
+                <div><small class="text-primary">Please Attach all relevant or supporting
+                        documents</small></div>
+                <div class="file-attachment-field">
+                    <div class="file-attachment-list" id="approver_attachments">
+                        @if ($document->approver_attachments)
+                        @foreach (json_decode($document->approver_attachments) as $file)
+                        <h6 type="button" class="file-container text-dark" style="background-color: rgb(243, 242, 240);">
+                            <b>{{ $file }}</b>
+                            <a href="{{ asset('upload/' . $file) }}" target="_blank"><i class="fa fa-eye text-primary" style="font-size:20px; margin-right:-10px;"></i></a>
+                            <a type="button" class="remove-file" data-remove-id="approver_attachmentsFile-{{ $loop->index }}" data-file-name="{{ $file }}"><i class="fa-solid fa-circle-xmark" style="color:red; font-size:20px;"></i></a>
+                        </h6>
+                        @endforeach
+                        @endif
+                    </div>
+                    <div class="add-btn">
+                        <div onclick="document.getElementById('myfile5').click()">Add</div>
+                        <input {{ $document->stage == 6 ? '' : 'disabled'}} type="file" id="myfile5" name="approver_attachments[]" {{ $document->stage == 0 || $document->stage == 13 ? 'disabled' : '' }} oninput="addMultipleFiles(this, 'approver_attachments')" multiple>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3 warehouse">
+            <div class="group-input">
+                <label for="Warehousefeedback">Approver Completed By</label>
+                <input readonly type="text" name="approver_by" id="approver_by" value="{{Helpers::getInitiatorName($document->approver_by)}}">
+
+            </div>
+        </div>
+
+        <div class="col-lg-6 new-date-data-field warehouse">
+            <div class="group-input input-date">
+                <label for="QA Completed On" style="font-weight: 100;">Approver Completed On</label>
+                <div class="calenderauditee">
+                    <input type="text" id="approver_on" value="{{Helpers::getdateFormat($document->approver_on)}}" disabled placeholder="DD-MM-YYYY" />
+                </div>
+            </div>
+        </div>
+
     </div>
-    <div class="button-block">
-        <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
-        <button type="button" class="backButton" onclick="previousStep()">Back</button>
-        <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
-        <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white"> Exit </a>
-        </button>
-    </div>
+</div>
+<div class="button-block">
+    <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
+    <button type="button" class="backButton" onclick="previousStep()">Back</button>
+    <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
+    <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white"> Exit </a>
+    </button>
+</div>
 </div>
 
 <div id="456" class="tabcontent">
@@ -1022,56 +1184,68 @@
                     <textarea {{Helpers::isRevised($document->stage)}} @if (in_array(Auth::user()->id, explode(",", $document->reviewers)) && $document->stage == 5) required @else readonly @endif  name="reviewer_remarks">{{$document->reviewer_remarks}}</textarea>
                 </div>
             </div>
-            <div class="col-12">
-                <div class="group-input">
-                    <label for="QA Initial Attachments">Reviewer Attachments</label>
-                    <div><small class="text-primary">Please Attach all relevant or supporting
-                            documents</small></div>
-                    <div class="file-attachment-field">
-                        <div class="file-attachment-list" id="reviewer_attachments">
-                            @if ($document->reviewer_attachments)
-                            @foreach (json_decode($document->reviewer_attachments) as $file)
-                            <h6 type="button" class="file-container text-dark" style="background-color: rgb(243, 242, 240);">
-                                <b>{{ $file }}</b>
-                                <a href="{{ asset('upload/' . $file) }}" target="_blank"><i class="fa fa-eye text-primary" style="font-size:20px; margin-right:-10px;"></i></a>
-                                <a type="button" class="remove-file" data-remove-id="reviewer_attachmentsFile-{{ $loop->index }}" data-file-name="{{ $file }}"><i class="fa-solid fa-circle-xmark" style="color:red; font-size:20px;"></i></a>
-                            </h6>
-                            @endforeach
-                            @endif
-                        </div>
-                        <div class="add-btn">
-                            <div onclick="document.getElementById('myfile4').click()">Add</div>
-                            <input type="file" id="myfile4" {{ $document->stage == 5 ? '' : 'disabled'}} name="reviewer_attachments[]" {{ $document->stage == 0 || $document->stage == 13 ? 'disabled' : '' }} oninput="addMultipleFiles(this, 'reviewer_attachments')" multiple>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 mb-3 warehouse">
-                <div class="group-input">
-                    <label for="Warehousefeedback">Reviewer Completed By</label>
-                    <input readonly type="text" name="reviewer_by" id="reviewer_by" value="{{Helpers::getInitiatorName($document->reviewer_by)}}">
 
-                </div>
-            </div>
 
-            <div class="col-lg-6 new-date-data-field warehouse">
-                <div class="group-input input-date">
-                    <label for="QA Completed On" style="font-weight: 100;">Reviewer Completed On</label>
-                    <div class="calenderauditee">
-                        <input type="text" id="reviewer_on" value="{{Helpers::getdateFormat($document->reviewer_on)}}" readonly placeholder="DD-MM-YYYY" />
-                    </div>
+            @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
+                <div>
+                    <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
+                    <input class="input-field" type="text" name="reviewer_remarks_comment">
                 </div>
-            </div>
+                <div class="button">Add Comment</div>
 
         </div>
+        @endif
+        @endif
+        <div class="col-12">
+            <div class="group-input">
+                <label for="QA Initial Attachments">Reviewer Attachments</label>
+                <div><small class="text-primary">Please Attach all relevant or supporting
+                        documents</small></div>
+                <div class="file-attachment-field">
+                    <div class="file-attachment-list" id="reviewer_attachments">
+                        @if ($document->reviewer_attachments)
+                        @foreach (json_decode($document->reviewer_attachments) as $file)
+                        <h6 type="button" class="file-container text-dark" style="background-color: rgb(243, 242, 240);">
+                            <b>{{ $file }}</b>
+                            <a href="{{ asset('upload/' . $file) }}" target="_blank"><i class="fa fa-eye text-primary" style="font-size:20px; margin-right:-10px;"></i></a>
+                            <a type="button" class="remove-file" data-remove-id="reviewer_attachmentsFile-{{ $loop->index }}" data-file-name="{{ $file }}"><i class="fa-solid fa-circle-xmark" style="color:red; font-size:20px;"></i></a>
+                        </h6>
+                        @endforeach
+                        @endif
+                    </div>
+                    <div class="add-btn">
+                        <div onclick="document.getElementById('myfile4').click()">Add</div>
+                        <input type="file" id="myfile4" {{ $document->stage == 5 ? '' : 'disabled'}} name="reviewer_attachments[]" {{ $document->stage == 0 || $document->stage == 13 ? 'disabled' : '' }} oninput="addMultipleFiles(this, 'reviewer_attachments')" multiple>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3 warehouse">
+            <div class="group-input">
+                <label for="Warehousefeedback">Reviewer Completed By</label>
+                <input readonly type="text" name="reviewer_by" id="reviewer_by" value="{{Helpers::getInitiatorName($document->reviewer_by)}}">
+
+            </div>
+        </div>
+
+        <div class="col-lg-6 new-date-data-field warehouse">
+            <div class="group-input input-date">
+                <label for="QA Completed On" style="font-weight: 100;">Reviewer Completed On</label>
+                <div class="calenderauditee">
+                    <input type="text" id="reviewer_on" value="{{Helpers::getdateFormat($document->reviewer_on)}}" readonly placeholder="DD-MM-YYYY" />
+                </div>
+            </div>
+        </div>
+
     </div>
-    <div class="button-block">
-        <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
-        <button type="button" class="backButton" onclick="previousStep()">Back</button>
-        <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
-        <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white"> Exit </a>
-        </button>
-    </div>
+</div>
+<div class="button-block">
+    <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
+    <button type="button" class="backButton" onclick="previousStep()">Back</button>
+    <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
+    <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white"> Exit </a>
+    </button>
+</div>
 </div>
 
 <div id="hodcft" class="tabcontent">
@@ -1086,56 +1260,67 @@
                     <textarea {{Helpers::isRevised($document->stage)}} @if (in_array(Auth::user()->id, explode(",", $document->hods)) && $document->stage == 3) required @else readonly @endif  name="hod_remarks">{{$document->hod_remarks}}</textarea>
                 </div>
             </div>
-            <div class="col-12">
-                <div class="group-input">
-                    <label for="QA Initial Attachments">HOD/CFTs Attachments</label>
-                    <div><small class="text-primary">Please Attach all relevant or supporting
-                            documents</small></div>
-                    <div class="file-attachment-field">
-                        <div class="file-attachment-list" id="hod_attachments">
-                            @if ($document->hod_attachments)
-                            @foreach (json_decode($document->hod_attachments) as $file)
-                            <h6 type="button" class="file-container text-dark" style="background-color: rgb(243, 242, 240);">
-                                <b>{{ $file }}</b>
-                                <a href="{{ asset('upload/' . $file) }}" target="_blank"><i class="fa fa-eye text-primary" style="font-size:20px; margin-right:-10px;"></i></a>
-                                <a type="button" class="remove-file" data-remove-id="hod_attachmentsFile-{{ $loop->index }}" data-file-name="{{ $file }}"><i class="fa-solid fa-circle-xmark" style="color:red; font-size:20px;"></i></a>
-                            </h6>
-                            @endforeach
-                            @endif
-                        </div>
-                        <div class="add-btn">
-                            <div onclick="document.getElementById('myfile2').click()">Add</div>
-                            <input type="file" id="myfile2" {{ $document->stage == 3 ? '' : 'disabled'}} name="hod_attachments[]" {{ $document->stage == 0 || $document->stage == 13 ? 'disabled' : '' }} oninput="addMultipleFiles(this, 'hod_attachments')" multiple>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 mb-3 warehouse">
-                <div class="group-input">
-                    <label for="Warehousefeedback">HOD/CFTs Completed By</label>
-                    <input readonly type="text" name="hod_by" id="hod_by" value="{{Helpers::getInitiatorName($document->hod_by)}}">
 
+            @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
+                <div>
+                    <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
+                    <input class="input-field" type="text" name="hod_cfts_remarks_comment">
                 </div>
-            </div>
-
-            <div class="col-lg-6 new-date-data-field warehouse">
-                <div class="group-input input-date">
-                    <label for="HOD/CFTs Completed On" style="font-weight: 100;">HOD/CFTs Completed On</label>
-                    <div class="calenderauditee">
-                        <input type="text" id="hod_on" readonly value="{{Helpers::getdateFormat($document->hod_on)}}" placeholder="DD-MM-YYYY" />
-                    </div>
-                </div>
-            </div>
+                <div class="button">Add Comment</div>
 
         </div>
+        @endif
+        @endif
+        <div class="col-12">
+            <div class="group-input">
+                <label for="QA Initial Attachments">HOD/CFTs Attachments</label>
+                <div><small class="text-primary">Please Attach all relevant or supporting
+                        documents</small></div>
+                <div class="file-attachment-field">
+                    <div class="file-attachment-list" id="hod_attachments">
+                        @if ($document->hod_attachments)
+                        @foreach (json_decode($document->hod_attachments) as $file)
+                        <h6 type="button" class="file-container text-dark" style="background-color: rgb(243, 242, 240);">
+                            <b>{{ $file }}</b>
+                            <a href="{{ asset('upload/' . $file) }}" target="_blank"><i class="fa fa-eye text-primary" style="font-size:20px; margin-right:-10px;"></i></a>
+                            <a type="button" class="remove-file" data-remove-id="hod_attachmentsFile-{{ $loop->index }}" data-file-name="{{ $file }}"><i class="fa-solid fa-circle-xmark" style="color:red; font-size:20px;"></i></a>
+                        </h6>
+                        @endforeach
+                        @endif
+                    </div>
+                    <div class="add-btn">
+                        <div onclick="document.getElementById('myfile2').click()">Add</div>
+                        <input type="file" id="myfile2" {{ $document->stage == 3 ? '' : 'disabled'}} name="hod_attachments[]" {{ $document->stage == 0 || $document->stage == 13 ? 'disabled' : '' }} oninput="addMultipleFiles(this, 'hod_attachments')" multiple>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3 warehouse">
+            <div class="group-input">
+                <label for="Warehousefeedback">HOD/CFTs Completed By</label>
+                <input readonly type="text" name="hod_by" id="hod_by" value="{{Helpers::getInitiatorName($document->hod_by)}}">
+
+            </div>
+        </div>
+
+        <div class="col-lg-6 new-date-data-field warehouse">
+            <div class="group-input input-date">
+                <label for="HOD/CFTs Completed On" style="font-weight: 100;">HOD/CFTs Completed On</label>
+                <div class="calenderauditee">
+                    <input type="text" id="hod_on" readonly value="{{Helpers::getdateFormat($document->hod_on)}}" placeholder="DD-MM-YYYY" />
+                </div>
+            </div>
+        </div>
+
     </div>
-    <div class="button-block">
-        <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
-        <button type="button" class="backButton" onclick="previousStep()">Back</button>
-        <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
-        <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white"> Exit </a>
-        </button>
-    </div>
+</div>
+<div class="button-block">
+    <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
+    <button type="button" class="backButton" onclick="previousStep()">Back</button>
+    <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
+    <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white"> Exit </a>
+    </button>
+</div>
 </div>
 
 <div id="qa" class="tabcontent">
@@ -1150,56 +1335,67 @@
                     <textarea {{Helpers::isRevised($document->stage)}} @if (in_array(Auth::user()->id, explode(",", $document->qa)) && $document->stage == 4) required @else readonly @endif  name="qa_remarks">{{$document->qa_remarks}}</textarea>
                 </div>
             </div>
-            <div class="col-12">
-                <div class="group-input">
-                    <label for="QA Initial Attachments">QA Attachments</label>
-                    <div><small class="text-primary">Please Attach all relevant or supporting
-                            documents</small></div>
-                    <div class="file-attachment-field">
-                        <div class="file-attachment-list" id="qa_attachments">
-                            @if ($document->qa_attachments)
-                            @foreach (json_decode($document->qa_attachments) as $file)
-                            <h6 type="button" class="file-container text-dark" style="background-color: rgb(243, 242, 240);">
-                                <b>{{ $file }}</b>
-                                <a href="{{ asset('upload/' . $file) }}" target="_blank"><i class="fa fa-eye text-primary" style="font-size:20px; margin-right:-10px;"></i></a>
-                                <a type="button" class="remove-file" data-remove-id="qa_attachmentsFile-{{ $loop->index }}" data-file-name="{{ $file }}"><i class="fa-solid fa-circle-xmark" style="color:red; font-size:20px;"></i></a>
-                            </h6>
-                            @endforeach
-                            @endif
-                        </div>
-                        <div class="add-btn">
-                            <div onclick="document.getElementById('myfile3').click()">Add</div>
-                            <input type="file" id="myfile3" {{ $document->stage == 4 ? '' : 'disabled'}} name="qa_attachments[]" {{ $document->stage == 0 || $document->stage == 13 ? 'disabled' : '' }} oninput="addMultipleFiles(this, 'qa_attachments')" multiple>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 mb-3 warehouse">
-                <div class="group-input">
-                    <label for="Warehousefeedback">QA Completed By</label>
-                    <input readonly type="text" name="qa_by" id="qa_by" value="{{Helpers::getInitiatorName($document->qa_by)}}">
 
+            @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
+                <div>
+                    <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
+                    <input class="input-field" type="text" name="qa_remarks_comment">
                 </div>
-            </div>
-
-            <div class="col-lg-6 new-date-data-field warehouse">
-                <div class="group-input input-date">
-                    <label for="QA Completed On" style="font-weight: 100;">QA Completed On</label>
-                    <div class="calenderauditee">
-                        <input type="text" id="qa_on" readonly value="{{Helpers::getdateFormat($document->qa_on)}}" placeholder="DD-MM-YYYY" />
-                    </div>
-                </div>
-            </div>
+                <div class="button">Add Comment</div>
 
         </div>
+        @endif
+        @endif
+        <div class="col-12">
+            <div class="group-input">
+                <label for="QA Initial Attachments">QA Attachments</label>
+                <div><small class="text-primary">Please Attach all relevant or supporting
+                        documents</small></div>
+                <div class="file-attachment-field">
+                    <div class="file-attachment-list" id="qa_attachments">
+                        @if ($document->qa_attachments)
+                        @foreach (json_decode($document->qa_attachments) as $file)
+                        <h6 type="button" class="file-container text-dark" style="background-color: rgb(243, 242, 240);">
+                            <b>{{ $file }}</b>
+                            <a href="{{ asset('upload/' . $file) }}" target="_blank"><i class="fa fa-eye text-primary" style="font-size:20px; margin-right:-10px;"></i></a>
+                            <a type="button" class="remove-file" data-remove-id="qa_attachmentsFile-{{ $loop->index }}" data-file-name="{{ $file }}"><i class="fa-solid fa-circle-xmark" style="color:red; font-size:20px;"></i></a>
+                        </h6>
+                        @endforeach
+                        @endif
+                    </div>
+                    <div class="add-btn">
+                        <div onclick="document.getElementById('myfile3').click()">Add</div>
+                        <input type="file" id="myfile3" {{ $document->stage == 4 ? '' : 'disabled'}} name="qa_attachments[]" {{ $document->stage == 0 || $document->stage == 13 ? 'disabled' : '' }} oninput="addMultipleFiles(this, 'qa_attachments')" multiple>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3 warehouse">
+            <div class="group-input">
+                <label for="Warehousefeedback">QA Completed By</label>
+                <input readonly type="text" name="qa_by" id="qa_by" value="{{Helpers::getInitiatorName($document->qa_by)}}">
+
+            </div>
+        </div>
+
+        <div class="col-lg-6 new-date-data-field warehouse">
+            <div class="group-input input-date">
+                <label for="QA Completed On" style="font-weight: 100;">QA Completed On</label>
+                <div class="calenderauditee">
+                    <input type="text" id="qa_on" readonly value="{{Helpers::getdateFormat($document->qa_on)}}" placeholder="DD-MM-YYYY" />
+                </div>
+            </div>
+        </div>
+
     </div>
-    <div class="button-block">
-        <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
-        <button type="button" class="backButton" onclick="previousStep()">Back</button>
-        <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
-        <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white"> Exit </a>
-        </button>
-    </div>
+</div>
+<div class="button-block">
+    <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
+    <button type="button" class="backButton" onclick="previousStep()">Back</button>
+    <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
+    <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white"> Exit </a>
+    </button>
+</div>
 </div>
 
 

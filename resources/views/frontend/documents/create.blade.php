@@ -1099,7 +1099,7 @@
                                                  </td>
                                                  <td><div class="group-input new-date-data-field mb-0">
                                                     <div class="input-date "><div
-                                                     class="calenderauditee">
+                                                    class="calenderauditee">
                                                     <input type="text" id="issuance_date' + serialNumber +'" readonly placeholder="DD-MMM-YYYY" />
                                                     <input type="date" name="distribution[0][issuance_date]" class="hide-input" 
                                                     oninput="handleDateInput(this, `issuance_date' + serialNumber +'`)" /></div></div></div>
