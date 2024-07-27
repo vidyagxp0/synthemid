@@ -2083,7 +2083,7 @@
 
                 </div>
                 {{-- HOD REMARKS TAB END --}}
-
+{{-- 
                 <div id="annexures" class="tabcontent">
 
                     <div class="d-flex justify-content-end">
@@ -2116,8 +2116,42 @@
                         <button type="button" class="backButton" onclick="previousStep()">Back</button>
                         <button type="button" class="nextButton" onclick="nextStep()">Next</button>
                     </div>
-                </div>
+                </div> --}}
 
+                {{-- ================================ --}}
+
+                <div id="annexures" class="tabcontent">
+                    <div class="d-flex justify-content-end">
+                        <div>
+                            <button data-bs-toggle="modal" data-bs-target="#annexure-modal" type="button" class="btn btn-primary">Annexure Print</button>
+                        </div>
+                    </div>
+                
+                    <div class="input-fields">
+                        @if ($document->document_content && !empty($document->document_content->annexuredata))
+                            @foreach (unserialize($document->document_content->annexuredata) as $data)
+                                <div class="group-input mb-3" id="group-{{ $loop->index }}">
+                                    <label id="label-{{ $loop->index }}">Annexure A-{{ $loop->index + 1 }}</label>
+                                    <textarea class="summernote" name="annexuredata[]" data-index="{{ $loop->index }}">{{ $data }}</textarea>
+                                </div>
+                            @endforeach
+                        @else
+                            @for ($i = 1; $i <= 20; $i++)
+                                <div class="group-input mb-3" id="group-{{ $i }}">
+                                    <label id="label-{{ $i }}">Annexure A-{{ $i }}</label>
+                                    <textarea class="summernote" name="annexuredata[]" id="annexure-{{ $i }}" data-index="{{ $i }}"></textarea>
+                                </div>
+                            @endfor
+                        @endif
+                    </div>
+                    <div class="button-block">
+                        <button type="submit" name="submit" value="save" class="saveButton">Save</button>
+                        <button type="button" class="backButton" onclick="previousStep()">Back</button>
+                        <button type="button" class="nextButton" onclick="nextStep()">Next</button>
+                    </div>
+                </div>
+                
+                
                 <div id="distribution-retrieval" class="tabcontent">
                     <div class="orig-head">
                         Distribution & Retrieval
@@ -2778,34 +2812,136 @@
         </div>
     </div>
 
-    <div class="modal fade" id="annexure-modal">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title">Annexure Print</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<!-- Modal -->
+<div class="modal fade" id="annexure-modal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Annexure</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body d-flex">
+                <!-- Options Part -->
+                <div class="options" style="flex: 1; border-right: 1px solid #000; padding-right: 10px;">
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="option-link" data-target="print-content">Print</a></li>
+                        <li><a href="#" class="option-link" data-label="Obsolete">Obsolete</a></li>
+                        <li><a href="#" class="option-link" data-label="Revised">Revised</a></li>
+                    </ul>
                 </div>
-                <form action="{{ route('document.print.pdf', $document->id) }}" method="GET" target="_blank">
-                    @csrf
-                    <!-- Modal body -->
-                    <div class="modal-body">
-                        @for ($i = 1; $i <= 20; $i++)
-                            <a href='{{ route('document.print.annexure', ['document' => $document->id, 'annexure' => $i]) }}' target="_blank">Print Annexure A-{{ $i }}</a> <br>
-                        @endfor
+                <!-- Content Part -->
+                <div class="content" style="flex: 2; padding-left: 10px;">
+                    <!-- Print Content -->
+                    <div id="print-content" class="content-section" style="display: none;">
+                        <form action="{{ route('document.print.pdf', $document->id) }}" method="GET" target="_blank">
+                            @csrf
+                            <div>
+                                @for ($i = 1; $i <= 20; $i++)
+                                    <a href='{{ route('document.print.annexure', ['document' => $document->id, 'annexure' => $i]) }}' target="_blank">Print Annexure A-{{ $i }}</a> <br>
+                                @endfor
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary rounded">Submit</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </form>
                     </div>
-    
-                    <!-- Modal footer -->
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary rounded">Submit</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <!-- Obsolete Content -->
+                    <div id="obsolete-content" class="content-section" style="display: none;">
+                        <p>Obsolete content...</p>
                     </div>
-                </form>
+                    <!-- Revised Content -->
+                    <div id="revised-content" class="content-section" style="display: none;">
+                        <p>Revised content...</p>
+                    </div>
+                    <!-- Default Blank Content -->
+                    <div id="default-content" class="content-section">
+                        {{-- <p>Select an option to display content...</p> --}}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+</div>
 
+<!-- JavaScript to handle the display of content and label updates -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const optionLinks = document.querySelectorAll('.option-link');
+        const contentSections = document.querySelectorAll('.content-section');
+        const defaultContent = document.getElementById('default-content');
+        let selectedLabelAddition = '';
 
+        function resetContent() {
+            contentSections.forEach(section => {
+                section.style.display = 'none';
+            });
+            defaultContent.style.display = 'block';
+        }
+
+        optionLinks.forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('data-target');
+                selectedLabelAddition = this.getAttribute('data-label') || '';
+
+                if (targetId === 'print-content') {
+                    // Show the print content but do not hide the modal
+                    resetContent();
+                    document.getElementById(targetId).style.display = 'block';
+                } else {
+                    // Hide modal and update labels
+                    $('#annexure-modal').modal('hide');
+                    updateLabels(selectedLabelAddition);
+
+                    if (selectedLabelAddition === 'Revised') {
+                        addSubInputs();
+                    } else {
+                        removeSubInputs();
+                    }
+                }
+            });
+        });
+
+        function updateLabels(addition) {
+            document.querySelectorAll('.group-input label').forEach((label, index) => {
+                const baseText = `Annexure A-${index + 1}`;
+                label.textContent = addition ? `${baseText} ${addition}` : baseText;
+            });
+
+            document.querySelectorAll('.group-input textarea').forEach(textarea => {
+                textarea.readOnly = addition === 'Obsolete' || addition === 'Revised';
+            });
+        }
+
+        function addSubInputs() {
+            document.querySelectorAll('.group-input').forEach((group, index) => {
+                let subInput = group.querySelector('.sub-input');
+                if (!subInput) {
+                    subInput = document.createElement('div');
+                    subInput.classList.add('sub-input');
+                    subInput.innerHTML = `<label>Annexure A-${index + 1}.1 Revised</label><textarea readonly></textarea>`;
+                    group.appendChild(subInput);
+                }
+            });
+        }
+
+        function removeSubInputs() {
+            document.querySelectorAll('.sub-input').forEach(subInput => {
+                subInput.remove();
+            });
+        }
+
+        // Initially show the default blank content
+        resetContent();
+
+        // Ensure labels do not reset when the modal is closed
+        $('#annexure-modal').on('hidden.bs.modal', function () {
+            resetContent();
+        });
+    });
+</script>
     <style>
         #step-form>div {
             display: none
