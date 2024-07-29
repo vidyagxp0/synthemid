@@ -1250,11 +1250,120 @@
                             <input type="number" name="issue_copies" value="1" min="1" class="form-control w-100" required>
                         </div>
                         <div class="group-input mb-3">
-                            <label for="print_reason">Print Reason <span class="text-danger">*</span></label>
+                            <label for="print_reason">Print Reason<span class="text-danger">*</span></label>
                             <textarea name="print_reason" class="form-control w-100" maxlength="255" required></textarea>
                         </div>
+                        <div class = "group-input mb-3">
+                            <label for="print_document_title">Document Title</label>
+                            <input type = "text" name="document_name" class="form-control w-100" maxlength="255"  value = "{{$document->document_name}}" Readonly>
+                        </div>
+                        @php        
+                                        $doc_number = '';                        
+                                            $doc_number = Helpers::getDivisionName($document->division_id)
+                                                        . '/' . ($document->document_type_name ? $temp . ' /' : '')
+                                                        . $document->created_at->format('Y')
+                                                        . '/000' . $document->id . 'R1.0';
+                                        @endphp
+                                      
+                        <div class = "group-input mb-3">
+                            <label for="print_document_number">Document Number</label>
+                            <input type = "text" name="document_id"  value = "{{ $doc_number }}"  class="form-control w-100" maxlength="255" readonly>
+                        </div>
+                        <!-- <div class = "group-input mb-3">
+                            <label for="Document_Printed_By">Document Printed By</label>
+                            <textarea name="document_printed_by" class="form-control w-100" maxlength="255"></textarea>
+                        </div> -->
+                        
+    @php
+        $users = DB::table('users')->get();
+    @endphp
+                        <div class="group-input mb-3">
+                                        <label for="Document_Printed_By">
+                                        Document Printed By 
+                                        </label>
+                                        <select id="select-state" placeholder="Select..." name="user_id" class="form-control w-100">
+                                            <option value="">Select a value</option>
+                                            @foreach ($users as $data)
+                                                <option value="{{ $data->id }}">{{ $data->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('document_printed_by')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                
+                        <div class = "group-input mb-3">
+                            <label for="Document_Printed_on">Document Printed on</label>
+                            <textarea name="date" class="form-control w-100" maxlength="255">{{$document->create_at}}</textarea>
+                        </div>
+                        <div class = "group-input mb-3">
+                            <label for="Number_of_Print_Copies">Number of Print Copies</label>
+                            <input type = 'text' name="document_printed_copies" class="form-control w-100" maxlength="255">
+                        </div>
+                        <div class="group-input new-date-data-field mb-0">
+                        <label for="Number_of_Print_Copies">Issuance Date</label>
+
+                                                    <div class="input-date "><div
+                                                     class="calenderauditee">
+                                                    <input type="text" id="date' + serialNumber +'" readonly placeholder="DD-MMM-YYYY"  class="form-control w-100" />
+                                                    <input type="date" name="date" class="hide-input" 
+                                                    oninput="handleDateInput(this, `date' + serialNumber +'`)" /></div></div></div>
                     </div>
-    
+
+                    <div class="group-input mb-3">
+                                        <label for="Issued  To">
+                                        Issued To
+                                        </label>
+                                        <select id="select-state" placeholder="Select..." name="issuance_to" class="form-control w-100">
+                                            <option value="">Select a value</option>
+                                            @foreach ($users as $data)
+                                                <option value="{{ $data->id }}">{{ $data->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('issuance_to')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                                            <div class="group-input mb-3">
+                                                                        <label for="Department Location" style="position: relative; left: 16px;"> Department/Location</label>
+                                            
+                                                        <select id="select-state" placeholder="Select..." name="department" class="form-control" style="width: 95%; position: relative; left: 13px;">
+                                                            <option value='0'>-- Select --</option>
+                                                            <option value='1'>Calibration Lab</option>
+                                                            <option value='2'>Engineering</option>
+                                                            <option value='3'>Facilities</option>
+                                                            <option value='4'>LAB</option>
+                                                            <option value='5'>Labeling</option>
+                                                            <option value='6'>Manufacturing</option>
+                                                            <option value = '7'>Quality Assurance</option>
+                                                            <option value="8">Quality Control</option>
+                                                            <option value="9"> Regulatory Affairs</option>
+                                                            <option value="10">Security</option>
+                                                            <option value="11">Training</option>
+                                                            <option value="12">IT</option>
+                                                            <option value="13">Application Engineering</option>
+                                                            <option value="14">Trading</option>
+                                                            <option value="15">Research</option>
+                                                            <option value="16">Sales</option>
+                                                            <option value="17">Finance</option>
+                                                            <option value="18">System</option>
+                                                            <option value="19">Administrative</option>
+                                                            <option value="20">M&A</option>
+                                                            <option value="21">R&D</option>
+                                                            <option value="22">Human Resources</option>
+                                                            <option value="23">Banking</option>
+                                                            <option value="24">Marketing</option>
+
+                                                            
+                                                        </select></div>
+
+                                                        <div class = "group-input mb-3"><label for="issued_copies" style="position: relative; left: 16px;">Number of Issued Copies</label>
+                            <textarea name="issued_copies" class="form-control" maxlength="255" style="width: 95%; position: relative; left: 16px;"></textarea></div>
+                        <div class = "group-input mb-3">
+                            <label for="Reason_for_Issuance" style="position: relative; left: 16px;">Reason for Issuance</label>
+                            <textarea name="issued_reason" class="form-control" maxlength="255" style="width: 95%; position: relative; left: 16px;"></textarea>  </div>     
+                                                    
                     <!-- Modal footer -->
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary rounded">Submit</button>

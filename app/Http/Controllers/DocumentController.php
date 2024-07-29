@@ -73,7 +73,7 @@ class DocumentController extends Controller
     }
     public function division_old(Request $request)
     {
-        // $request->dd();
+        
         // return $request;
         
         $new = new Document;
@@ -149,7 +149,7 @@ class DocumentController extends Controller
         $count = $query->where('documents.originator_id', Auth::user()->id)->count();
         $documents = $query->paginate(10);
 
-        // dd($request->all(), $query->paginate(10));
+
         $divisions = QMSDivision::where('status', '1')->select('id', 'name')->get();
         // $divisions = QMSDivision::where('status', '1')->select('id', 'name')->get();
         $documentValues = Document::withoutTrashed()->select('id', 'document_type_id')->get();
@@ -158,7 +158,7 @@ class DocumentController extends Controller
 
         $documentStatus = Document::withoutTrashed()->select('id', 'status')->get();
         $documentStatusIds = $documentValues->pluck('document_type_id')->unique()->toArray();
-        // dd($documentStatus);
+        
 
         $OriValues = Document::withoutTrashed()->select('id', 'originator_id')->get();
         $OriTypeIds = $OriValues->pluck('originator_id')->unique()->toArray();
@@ -323,6 +323,7 @@ class DocumentController extends Controller
     public function create()
     {
         //
+
         $division = SetDivision::where('user_id', Auth::id())->latest()->first();
         $ccrecord = CC::get();
        
@@ -369,7 +370,7 @@ class DocumentController extends Controller
                 ->get();
 
 
-        // dd($process->id);
+        
         $approvers = DB::table('user_roles')
                 ->join('users', 'user_roles.user_id', '=', 'users.id')
                 ->select('user_roles.q_m_s_processes_id', 'users.id','users.role','users.name') // Include all selected columns in the select statement
@@ -456,7 +457,7 @@ class DocumentController extends Controller
      */
     public function store(Request $request)
     {
-        // $request->dd();
+        
         // effective_date, review_period
 
         if ($request->submit == 'save') {
@@ -584,6 +585,7 @@ class DocumentController extends Controller
                 $document->approver_group = implode(',', $request->approver_group);
             }
             $document->save();
+            
 
             DocumentService::update_document_numbers();
             
@@ -731,8 +733,9 @@ class DocumentController extends Controller
      */
     public function edit($id)
     {
+        
         $ccrecord = CC::get();
-        // dd($ccrecord);
+        
         $users = User::all();
         if (! empty($users)) {
             foreach ($users as $data) {
@@ -750,12 +753,16 @@ class DocumentController extends Controller
             }
             
         }
+
+        $pp = PrintHistory::where('document_id',$id)->firstorcreate();
+        
+        // dd($pp);
         $print_history = PrintHistory::join('users', 'print_histories.user_id', 'users.id')->select('print_histories.*', 'users.name as user_name')->where('document_id', $id)->get();
         $document = Document::find($id);
         $document->date = Carbon::parse($document->created_at)->format('d-M-Y');
         $document['document_content'] = DocumentContent::where('document_id', $id)->first();
         $document_distribution_grid = PrintHistory::where('document_id', $id)->leftjoin('documents','documents.id','print_histories.document_id')->get(['print_histories.*', 'documents.document_name']);
-        // dd($document_distribution_grid);
+        
         $document['division'] = Division::where('id', $document->division_id)->value('name');
         $year = Carbon::parse($document->created_at)->format('Y');
         $trainer = User::get();
@@ -811,7 +818,9 @@ class DocumentController extends Controller
             ->where('user_roles.q_m_s_roles_id', 40)
             ->groupBy('user_roles.q_m_s_processes_id', 'users.id','users.role','users.name') // Include all selected columns in the group by clause
             ->get();
-    // dd( $document);
+
+            
+    
 
         return view('frontend.documents.edit', compact(
             'document',
@@ -1057,6 +1066,8 @@ class DocumentController extends Controller
             
 
             $document->update();
+
+            
 
             DocumentService::handleDistributionGrid($document, $request->distribution);
 
@@ -1993,19 +2004,55 @@ class DocumentController extends Controller
     public function printPDF($id)
     {
 
+        
         $issue_copies = request('issue_copies');
+        
         $print_reason = request('print_reason');
+
+        $document_print_by = request('user_id');
+
+        $documentNo = request('document_id');
+
+        $NoofCopies = request('document_printed_copies');
+
+        $IssueDate = request('issuance_date');
+
+        $IssuanceTo = request('issuance_to');
+
+        $IssuedCopies = request('issued_copies');
+
+        $reasonIssue = request('issued_reason');
+
+        $depart = request('department');
+      
 
         if (intval($issue_copies) < 1)
         {
             return "Cannot issue less than 1 copies! Requested $issue_copies no. of copies.";
         }
 
+        $ModalData = New PrintHistory;
+        $ModalData->issue_copies = $issue_copies;
+        $ModalData->print_reason = $print_reason;
+        $ModalData->user_id = $document_print_by;
+        $ModalData->document_id = $documentNo;
+        $ModalData->date = date('Y-m-d'); 
+        $ModalData->document_printed_copies = $NoofCopies;
+        $ModalData->date = $IssueDate;
+        $ModalData->issuance_to = $IssuanceTo;
+        $ModalData->issued_copies =$IssuedCopies;
+        $ModalData->issued_reason = $reasonIssue;
+        $ModalData->department = $depart;
+        $ModalData->save();
+        // dd($ModalData);
+
         $roles = Auth::user()->userRoles()->select('role_id')->distinct()->pluck('role_id')->toArray();
         $controls = PrintControl::whereIn('role_id', $roles)->first();
+    
 
         if ($controls) {
             set_time_limit(30);
+
             $document = Document::find($id);
             $data = Document::find($id);
             $data->department = Department::find($data->department_id);
@@ -2017,7 +2064,7 @@ class DocumentController extends Controller
             $data['document_division'] = Division::where('id', $data->division_id)->value('name');
             $data['issue_copies'] = $issue_copies;
 
-
+// dd($departments);
             $data['year'] = Carbon::parse($data->created_at)->format('Y');
             // $document = Document::where('id', $id)->get();
             // $pdf = PDF::loadView('frontend.documents.pdfpage', compact('data'))->setOption(['dpi' => 150, 'defaultFont' => 'sans-serif']);
@@ -2025,7 +2072,8 @@ class DocumentController extends Controller
             $pdf = App::make('dompdf.wrapper');
             $time = Carbon::now();
             
-            $pdf = PDF::loadview('frontend.documents.pdfpage', compact('data', 'time', 'document', 'issue_copies', 'print_reason'))
+            
+            $pdf = PDF::loadview('frontend.documents.pdfpage', compact('data', 'time', 'document', 'issue_copies', 'print_reason','departments','document_distribution_grid'))
                 ->setOptions([
                     'defaultFont' => 'sans-serif',
                     'isHtml5ParserEnabled' => true,
@@ -2080,6 +2128,7 @@ class DocumentController extends Controller
                     $download->print_reason = $print_reason;
                     $download->issue_copies = $issue_copies;
                     $download->save();
+                
 
                     // download PDF file with download method
 
@@ -2166,6 +2215,7 @@ class DocumentController extends Controller
                     $download->date = Carbon::now()->format('d-m-Y');
                     $download->print_reason = $print_reason;
                     $download->issue_copies = $issue_copies;
+
                     $download->save();
 
                     // download PDF file with download method
@@ -2420,9 +2470,13 @@ class DocumentController extends Controller
             $print_history->document_name = $request->document_name;
             $print_history->issue_copies = $request->issue_copies;
             $print_history->print_reason = $request->print_reason;
+            $print_history->document_title = $request->document_title;
             $print_history->printed_by = Auth::user()->id;
             $print_history->printed_on = date('Y-m-d');
+           
             $print_history->save();
+            
+
 
             $documentToPdfMap = [
                 'Analysis Protocol Template' => 'pdf/Analysis_Protocol_Template.pdf',
