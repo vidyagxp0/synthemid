@@ -2119,37 +2119,38 @@
                 </div> --}}
 
                 {{-- ================================ --}}
+               <div id="annexures" class="tabcontent">
+    <div class="d-flex justify-content-end">
+        <div>
+            <button data-bs-toggle="modal" data-bs-target="#annexure-modal" type="button" class="btn btn-primary">Annexure Print</button>
+        </div>
+    </div>
 
-                <div id="annexures" class="tabcontent">
-                    <div class="d-flex justify-content-end">
-                        <div>
-                            <button data-bs-toggle="modal" data-bs-target="#annexure-modal" type="button" class="btn btn-primary">Annexure Print</button>
-                        </div>
-                    </div>
-                
-                    <div class="input-fields">
-                        @if ($document->document_content && !empty($document->document_content->annexuredata))
-                            @foreach (unserialize($document->document_content->annexuredata) as $data)
-                                <div class="group-input mb-3" id="group-{{ $loop->index }}">
-                                    <label id="label-{{ $loop->index }}">Annexure A-{{ $loop->index + 1 }}</label>
-                                    <textarea class="summernote" name="annexuredata[]" data-index="{{ $loop->index }}">{{ $data }}</textarea>
-                                </div>
-                            @endforeach
-                        @else
-                            @for ($i = 1; $i <= 20; $i++)
-                                <div class="group-input mb-3" id="group-{{ $i }}">
-                                    <label id="label-{{ $i }}">Annexure A-{{ $i }}</label>
-                                    <textarea class="summernote" name="annexuredata[]" id="annexure-{{ $i }}" data-index="{{ $i }}"></textarea>
-                                </div>
-                            @endfor
-                        @endif
-                    </div>
-                    <div class="button-block">
-                        <button type="submit" name="submit" value="save" class="saveButton">Save</button>
-                        <button type="button" class="backButton" onclick="previousStep()">Back</button>
-                        <button type="button" class="nextButton" onclick="nextStep()">Next</button>
-                    </div>
+    <div class="input-fields">
+        @if ($document->document_content && !empty($document->document_content->annexuredata))
+            @foreach (unserialize($document->document_content->annexuredata) as $data)
+                <div class="group-input mb-3" id="group-{{ $loop->index + 1 }}">
+                    <label id="label-{{ $loop->index + 1 }}">Annexure A-{{ $loop->index + 1 }}</label>
+                    <textarea class="summernote" name="annexuredata[]" id="annexure-{{ $loop->index + 1 }}" data-index="{{ $loop->index + 1 }}">{{ $data }}</textarea>
+                    <input type="hidden" name="annexurestate[]" id="state-{{ $loop->index + 1 }}" value="">
                 </div>
+            @endforeach
+        @else
+            @for ($i = 1; $i <= 20; $i++)
+                <div class="group-input mb-3" id="group-{{ $i }}">
+                    <label id="label-{{ $i }}">Annexure A-{{ $i }}</label>
+                    <textarea class="summernote" name="annexuredata[]" id="annexure-{{ $i }}" data-index="{{ $i }}"></textarea>
+                    <input type="hidden" name="annexurestate[]" id="state-{{ $i }}" value="">
+                </div>
+            @endfor
+        @endif
+    </div>
+    <div class="button-block">
+        <button type="submit" name="submit" value="save" class="saveButton">Save</button>
+        <button type="button" class="backButton" onclick="previousStep()">Back</button>
+        <button type="button" class="nextButton" onclick="nextStep()">Next</button>
+    </div>
+</div>
                 
                 
                 <div id="distribution-retrieval" class="tabcontent">
@@ -2811,7 +2812,6 @@
             </form>
         </div>
     </div>
-
 <!-- Modal -->
 <div class="modal fade" id="annexure-modal">
     <div class="modal-dialog modal-dialog-centered">
@@ -2826,8 +2826,8 @@
                 <div class="options" style="flex: 1; border-right: 1px solid #000; padding-right: 10px;">
                     <ul class="list-unstyled">
                         <li><a href="#" class="option-link" data-target="print-content">Print</a></li>
-                        <li><a href="#" class="option-link" data-label="Obsolete">Obsolete</a></li>
-                        <li><a href="#" class="option-link" data-label="Revised">Revised</a></li>
+                        <li><a href="#" class="option-link" data-target="obsolete-content" data-label="Obsolete">Obsolete</a></li>
+                        <li><a href="#" class="option-link" data-target="revised-content" data-label="Revised">Revised</a></li>
                     </ul>
                 </div>
                 <!-- Content Part -->
@@ -2849,11 +2849,19 @@
                     </div>
                     <!-- Obsolete Content -->
                     <div id="obsolete-content" class="content-section" style="display: none;">
-                        <p>Obsolete content...</p>
+                        <div>
+                            @for ($i = 1; $i <= 20; $i++)
+                                <a href="#" class="obsolete-annexure" data-index="{{ $i }}">Obsolete Annexure A-{{ $i }}</a><br>
+                            @endfor
+                        </div>
                     </div>
                     <!-- Revised Content -->
                     <div id="revised-content" class="content-section" style="display: none;">
-                        <p>Revised content...</p>
+                        <div>
+                            @for ($i = 1; $i <= 20; $i++)
+                                <a href="#" class="revised-annexure" data-index="{{ $i }}">Revised Annexure A-{{ $i }}</a><br>
+                            @endfor
+                        </div>
                     </div>
                     <!-- Default Blank Content -->
                     <div id="default-content" class="content-section">
@@ -2865,13 +2873,11 @@
     </div>
 </div>
 
-<!-- JavaScript to handle the display of content and label updates -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const optionLinks = document.querySelectorAll('.option-link');
         const contentSections = document.querySelectorAll('.content-section');
         const defaultContent = document.getElementById('default-content');
-        let selectedLabelAddition = '';
 
         function resetContent() {
             contentSections.forEach(section => {
@@ -2884,54 +2890,12 @@
             link.addEventListener('click', function (e) {
                 e.preventDefault();
                 const targetId = this.getAttribute('data-target');
-                selectedLabelAddition = this.getAttribute('data-label') || '';
 
-                if (targetId === 'print-content') {
-                    // Show the print content but do not hide the modal
-                    resetContent();
-                    document.getElementById(targetId).style.display = 'block';
-                } else {
-                    // Hide modal and update labels
-                    $('#annexure-modal').modal('hide');
-                    updateLabels(selectedLabelAddition);
-
-                    if (selectedLabelAddition === 'Revised') {
-                        addSubInputs();
-                    } else {
-                        removeSubInputs();
-                    }
-                }
+                // Show the content corresponding to the clicked option
+                resetContent();
+                document.getElementById(targetId).style.display = 'block';
             });
         });
-
-        function updateLabels(addition) {
-            document.querySelectorAll('.group-input label').forEach((label, index) => {
-                const baseText = `Annexure A-${index + 1}`;
-                label.textContent = addition ? `${baseText} ${addition}` : baseText;
-            });
-
-            document.querySelectorAll('.group-input textarea').forEach(textarea => {
-                textarea.readOnly = addition === 'Obsolete' || addition === 'Revised';
-            });
-        }
-
-        function addSubInputs() {
-            document.querySelectorAll('.group-input').forEach((group, index) => {
-                let subInput = group.querySelector('.sub-input');
-                if (!subInput) {
-                    subInput = document.createElement('div');
-                    subInput.classList.add('sub-input');
-                    subInput.innerHTML = `<label>Annexure A-${index + 1}.1 Revised</label><textarea readonly></textarea>`;
-                    group.appendChild(subInput);
-                }
-            });
-        }
-
-        function removeSubInputs() {
-            document.querySelectorAll('.sub-input').forEach(subInput => {
-                subInput.remove();
-            });
-        }
 
         // Initially show the default blank content
         resetContent();
@@ -2940,8 +2904,65 @@
         $('#annexure-modal').on('hidden.bs.modal', function () {
             resetContent();
         });
+
+        // Handle Obsolete and Revised actions
+        const obsoleteLinks = document.querySelectorAll('.obsolete-annexure');
+        const revisedLinks = document.querySelectorAll('.revised-annexure');
+
+        function setAnnexureState(index, state) {
+            const textarea = document.querySelector(`#annexure-${index}`);
+            const label = document.getElementById(`label-${index}`);
+
+            if (textarea && label) {
+                textarea.readOnly = true;
+                label.textContent = `Annexure A-${index} (${state})`;
+            }
+        }
+
+        function addSubTextarea(index) {
+            const group = document.getElementById(`group-${index}`);
+            const newIndex = index + '.1';
+            const newGroup = document.createElement('div');
+            newGroup.classList.add('group-input', 'mb-3');
+            newGroup.id = `group-${newIndex}`;
+
+            const newLabel = document.createElement('label');
+            newLabel.id = `label-${newIndex}`;
+            newLabel.textContent = `Annexure A-${newIndex} (Revised)`;
+
+            const newTextarea = document.createElement('textarea');
+            newTextarea.classList.add('summernote');
+            newTextarea.name = 'annexuredata[]';
+            newTextarea.id = `annexure-${newIndex}`;
+            newTextarea.dataset.index = newIndex;
+
+            newGroup.appendChild(newLabel);
+            newGroup.appendChild(newTextarea);
+
+            group.parentNode.insertBefore(newGroup, group.nextSibling);
+        }
+
+        obsoleteLinks.forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const index = this.getAttribute('data-index');
+                setAnnexureState(index, 'Obsolete');
+                $('#annexure-modal').modal('hide');
+            });
+        });
+
+        revisedLinks.forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const index = this.getAttribute('data-index');
+                setAnnexureState(index, 'Revised');
+                addSubTextarea(index);
+                $('#annexure-modal').modal('hide');
+            });
+        });
     });
 </script>
+
     <style>
         #step-form>div {
             display: none
