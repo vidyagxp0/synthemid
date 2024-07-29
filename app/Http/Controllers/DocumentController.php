@@ -726,15 +726,14 @@ class DocumentController extends Controller
      */
     public function edit($id)
     {
-
         $ccrecord = CC::get();
+        // dd($ccrecord);
         $users = User::all();
         if (!empty($users)) {
             foreach ($users as $data) {
                 $data->role = RoleGroup::where('id', $data->role)->value('name');
             }
         }
-
         $document_data = Document::all();
         if (!empty($document_data)) {
             foreach ($document_data as $temp) {
@@ -745,35 +744,38 @@ class DocumentController extends Controller
                 }
             }
         }
-
         $print_history = PrintHistory::join('users', 'print_histories.user_id', 'users.id')->select('print_histories.*', 'users.name as user_name')->where('document_id', $id)->get();
         $document = Document::find($id);
         $document->date = Carbon::parse($document->created_at)->format('d-M-Y');
         $document['document_content'] = DocumentContent::where('document_id', $id)->first();
+        // $document['document_comment'] = DocumentContent::where('document_id', $id)->first();
         $document_distribution_grid = PrintHistory::where('document_id', $id)->leftjoin('documents', 'documents.id', 'print_histories.document_id')->get(['print_histories.*', 'documents.document_name']);
-
+        // dd($document_distribution_grid);
         $document['division'] = Division::where('id', $document->division_id)->value('name');
         $year = Carbon::parse($document->created_at)->format('Y');
         $trainer = User::get();
         $trainingDoc = DocumentTraining::where('document_id', $id)->first();
+        $history = DocumentHistory::where('document_id', $id)->get();
         $documentsubTypes = DocumentSubtype::all();
         $keywords = Keyword::where('document_id', $id)->get();
         $annexure = Annexure::where('document_id', $id)->first();
 
         $signature = StageManage::where('document_id', $id)->get();
+        //$reviewer = User::get();
         $reviewer = DB::table('user_roles')
             ->join('users', 'user_roles.user_id', '=', 'users.id')
-            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
+            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the select statement
             ->where('user_roles.q_m_s_processes_id', 24)
             ->where('user_roles.q_m_s_roles_id', 2)
-            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
+            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the group by clause
             ->get();
+        //$approvers = User::get();
         $approvers = DB::table('user_roles')
             ->join('users', 'user_roles.user_id', '=', 'users.id')
-            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
+            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the select statement
             ->where('user_roles.q_m_s_processes_id', 24)
             ->where('user_roles.q_m_s_roles_id', 1)
-            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
+            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the group by clause
             ->get();
         $reviewergroup = Grouppermission::where('role_id', 2)->get();
         $approversgroup = Grouppermission::where('role_id', 1)->get();
@@ -784,38 +786,27 @@ class DocumentController extends Controller
 
         $hods = DB::table('user_roles')
             ->join('users', 'user_roles.user_id', '=', 'users.id')
-            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
+            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the select statement
             ->where('user_roles.q_m_s_processes_id', 24)
             ->where('user_roles.q_m_s_roles_id', 4)
-            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
+            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the group by clause
             ->get();
         $qa = DB::table('user_roles')
             ->join('users', 'user_roles.user_id', '=', 'users.id')
-            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
+            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the select statement
             ->where('user_roles.q_m_s_processes_id', 24)
             ->where('user_roles.q_m_s_roles_id', 7)
-            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
+            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the group by clause
             ->get();
 
         $drafter = DB::table('user_roles')
             ->join('users', 'user_roles.user_id', '=', 'users.id')
-            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
+            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the select statement
             ->where('user_roles.q_m_s_processes_id', 24)
             ->where('user_roles.q_m_s_roles_id', 40)
-            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
+            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the group by clause
             ->get();
-
-        // Decode JSON encoded comments
-        $history = DocumentHistory::where('document_id', $id)->get();
-        $comments = [];
-        foreach ($history as $record) {
-            if ($record->comment) {
-                $decodedComments = json_decode($record->comment, true);
-                if (is_array($decodedComments)) {
-                    $comments = array_merge($comments, $decodedComments);
-                }
-            }
-        }
+        // dd( $document);
 
         return view('frontend.documents.edit', compact(
             'document',
@@ -841,13 +832,9 @@ class DocumentController extends Controller
             'ccrecord',
             'annexure',
             'documentsubTypes',
-            'document_distribution_grid',
-            'comments' // Pass comments to the view
+            'document_distribution_grid'
         ));
     }
-
-
-
 
     /**
      * Update the specified resource in storage.
@@ -1266,7 +1253,7 @@ class DocumentController extends Controller
                 $history->activity_type = 'Effective Date';
                 $history->previous = $lastDocument->effective_date;
                 $history->current = $document->effective_date;
-                $history->comment = json_encode($request->effective_date_comment);
+                $history->comment = implode($request->effective_date_comment);
                 $history->user_id = Auth::user()->id;
                 $history->user_name = Auth::user()->name;
                 $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
@@ -1703,6 +1690,8 @@ class DocumentController extends Controller
 
             toastr()->success('Document Updated');
             return redirect()->back();
+
+
             // if (Helpers::checkRoles(3)) {
             //     return redirect('doc-details/' . $id);
             // } else {
@@ -1711,7 +1700,7 @@ class DocumentController extends Controller
         } else {
             toastr()->error('Not working');
 
-            return redirect()->back();
+            // return redirect()->back();
         }
 
         toastr()->success('Document Updated');
