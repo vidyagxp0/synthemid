@@ -155,15 +155,63 @@
                         });
                     </script>
 
-                    @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
+
+
+                    @if (Auth::user()->role != 3)
+                    @if ($document->stage > 4 && $document->stage <= 10) <div class="comment-section">
                         <div>
-                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
-                            <input class="input-field" type="text" name="document_name_comment">
+                            <!-- <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p> -->
+                            <div id="comment-container1">
+                            </div>
+                            <div class="button-container">
+                                <div class="button" style="display: inline-block; padding: 2px 8px; background-color: #fff; color: black; border-radius: 5px; cursor: pointer; text-align: center; box-sizing: border-box; border: 2px solid black;" onclick="addCommentField01()">+ Add Comment</div>
+                            </div>
                         </div>
-                        <div class="button">Add Comment</div>
                 </div>
+
+                <style>
+                    .comment-section {
+                        margin-bottom: 20px;
+                    }
+
+                    .input-field {
+                        display: block;
+                        margin-bottom: 10px;
+                        padding: 8px;
+                        width: 100%;
+                        box-sizing: border-box;
+                    }
+
+                    .button-container {
+                        margin-top: 10px;
+                    }
+
+                    .button:hover {
+                        background-color: #0056b3;
+                    }
+                </style>
+
+                <script>
+                    function addCommentField01() {
+                        var newInput = document.createElement("input");
+                        newInput.setAttribute("type", "text");
+                        newInput.setAttribute("name", "document_name_comment[]");
+                        newInput.classList.add("input-field");
+
+                        var newTimestamp = document.createElement("p");
+                        newTimestamp.classList.add("timestamp");
+                        newTimestamp.style.color = "blue";
+                        newTimestamp.innerHTML = 'Modify by {{ Auth::user()->name }} at {{ date("d-M-Y h:i:s") }}';
+
+                        var container = document.getElementById("comment-container1");
+                        container.appendChild(newTimestamp);
+                        container.appendChild(newInput);
+                    }
+                </script>
                 @endif
                 @endif
+
+
 
                 <div class="col-md-12">
                     <div class="group-input">
@@ -197,20 +245,11 @@
                 @if (Auth::user()->role != 3)
                 @if ($document->stage > 4 && $document->stage <= 10) <div class="comment-section">
                     <div>
-                        <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
+                        <!-- <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p> -->
                         <div id="comment-container">
-                            <input class="input-field" style="background: #ffff0061;" type="text" name="short_desc_comment[]">
                         </div>
                         <div class="button-container">
-                            <div class="button" style=" display: inline-block;
-            padding: 2px 8px;
-            background-color:#fff;
-            color: black;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
-            box-sizing: border-box;
-            border: 2px solid black;" onclick="addCommentField()">+ Add Comment</div>
+                            <div class="button" style="display: inline-block; padding: 2px 8px; background-color: #fff; color: black; border-radius: 5px; cursor: pointer; text-align: center; box-sizing: border-box; border: 2px solid black;" onclick="addCommentField()">+ Add Comment</div>
                         </div>
                     </div>
             </div>
@@ -239,14 +278,19 @@
 
             <script>
                 function addCommentField() {
-                    // Create a new input field
                     var newInput = document.createElement("input");
                     newInput.setAttribute("type", "text");
                     newInput.setAttribute("name", "short_desc_comment[]");
                     newInput.classList.add("input-field");
 
-                    document.getElementById("comment-container").appendChild(newInput);
+                    var newTimestamp = document.createElement("p");
+                    newTimestamp.classList.add("timestamp");
+                    newTimestamp.style.color = "blue";
+                    newTimestamp.innerHTML = 'Modify by {{ Auth::user()->name }} at {{ date("d-M-Y h:i:s") }}';
 
+                    var container = document.getElementById("comment-container");
+                    container.appendChild(newTimestamp);
+                    container.appendChild(newInput);
                 }
             </script>
             @endif
@@ -301,20 +345,11 @@
                 @if (Auth::user()->role != 3)
                 @if ($document->stage > 4 && $document->stage <= 10) <div class="comment-section">
                     <div>
-                        <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
+                        <!-- <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p> -->
                         <div id="comment-container-new">
-                            <input class="input-field" style="background: #ffff0061;" type="text" name="document_type_id_comment[]">
                         </div>
                         <div class="button-container">
-                            <div class="button" style=" display: inline-block;
-            padding: 2px 8px;
-            background-color:#fff;
-            color: black;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
-            box-sizing: border-box;
-            border: 2px solid black;" onclick="addCommentField1()">+ Add Comment</div>
+                            <div class="button" style="display: inline-block; padding: 2px 8px; background-color: #fff; color: black; border-radius: 5px; cursor: pointer; text-align: center; box-sizing: border-box; border: 2px solid black;" onclick="addCommentField0()">+ Add Comment</div>
                         </div>
                     </div>
             </div>
@@ -342,15 +377,20 @@
             </style>
 
             <script>
-                function addCommentField1() {
-
+                function addCommentField0() {
                     var newInput = document.createElement("input");
                     newInput.setAttribute("type", "text");
                     newInput.setAttribute("name", "document_type_id_comment[]");
                     newInput.classList.add("input-field");
 
-                    document.getElementById("comment-container-new").appendChild(newInput);
+                    var newTimestamp = document.createElement("p");
+                    newTimestamp.classList.add("timestamp");
+                    newTimestamp.style.color = "blue";
+                    newTimestamp.innerHTML = 'Modify by {{ Auth::user()->name }} at {{ date("d-M-Y h:i:s") }}';
 
+                    var container = document.getElementById("comment-container-new");
+                    container.appendChild(newTimestamp);
+                    container.appendChild(newInput);
                 }
             </script>
             @endif
@@ -401,24 +441,14 @@
         </div>
         <p id="due_dateDocError" style="color:red">**Due Date is required</p>
 
-
         @if (Auth::user()->role != 3)
         @if ($document->stage > 4 && $document->stage <= 10) <div class="comment-section">
             <div>
-                <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
-                <div id="comment-container-due-date">
-                    <input class="input-field" type="text" name="due_date_comment[]">
+                <!-- <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p> -->
+                <div id="comment-container-date">
                 </div>
                 <div class="button-container">
-                    <div class="button" style=" display: inline-block;
-            padding: 2px 8px;
-            background-color:#fff;
-            color: black;
-            border-radius: 5px;
-            cursor: pointer;
-            text-align: center;
-            box-sizing: border-box;
-            border: 2px solid black;" onclick="addCommentField2()">+ Add Comment</div>
+                    <div class="button" style="display: inline-block; padding: 2px 8px; background-color: #fff; color: black; border-radius: 5px; cursor: pointer; text-align: center; box-sizing: border-box; border: 2px solid black;" onclick="addCommentField1()">+ Add Comment</div>
                 </div>
             </div>
     </div>
@@ -446,19 +476,25 @@
     </style>
 
     <script>
-        function addCommentField2() {
-
+        function addCommentField1() {
             var newInput = document.createElement("input");
             newInput.setAttribute("type", "text");
-            newInput.setAttribute("name", "due_date_comment[]");
+            newInput.setAttribute("name", "due_dateDoc_comment[]");
             newInput.classList.add("input-field");
 
-            document.getElementById("comment-container-due-date").appendChild(newInput);
+            var newTimestamp = document.createElement("p");
+            newTimestamp.classList.add("timestamp");
+            newTimestamp.style.color = "blue";
+            newTimestamp.innerHTML = 'Modify by {{ Auth::user()->name }} at {{ date("d-M-Y h:i:s") }}';
 
+            var container = document.getElementById("comment-container-date");
+            container.appendChild(newTimestamp);
+            container.appendChild(newInput);
         }
     </script>
     @endif
     @endif
+
 </div>
 
 
@@ -492,18 +528,86 @@
         @endforeach
     </div>
 
-
-    @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
-        <div>
-            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
-            <input class="input-field" type="text" name="effective_date_comment">
+    @if (Auth::user()->role != 3)
+    @if ($document->stage > 4 && $document->stage <= 10) <div class="comment-section">
+        <div id="comment-container-effective">
+            @if(isset($comments) && is_array($comments))
+            @foreach($comments as $comment)
+            <div class="input-container">
+                <input type="text" class="input-field" name="effective_date_comment[]" value="{{ htmlspecialchars($comment) }}" readonly>
+                <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
+            </div>
+            @endforeach
+            @endif
         </div>
-        <div class="button">Add Comment</div>
+        <div class="button-container">
+            <div class="button" style="display: inline-block; padding: 2px 8px; background-color: #fff; color: black; border-radius: 5px; cursor: pointer; text-align: center; box-sizing: border-box; border: 2px solid black;" onclick="addCommentField()">+ Add Comment</div>
+        </div>
 </div>
+
+<style>
+    .comment-section {
+        margin-bottom: 20px;
+    }
+
+    .input-field {
+        display: block;
+        margin-bottom: 10px;
+        padding: 8px;
+        width: 100%;
+        box-sizing: border-box;
+        background-color: #f9f9f9;
+    }
+
+    .button-container {
+        margin-top: 10px;
+    }
+
+    .button:hover {
+        background-color: #0056b3;
+    }
+
+    .input-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .input-container .input-field {
+        flex: 1;
+        border: 1px solid #ccc;
+    }
+
+    .input-container .timestamp {
+        margin-left: 10px;
+    }
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function removeRow(button) {
+        var row = button.closest('.input-container');
+        row.remove();
+    }
+
+    function addCommentField() {
+        var container = document.getElementById("comment-container-effective");
+        var newField = document.createElement('div');
+        newField.classList.add('input-container');
+        newField.innerHTML = `
+                    <input type="text" class="input-field" name="effective_date_comment[]">
+                    <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
+                    <button type="button" onclick="removeRow(this)">Remove</button>
+                `;
+        container.appendChild(newField);
+    }
+</script>
 @endif
 @endif
 
+
 </div>
+
+
 <div class="col-md-2">
     <div class="group-input">
         <label for="review-period">Review Period (in years)</label>
@@ -533,17 +637,91 @@
             }
         }
     </script>
-
-
-    @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
-        <div>
-            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
-            <input class="input-field" type="text" name="review_period_comment">
+    <div class="col-md-12">
+        <div class="group-input">
+            <label for="comments" id="comments">
+                Comments<button type="button" id="commentbtnadd" name="button">+</button>
+            </label>
+            <div id="commentsdiv">
+                @if(isset($comments) && is_array($comments))
+                @foreach($comments as $comment)
+                <div class="singleCommentBlock">
+                    <div class="row">
+                        <div class="col-sm-10">
+                            <input type="text" class="input-field" name="review_period_comment[]" value="{{ htmlspecialchars($comment) }}">
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-danger removeComment">Remove</button>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+                @else
+                <div class="singleCommentBlock">
+                    <div class="row">
+                        <div class="col-sm-10">
+                            <input type="text" class="input-field" name="review_period_comment[]">
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-danger removeComment">Remove</button>
+                        </div>
+                    </div>
+                </div>
+                @endif
+            </div>
         </div>
-        <div class="button">Add Comment</div>
-</div>
-@endif
-@endif
+    </div>
+
+    <style>
+        .singleCommentBlock {
+            margin-bottom: 10px;
+        }
+
+        .input-field {
+            display: block;
+            margin-bottom: 10px;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .removeComment {
+            margin-left: 10px;
+        }
+    </style>
+
+    <script>
+        document.getElementById('commentbtnadd').addEventListener('click', function() {
+            var container = document.getElementById('commentsdiv');
+            var newField = document.createElement('div');
+            newField.classList.add('singleCommentBlock');
+            newField.innerHTML = `
+            <div class="row">
+                <div class="col-sm-10">
+                    <input type="text" class="input-field" name="comments[]">
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-danger removeComment">Remove</button>
+                </div>
+            </div>
+        `;
+            container.appendChild(newField);
+
+            // Add event listener for the new Remove button
+            newField.querySelector('.removeComment').addEventListener('click', function() {
+                newField.remove();
+            });
+        });
+
+        // Add event listener for existing Remove buttons
+        document.querySelectorAll('.removeComment').forEach(button => {
+            button.addEventListener('click', function() {
+                this.closest('.singleCommentBlock').remove();
+            });
+        });
+    </script>
+
+
 </div>
 
 <div class="col-md-5 new-date-data-field">
@@ -1180,8 +1358,8 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="group-input">
-                    <label for="comments">Reviewer Remarks <span @if (in_array(Auth::user()->id, explode(",", $document->reviewers)) && $document->stage == 5) @else style="display: none" @endif class="text-danger">*</span></label>
-                    <textarea {{Helpers::isRevised($document->stage)}} @if (in_array(Auth::user()->id, explode(",", $document->reviewers)) && $document->stage == 5) required @else readonly @endif  name="reviewer_remarks">{{$document->reviewer_remarks}}</textarea>
+                    <label for="comments">Reviewer Remarks <span @if (in_array(Auth::user()->id, explode(",", $document->reviewers)) && $document->stage == 6) @else style="display: none" @endif class="text-danger">*</span></label>
+                    <textarea {{Helpers::isRevised($document->stage)}} @if (in_array(Auth::user()->id, explode(",", $document->reviewers)) && $document->stage == 6) required @else readonly @endif  name="reviewer_remarks">{{$document->reviewer_remarks}}</textarea>
                 </div>
             </div>
 

@@ -726,14 +726,15 @@ class DocumentController extends Controller
      */
     public function edit($id)
     {
+
         $ccrecord = CC::get();
-        // dd($ccrecord);
         $users = User::all();
         if (!empty($users)) {
             foreach ($users as $data) {
                 $data->role = RoleGroup::where('id', $data->role)->value('name');
             }
         }
+
         $document_data = Document::all();
         if (!empty($document_data)) {
             foreach ($document_data as $temp) {
@@ -744,37 +745,35 @@ class DocumentController extends Controller
                 }
             }
         }
+
         $print_history = PrintHistory::join('users', 'print_histories.user_id', 'users.id')->select('print_histories.*', 'users.name as user_name')->where('document_id', $id)->get();
         $document = Document::find($id);
         $document->date = Carbon::parse($document->created_at)->format('d-M-Y');
         $document['document_content'] = DocumentContent::where('document_id', $id)->first();
         $document_distribution_grid = PrintHistory::where('document_id', $id)->leftjoin('documents', 'documents.id', 'print_histories.document_id')->get(['print_histories.*', 'documents.document_name']);
-        // dd($document_distribution_grid);
+
         $document['division'] = Division::where('id', $document->division_id)->value('name');
         $year = Carbon::parse($document->created_at)->format('Y');
         $trainer = User::get();
         $trainingDoc = DocumentTraining::where('document_id', $id)->first();
-        $history = DocumentHistory::where('document_id', $id)->get();
         $documentsubTypes = DocumentSubtype::all();
         $keywords = Keyword::where('document_id', $id)->get();
         $annexure = Annexure::where('document_id', $id)->first();
 
         $signature = StageManage::where('document_id', $id)->get();
-        //$reviewer = User::get();
         $reviewer = DB::table('user_roles')
             ->join('users', 'user_roles.user_id', '=', 'users.id')
-            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the select statement
+            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
             ->where('user_roles.q_m_s_processes_id', 24)
             ->where('user_roles.q_m_s_roles_id', 2)
-            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the group by clause
+            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
             ->get();
-        //$approvers = User::get();
         $approvers = DB::table('user_roles')
             ->join('users', 'user_roles.user_id', '=', 'users.id')
-            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the select statement
+            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
             ->where('user_roles.q_m_s_processes_id', 24)
             ->where('user_roles.q_m_s_roles_id', 1)
-            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the group by clause
+            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
             ->get();
         $reviewergroup = Grouppermission::where('role_id', 2)->get();
         $approversgroup = Grouppermission::where('role_id', 1)->get();
@@ -785,27 +784,38 @@ class DocumentController extends Controller
 
         $hods = DB::table('user_roles')
             ->join('users', 'user_roles.user_id', '=', 'users.id')
-            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the select statement
+            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
             ->where('user_roles.q_m_s_processes_id', 24)
             ->where('user_roles.q_m_s_roles_id', 4)
-            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the group by clause
+            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
             ->get();
         $qa = DB::table('user_roles')
             ->join('users', 'user_roles.user_id', '=', 'users.id')
-            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the select statement
+            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
             ->where('user_roles.q_m_s_processes_id', 24)
             ->where('user_roles.q_m_s_roles_id', 7)
-            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the group by clause
+            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
             ->get();
 
         $drafter = DB::table('user_roles')
             ->join('users', 'user_roles.user_id', '=', 'users.id')
-            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the select statement
+            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
             ->where('user_roles.q_m_s_processes_id', 24)
             ->where('user_roles.q_m_s_roles_id', 40)
-            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the group by clause
+            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
             ->get();
-        // dd( $document);
+
+        // Decode JSON encoded comments
+        $history = DocumentHistory::where('document_id', $id)->get();
+        $comments = [];
+        foreach ($history as $record) {
+            if ($record->comment) {
+                $decodedComments = json_decode($record->comment, true);
+                if (is_array($decodedComments)) {
+                    $comments = array_merge($comments, $decodedComments);
+                }
+            }
+        }
 
         return view('frontend.documents.edit', compact(
             'document',
@@ -831,9 +841,13 @@ class DocumentController extends Controller
             'ccrecord',
             'annexure',
             'documentsubTypes',
-            'document_distribution_grid'
+            'document_distribution_grid',
+            'comments' // Pass comments to the view
         ));
     }
+
+
+
 
     /**
      * Update the specified resource in storage.
@@ -1102,7 +1116,7 @@ class DocumentController extends Controller
                 $history->activity_type = 'Document Name';
                 $history->previous = $lastDocument->document_name;
                 $history->current = $document->document_name;
-                $history->comment = $request->document_name_comment;
+                $history->comment = implode($request->document_name_comment);
                 $history->user_id = Auth::user()->id;
                 $history->user_name = Auth::user()->name;
                 $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
@@ -1133,7 +1147,7 @@ class DocumentController extends Controller
                 $history->activity_type = 'Due Date';
                 $history->previous = $lastDocument->due_dateDoc;
                 $history->current = $document->due_dateDoc;
-                $history->comment = $request->due_dateDoc_comment;
+                $history->comment = implode($request->due_dateDoc_comment);
                 $history->user_id = Auth::user()->id;
                 $history->user_name = Auth::user()->name;
                 $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
@@ -1207,19 +1221,19 @@ class DocumentController extends Controller
                 $history->origin_state = $lastDocument->status;
                 $history->save();
             }
-            // if ($lastDocument->document_type_id != $document->document_type_id || ! empty($request->document_type_id_comment)) {
-            //     $history = new DocumentHistory;
-            //     $history->document_id = $id;
-            //     $history->activity_type = 'Document';
-            //     $history->previous = DocumentType::where('id', $lastDocument->document_type_id)->value('name');
-            //     $history->current = DocumentType::where('id', $document->document_type_id)->value('name');
-            //     $history->comment = $request->document_type_id_comment;
-            //     $history->user_id = Auth::user()->id;
-            //     $history->user_name = Auth::user()->name;
-            //     $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
-            //     $history->origin_state = $lastDocument->status;
-            //     $history->save();
-            // }
+            if ($lastDocument->document_type_id != $document->document_type_id || !empty($request->document_type_id_comment)) {
+                $history = new DocumentHistory;
+                $history->document_id = $id;
+                $history->activity_type = 'Document';
+                $history->previous = DocumentType::where('id', $lastDocument->document_type_id)->value('name');
+                $history->current = DocumentType::where('id', $document->document_type_id)->value('name');
+                $history->comment = implode($request->document_type_id_comment);
+                $history->user_id = Auth::user()->id;
+                $history->user_name = Auth::user()->name;
+                $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
+                $history->origin_state = $lastDocument->status;
+                $history->save();
+            }
             // if ($lastDocument->document_subtype_id != $document->document_subtype_id || ! empty($request->document_type_id_comment)) {
             //     $history = new DocumentHistory;
             //     $history->document_id = $id;
@@ -1252,7 +1266,7 @@ class DocumentController extends Controller
                 $history->activity_type = 'Effective Date';
                 $history->previous = $lastDocument->effective_date;
                 $history->current = $document->effective_date;
-                $history->comment = $request->effective_date_comment;
+                $history->comment = json_encode($request->effective_date_comment);
                 $history->user_id = Auth::user()->id;
                 $history->user_name = Auth::user()->name;
                 $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
@@ -1265,7 +1279,7 @@ class DocumentController extends Controller
                 $history->activity_type = 'Next-Review Date';
                 $history->previous = $lastDocument->next_review_date;
                 $history->current = $document->next_review_date;
-                $history->comment = $request->next_review_date_comment;
+                $history->comment = implode($request->next_review_date_comment);
                 $history->user_id = Auth::user()->id;
                 $history->user_name = Auth::user()->name;
                 $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
@@ -1278,7 +1292,7 @@ class DocumentController extends Controller
                 $history->activity_type = 'Review Period';
                 $history->previous = $lastDocument->review_period;
                 $history->current = $document->review_period;
-                $history->comment = $request->review_period_comment;
+                $history->comment = implode($request->review_period_comment);
                 $history->user_id = Auth::user()->id;
                 $history->user_name = Auth::user()->name;
                 $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
@@ -1688,11 +1702,12 @@ class DocumentController extends Controller
             }
 
             toastr()->success('Document Updated');
-            if (Helpers::checkRoles(3)) {
-                return redirect('doc-details/' . $id);
-            } else {
-                return redirect('rev-details/' . $id);
-            }
+            return redirect()->back();
+            // if (Helpers::checkRoles(3)) {
+            //     return redirect('doc-details/' . $id);
+            // } else {
+            //     return redirect('rev-details/' . $id);
+            // }
         } else {
             toastr()->error('Not working');
 
