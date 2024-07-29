@@ -60,6 +60,8 @@ class DocumentDetailsController extends Controller
         $document = Document::withTrashed()->find($request->document_id);
         $originator = User::find($document->originator_id);
 
+        if($request->stage_id == 3)
+        {
           $stage = new StageManage;
           $stage->document_id = $request->document_id;
           $stage->user_id = Auth::user()->id;
@@ -74,6 +76,7 @@ class DocumentDetailsController extends Controller
           StageManage::where('document_id', $request->document_id)
               ->where('stage', 'Draft Review Submit')
               ->delete();
+              // For Backword 
 
           $document->status = "Draft";
             $document->stage = 2;
@@ -107,6 +110,7 @@ class DocumentDetailsController extends Controller
             }
             $document->save();
             return redirect()->back();
+        }          
       }
       else {
         toastr()->error('E-signature is not matched.');
@@ -132,7 +136,7 @@ class DocumentDetailsController extends Controller
           $stage->comment = $request->comment;
 
           
-          if ($stage->stage == "Draft") {
+          if ($stage->stage == "Pending Draft Creation") {
             $deletePreviousApproval = StageManage::where('document_id', $request->document_id)->get();
             if ($deletePreviousApproval) {
               foreach ($deletePreviousApproval as $updateRecords) {
@@ -140,20 +144,20 @@ class DocumentDetailsController extends Controller
               }
             }
             $document->stage = 2;
-            $document->status = "Draft";
+            $document->status = "Pending Draft Creation";
             $history = new DocumentHistory();
             $history->document_id = $request->document_id;
-            $history->activity_type = 'Send for Draft';
+            $history->activity_type = 'Send to Author ';
             $history->previous = '';
             $history->current = '';
             $history->comment = $request->comment;
             $history->action_name = 'Submit';
             $history->change_from = 'Initiate';
-            $history->change_to = 'Draft';
+            $history->change_to = 'Pending Draft Creation';
             $history->user_id = Auth::user()->id;
             $history->user_name = Auth::user()->name;
             $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
-            $history->origin_state = 'Draft';
+            $history->origin_state = 'Pending Draft Creation';
             $history->save();
 
             $document->save();
@@ -203,17 +207,17 @@ class DocumentDetailsController extends Controller
 
             $history = new DocumentHistory();
             $history->document_id = $request->document_id;
-            $history->activity_type = 'Send for HOD/CFT Review';
+            $history->activity_type = 'Send for HOD Review';
             $history->previous = '';
             $history->current = '';
             $history->comment = $request->comment;
             $history->action_name = 'Submit';
-            $history->change_from = 'Draft';
-            $history->change_to = 'HOD/CFT Review';
+            $history->change_from = 'Pending Draft Creation';
+            $history->change_to = 'HOD Review';
             $history->user_id = Auth::user()->id;
             $history->user_name = Auth::user()->name;
             $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
-            $history->origin_state = 'Draft';
+            $history->origin_state = 'Pending Draft Creation';
             $history->save();
           }
 

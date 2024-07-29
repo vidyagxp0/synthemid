@@ -124,27 +124,27 @@
                                             @if ($drafter && empty($drafter_submit))
                                                 @if($document->stage < 3)
                                                 <button data-bs-toggle="modal" data-bs-target="#review-cancel">
-                                                    Send to Initiate&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                    Send to Initiator&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                                 @endif
                                             @endif
                                         @elseif($document->stage == 2)
                                             <button data-bs-toggle="modal" data-bs-target="#review-cancel">
-                                                Send to Initiate&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                Send to Initiator&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                             </button>
                                         @endif
 
                                         @if (empty($drafter) && $document->stage == 2)
                                             @if (empty($draft_reject))
                                                 <button data-bs-toggle="modal" data-bs-target="#review-cancel">
-                                                    Send to Initiate&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                    Send to Initiator&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                                 <button data-bs-toggle="modal" data-bs-target="#review-sign">
-                                                    Send for HOD/CFT Review&nbsp;<i class="fa-regular fa-paper-plane"></i>
+                                                    Draft Complete&nbsp;<i class="fa-regular fa-paper-plane"></i>
                                                 </button>
                                             @elseif($document->stage == 2)
                                                 <button data-bs-toggle="modal" data-bs-target="#review-sign">
-                                                    Send for HOD/CFT Review&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                    Draft Complete&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                             @endif
                                         @endif
@@ -155,24 +155,24 @@
                                     <div class="progress-bars">
                                         
                                         @if ($document->stage < 13)
-                                            @if ($document->stage >= 1)
+                                            {{-- @if ($document->stage >= 1)
                                                 <div class="active">Initiate</div>
                                             @else
                                                 <div>Initiate</div>
-                                            @endif
+                                            @endif --}}
                                             @if ($document->stage >= 2)
-                                                <div class="active">Draft</div>
+                                                <div class="active">Pending Draft Creation</div>
                                             @else
-                                                <div>Draft</div>
+                                                <div>Pending Draft Creation</div>
                                             @endif
                                             @if ($drafter)
                                                 @if ($drafter->stage == 'HOD Review Submit' AND $document->stage >= 2)
-                                                    <div class="active">Send for HOD/CFT Review</div>
+                                                    <div class="active">Send for HOD Review</div>
                                                 @else
-                                                    <div>Send for HOD/CFT Review</div>
+                                                    <div>Send for HOD Review</div>
                                                 @endif
                                             @else
-                                                <div>Send for HOD/CFT Review</div>
+                                                <div>Send for HOD Review</div>
                                             @endif
                                         @else 
                                             <div class="bg-danger rounded-pill text-white">{{ Helpers::getDocStatusByStage($document->stage) }}</div>
@@ -194,11 +194,8 @@
                                         @if (empty($hod_reject))
                                             @if ($stagehod && empty($stagehod_submit))
                                                 @if($document->stage < 4)
-                                                <button data-bs-toggle="modal" data-bs-target="#review-cancel">
-                                                    Send to Initiate&nbsp;<i class="fa-regular fa-circle-xmark"></i>
-                                                </button>
                                                 <button data-bs-toggle="modal" data-bs-target="#sendtodraft">
-                                                    Send to Draft&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                    More Info Required&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                                 @endif
                                             @endif
@@ -206,18 +203,15 @@
 
                                         @if (empty($stagehod) && $document->stage == 3)
                                             @if (empty($hod_reject))
-                                                <button data-bs-toggle="modal" data-bs-target="#review-cancel">
-                                                    Send to Initiate&nbsp;<i class="fa-regular fa-circle-xmark"></i>
-                                                </button>
                                                 <button data-bs-toggle="modal" data-bs-target="#sendtodraft">
-                                                    Send to Draft&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                   More Info Required&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                                 <button data-bs-toggle="modal" data-bs-target="#review-sign">
-                                                    HOD/CFT Review Complete&nbsp;<i class="fa-regular fa-paper-plane"></i>
+                                                    HOD Review Complete&nbsp;<i class="fa-regular fa-paper-plane"></i>
                                                 </button>
                                             @elseif($document->stage == 3)
                                                 <button data-bs-toggle="modal" data-bs-target="#review-sign">
-                                                    HOD/CFT Review Complete&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                    HOD Review Complete&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                             @endif
                                         @endif
@@ -228,24 +222,24 @@
                                     <div class="progress-bars">
                                         
                                         @if ($document->stage < 13)
-                                            @if ($document->stage > 1)
+                                            {{-- @if ($document->stage > 1)
                                                 <div class="active">Initiate</div>
                                             @else
                                                 <div>Initiate</div>
-                                            @endif
+                                            @endif --}}
                                             @if ($document->stage > 2)
-                                                <div class="active">Draft</div>
+                                                <div class="active">HOD Review</div>
                                             @else
-                                                <div>Draft</div>
+                                                <div>HOD Review</div>
                                             @endif
                                             @if ($stagehod)
                                                 @if ($stagehod->stage == 'HOD Review Submit' AND $document->stage >= 3)
-                                                    <div class="active">HOD/CFT Review Complete</div>
+                                                    <div class="active">QA Initial Review</div>
                                                 @else
-                                                    <div>HOD/CFT Review Complete</div>
+                                                    <div>QA Initial Review</div>
                                                 @endif
                                             @else
-                                                <div>HOD/CFT Review Complete</div>
+                                                <div>QA Initial Review</div>
                                             @endif
                                         @else 
                                             <div class="bg-danger rounded-pill text-white">{{ Helpers::getDocStatusByStage($document->stage) }}</div>
@@ -267,11 +261,11 @@
                                         @if (empty($qa_reject))
                                             @if ($stageqa && empty($qa_submit))
                                                 @if($document->stage < 5)
-                                                <button data-bs-toggle="modal" data-bs-target="#review-cancel">
-                                                    Send to Initiate&nbsp;<i class="fa-regular fa-circle-xmark"></i>
-                                                </button>
+                                                {{-- <button data-bs-toggle="modal" data-bs-target="#review-cancel">
+                                                    Send to Initiator&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                </button> --}}
                                                 <button data-bs-toggle="modal" data-bs-target="#sendtodraft">
-                                                    Send to Draft&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                    Send to HOD/ Author&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                                 @endif
                                             @endif
@@ -279,18 +273,21 @@
 
                                         @if (empty($stageqa) && $document->stage == 4)
                                             @if (empty($qa_reject))
-                                                <button data-bs-toggle="modal" data-bs-target="#review-cancel">
-                                                    Send to Initiate&nbsp;<i class="fa-regular fa-circle-xmark"></i>
-                                                </button>
-                                                <button data-bs-toggle="modal" data-bs-target="#sendtodraft">
-                                                    Send to Draft&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                {{-- <button data-bs-toggle="modal" data-bs-target="#review-cancel">
+                                                    Send to Initiator&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                </button> --}}
+                                                {{-- <button data-bs-toggle="modal" data-bs-target="#sendtodraft">
+                                                    Send to Author&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                </button> --}}
+                                                <button data-bs-toggle="modal" data-bs-target="#review-sign">
+                                                    More Info Required &nbsp;<i class="fa-regular fa-paper-plane"></i>
                                                 </button>
                                                 <button data-bs-toggle="modal" data-bs-target="#review-sign">
-                                                    QA Review Complete&nbsp;<i class="fa-regular fa-paper-plane"></i>
+                                                   QA Initial Review Complete&nbsp;<i class="fa-regular fa-paper-plane"></i>
                                                 </button>
                                             @elseif($document->stage == 4)
                                                 <button data-bs-toggle="modal" data-bs-target="#review-sign">
-                                                    QA Review Complete&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                    QA Initial Review Complete&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                             @endif
                                         @endif
@@ -301,24 +298,24 @@
                                     <div class="progress-bars">
                                         
                                         @if ($document->stage < 13)
-                                            @if ($document->stage > 1)
+                                            {{-- @if ($document->stage > 1)
                                                 <div class="active">Initiate</div>
                                             @else
                                                 <div>Initiate</div>
-                                            @endif
-                                            @if ($document->stage > 2)
-                                                <div class="active">Draft</div>
+                                            @endif --}}
+                                            @if ($document->stage > 3)
+                                                <div class="active">QA Initial Review</div>
                                             @else
-                                                <div>Draft</div>
+                                                <div>QA Initial Review</div>
                                             @endif
                                             @if ($stageqa)
                                                 @if ($stageqa->stage == 'QA Review Submit' AND $document->stage >= 4)
-                                                    <div class="active">QA Review Complete</div>
+                                                    <div class="active">Reviewer's Review </div>
                                                 @else
-                                                    <div>QA Review Complete</div>
+                                                    <div>Reviewer's Review</div>
                                                 @endif
                                             @else
-                                                <div>QA Review Complete</div>
+                                                <div>Reviewer's Review</div>
                                             @endif
                                         @else 
                                             <div class="bg-danger rounded-pill text-white">{{ Helpers::getDocStatusByStage($document->stage) }}</div>
@@ -340,11 +337,11 @@
                                         @if (empty($review_reject))
                                             @if ($stagereview && empty($stagereview_submit))
                                                 @if($document->stage < 6)
-                                                <button data-bs-toggle="modal" data-bs-target="#review-cancel">
-                                                    Send to Initiate&nbsp;<i class="fa-regular fa-circle-xmark"></i>
-                                                </button>
+                                                {{-- <button data-bs-toggle="modal" data-bs-target="#review-cancel">
+                                                    Send to Initiator&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                </button> --}}
                                                 <button data-bs-toggle="modal" data-bs-target="#sendtodraft">
-                                                    Send to Draft&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                    More Info Required&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                                 @endif
                                             @endif
@@ -352,18 +349,18 @@
 
                                         @if (empty($stagereview) && $document->stage == 5)
                                             @if (empty($review_reject))
-                                                <button data-bs-toggle="modal" data-bs-target="#review-cancel">
-                                                    Send to Initiate&nbsp;<i class="fa-regular fa-circle-xmark"></i>
-                                                </button>
+                                                {{-- <button data-bs-toggle="modal" data-bs-target="#review-cancel">
+                                                    Send to Initiator&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                </button> --}}
                                                 <button data-bs-toggle="modal" data-bs-target="#sendtodraft">
-                                                    Send to Draft&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                    More Info Required&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                                 <button data-bs-toggle="modal" data-bs-target="#review-sign">
-                                                    Reviewer Review&nbsp;<i class="fa-regular fa-paper-plane"></i>
+                                                   Review Complete&nbsp;<i class="fa-regular fa-paper-plane"></i>
                                                 </button>
                                             @elseif($document->stage == 5)
                                                 <button data-bs-toggle="modal" data-bs-target="#review-sign">
-                                                    Reviewer Review&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                    Review Complete&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                             @endif
                                         @endif
@@ -374,24 +371,24 @@
                                     <div class="progress-bars">
                                         
                                         @if ($document->stage < 13)
-                                            @if ($document->stage > 1)
+                                            {{-- @if ($document->stage > 1)
                                                 <div class="active">Initiate</div>
                                             @else
                                                 <div>Initiate</div>
-                                            @endif
+                                            @endif --}}
                                             @if ($document->stage > 2)
-                                                <div class="active">Draft</div>
+                                                <div class="active">Reviewer's Review </div>
                                             @else
-                                                <div>Draft</div>
+                                                <div>Reviewer's Review </div>
                                             @endif
                                             @if ($stagereview)
                                                 @if ($stagereview->stage == 'Review-Submit' AND $document->stage >= 5)
-                                                    <div class="active">Reviewer Review Complete</div>
+                                                    <div class="active">Pending Approval</div>
                                                 @else
-                                                    <div>Reviewer Review Complete</div>
+                                                    <div>Pending Approval</div>
                                                 @endif
                                             @else
-                                                <div>Reviewer Review Complete</div>
+                                                <div>Pending Approval</div>
                                             @endif
                                         @else 
                                             <div class="bg-danger rounded-pill text-white">{{ Helpers::getDocStatusByStage($document->stage) }}</div>
@@ -414,11 +411,11 @@
                                             @if ($stageapprove && empty($stageapprove_submit))
                                                 @if($document->stage < 7)
                                                 <button data-bs-toggle="modal" data-bs-target="#review-cancel">
-                                                    Send to Initiate&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                    More Info Required&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
-                                                <button data-bs-toggle="modal" data-bs-target="#sendtodraft">
-                                                    Send to Draft&nbsp;<i class="fa-regular fa-circle-xmark"></i>
-                                                </button>
+                                                {{-- <button data-bs-toggle="modal" data-bs-target="#sendtodraft">
+                                                    Send to Author&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                </button> --}}
                                                 @endif
                                             @endif
                                         @endif
@@ -426,11 +423,11 @@
                                         @if (empty($stageapprove) && $document->stage == 6)
                                             @if (empty($approval_reject))
                                                 <button data-bs-toggle="modal" data-bs-target="#review-cancel">
-                                                    Send to Initiate&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                       More Info Required &nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
-                                                <button data-bs-toggle="modal" data-bs-target="#sendtodraft">
-                                                    Send to Draft&nbsp;<i class="fa-regular fa-circle-xmark"></i>
-                                                </button>
+                                                {{-- <button data-bs-toggle="modal" data-bs-target="#sendtodraft">
+                                                    Send to Author&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                </button> --}}
                                                 <button data-bs-toggle="modal" data-bs-target="#review-sign">
                                                     Approved&nbsp;<i class="fa-regular fa-paper-plane"></i>
                                                 </button>
@@ -447,16 +444,16 @@
                                     <div class="progress-bars">
                                         
                                         @if ($document->stage < 13)
-                                            @if ($document->stage > 1)
+                                            {{-- @if ($document->stage > 1)
                                                 <div class="active">Initiate</div>
                                             @else
                                                 <div>Initiate</div>
-                                            @endif
-                                            @if ($document->stage > 2)
-                                                <div class="active">Draft</div>
+                                            @endif --}}
+                                            {{-- @if ($document->stage > 2)
+                                                <div class="active">Pending Draft Creation</div>
                                             @else
-                                                <div>Draft</div>
-                                            @endif
+                                                <div>Pending Draft Creation</div>
+                                            @endif --}}
                                             @if ($stageapprove)
                                                 @if ($stageapprove->stage == 'Approval-Submit' AND $document->stage >= 6)
                                                     <div class="active">Approval Pending</div>
@@ -997,10 +994,10 @@
                         @endphp
 
                         @if ($document->stage == 2 && empty($document->drafter_remarks))
-                            <div style="color: red">Note: Please ensure that all required fields in the Drafter input are completed before proceeding with the activity to send it for HOD/CFT review.</div>
+                            <div style="color: red">Note: Please ensure that all required fields in the Drafter input are completed before proceeding with the activity to send it for HOD review.</div>
                             @php $hideSubmitButton = true; @endphp
                         @elseif ($document->stage == 3 && empty($document->hod_remarks))
-                            <div style="color: red">Note: Please ensure that all required fields in the HOD/CFT input are completed before proceeding with the activity to HOD/CFT Review Complete.</div>
+                            <div style="color: red">Note: Please ensure that all required fields in the HOD input are completed before proceeding with the activity to HOD Review Complete.</div>
                             @php $hideSubmitButton = true; @endphp
                         @elseif ($document->stage == 4 && empty($document->qa_remarks))
                             <div style="color: red">Note: Please ensure that all required fields in the QA input are completed before proceeding with the activity to QA Review Complete.</div>
@@ -1061,9 +1058,10 @@
 
                     <!-- Modal footer -->
                     <div class="modal-footer">
-                        @if (!$hideSubmitButton)
+                        {{-- @if (!$hideSubmitButton)
                             <button type="submit">Submit</button>
-                        @endif
+                        @endif --}}
+                        <button type="submit">Submit</button>
                         <button type="button" data-bs-dismiss="modal">Close</button>
                     </div>
                 </form>
@@ -1179,8 +1177,25 @@
                             <textarea required name="comment" value="{{ old('comment') }}"></textarea>
                         </div> 
                     </div>
+                    @if ($document->stage == 2)
+                        <input type="hidden" name="stage_id" value="1" />
+                    @endif
+                    @if ($document->stage == 3)
                         <input type="hidden" name="stage_id" value="2" />
-                        <input type="hidden" name="status" value={{$document->status}} />
+                    @endif
+                    @if ($document->stage == 4)
+                        <input type="hidden" name="stage_id" value="3" />
+                    @endif
+                    @if ($document->stage == 5)
+                        <input type="hidden" name="stage_id" value="4" />
+                    @endif
+                    @if ($document->stage == 6)
+                        <input type="hidden" name="stage_id" value="5" />
+                    @endif
+
+
+                        {{-- <input type="hidden" name="stage_id" value="2" /> --}}
+                        {{-- <input type="hidden" name="status" value={{$document->status}} /> --}}
 
                     <!-- Modal footer -->
                     <div class="modal-footer">

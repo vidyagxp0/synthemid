@@ -106,7 +106,7 @@
                                 @if ($document->stage == 1)
                                     <input type="hidden" name="stage_id" value="2" />
                                     <button class="button_theme1" data-bs-toggle="modal" data-bs-target="#approve-sign">
-                                        Send For Draft<i class="fa-regular fa-paper-plane"></i>
+                                        Send To Author<i class="fa-regular fa-paper-plane"></i>
                                     </button>
                                 @endif
                                 @if ($document->training_required == 'yes')
@@ -130,14 +130,14 @@
                                             <div class="">Initiate</div>
                                         @endif
                                         @if ($document->stage >= 2)
-                                            <div class="active">Draft</div>
+                                            <div class="active">Pending Draft Creation</div>
                                         @else
-                                            <div class="">Draft</div>
+                                            <div class="">Pending Draft Creation</div>
                                         @endif
                                         @if ($document->stage >= 3)
-                                            <div class="active">HOD/CFT Review</div>
+                                            <div class="active">HOD Review</div>
                                         @else
-                                            <div class="">HOD/CFT Review</div>
+                                            <div class="">HOD Review</div>
                                         @endif
                                         @if ($document->stage >= 4)
                                             <div class="active">QA Review</div>
@@ -145,14 +145,14 @@
                                             <div class="">QA Review</div>
                                         @endif
                                         @if ($document->stage >= 5)      
-                                            <div class="active">Reviewer Review</div>
+                                            <div class="active">Reviewer Inspection</div>
                                         @else
-                                            <div class="">Reviewer Review</div>
+                                            <div class="">Reviewer Inspection</div>
                                         @endif
                                         @if ($document->stage >= 6)            
-                                            <div class="active">Approver Pending</div>
+                                            <div class="active"> Pending Approval</div>
                                         @else
-                                            <div class="">Approver Pending</div>
+                                            <div class=""> Pending Approval</div>
                                         @endif
                                         @if ($document->training_required == 'yes')
                                             @if ($document->stage >= 7)
@@ -196,7 +196,7 @@
                             <div class="col-2">
                                 <div class="inner-block person-table">
                                     <div class="main-title mb-0">
-                                        Drafters
+                                        Author
                                     </div>
                                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#doc-drafter">
                                         View
@@ -206,7 +206,7 @@
                             <div class="col-2">
                                 <div class="inner-block person-table">
                                     <div class="main-title mb-0">
-                                        HOD/CFTs
+                                        HOD
                                     </div>
                                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#doc-hods">
                                         View
