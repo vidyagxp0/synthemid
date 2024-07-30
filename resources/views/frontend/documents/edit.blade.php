@@ -2124,7 +2124,7 @@
                     </div>
                     {{-- <div class="col-md-12 input-fields">
                         <div class="group-input">
-
+                        
                             <label for="distribution" id="distribution">
                                 Distribution & Retrieval<button type="button" id="distributionbtnadd" name="button">+</button>
                             </label>
@@ -2207,7 +2207,7 @@
                                             
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <!-- <tbody>
                                         @php        
                                         $doc_number = '';                        
                                             $doc_number = Helpers::getDivisionName($document->division_id)
@@ -2215,7 +2215,9 @@
                                                         . $document->created_at->format('Y')
                                                         . '/000' . $document->id . 'R1.0';
                                         @endphp
+
                                         @foreach ($document_distribution_grid as $grid)
+
                                             <tr>
                                                 <td>
                                                     {{ $loop->index + 1 }}
@@ -2293,6 +2295,135 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
+                                            </td>    
+                                            <td><input type="number" name="distribution[{{ $loop->index }}][retrieved_copies]" value="{{ $grid->retrieved_copies }}">
+                                            </td>
+                                            <td><input type="text" name="distribution[{{ $loop->index }}][retrieved_reason]" value="{{ $grid->retrieved_reason }}">
+                                            </td>
+                                            <td><input type="text" name="distribution[{{ $loop->index }}][remark]" value="{{ $grid->remark }}">
+                                            </td>
+                                            <td>
+                                                <button class='removeTrainRow'>Remove</button>
+                                            </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody> -->
+
+                                    <tbody>
+                                        @php        
+                                        $doc_number = '';                        
+                                            $doc_number = Helpers::getDivisionName($document->division_id)
+                                                        . '/' . ($document->document_type_name ? $temp . ' /' : '')
+                                                        . $document->created_at->format('Y')
+                                                        . '/000' . $document->id . 'R1.0';
+                                        @endphp
+
+                                        @foreach ($PH as $grid)
+                                        
+                                        
+                                            <tr>
+                                                <td>
+                                                    {{ $loop->index + 1 }}
+                                                  </td>
+                                                <td><input  type="text" value="{{ $document->document_name }}"  name="document_name"></td>
+                                                
+                                                <td><input type="text" name="document_number" value="{{ $doc_number }}">
+                                                </td>
+                                                <!-- <td><input type="text" value="{{ $grid->user_id }}" name="user_id">
+                                                </td> -->
+                                                <td><input type="text" value="{{ Helpers::getInitiatorName($grid->user_id) }}" name="user_id">
+                                                </td>
+                                               
+                                                <!-- <td><input type="text" value="{{ Helpers::getdateFormat($grid->created_at) }}" name="distribution[{{ $loop->index }}][Helpers::getdateFormat($grid->created_at)]">
+                                                </td> -->
+                                                <td><input type="text" value="{{ Helpers::getdateFormat($grid->created_at) }}" name="created_at"></td>
+                                              
+                                                <td><input type="text" value="{{ $grid->issue_copies }}" name="issue_copies">
+                                                </td>
+                                                <td><div class="group-input new-date-document_distribution_grid-field mb-0">
+                                                <div class="input-date "><div
+                                                    class="calenderauditee">
+                                                <input type="text" id="date' + serialNumber +'" readonly placeholder="DD-MM-YYYY" value="{{ Helpers::getdateFormat($grid->date) }}"/>
+                                                <input type="date" name="date" 
+                                                class="hide-input" style="position: absolute; top: 0; left: 0; opacity: 0;"
+                                                oninput="handleDateInput(this, `date' + serialNumber +'`)" value="{{ Helpers::getdateFormat($grid->date) }}"/></div></div></div>
+                                            </td>
+                                            
+                                                <td>
+                                                    <select id="select-state" placeholder="Select..."
+                                                        name="issuance_to" >
+                                                        <option value='0' {{ $grid->issuance_to == '0' ? 'selected' : '' }}>-- Select --</option>
+                                                        @foreach ($users as $user)
+                                                            <option value="{{ $user->id }}" {{ $grid->issuance_to == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                <select id="select-state" placeholder="Select..." name="department" class="form-control" style="width: 95%; position: relative; left: 13px;">
+    <option value='0' {{ $grid->department == '0' ? 'selected' : '' }}>-- Select --</option>
+    @php
+        $staticDepartments = [
+            1 => 'Calibration Lab', 
+            2 => 'Engineering', 
+            3 => 'Facilities', 
+            4 => 'LAB', 
+            5 => 'Labeling', 
+            6 => 'Manufacturing', 
+            7 => 'Quality Assurance', 
+            8 => 'Quality Control', 
+            9 => 'Regulatory Affairs', 
+            10 => 'Security', 
+            11 => 'Training', 
+            12 => 'IT', 
+            13 => 'Application Engineering', 
+            14 => 'Trading', 
+            15 => 'Research', 
+            16 => 'Sales', 
+            17 => 'Finance', 
+            18 => 'System', 
+            19 => 'Administrative', 
+            20 => 'M&A', 
+            21 => 'R&D', 
+            22 => 'Human Resources', 
+            23 => 'Banking', 
+            24 => 'Marketing'
+        ];
+    @endphp
+    @foreach ($staticDepartments as $key => $value)
+        <option value='{{ $key }}' {{ $grid->department == $key ? 'selected' : '' }}>
+            {{ $value }}
+        </option>
+    @endforeach
+</select>
+
+                                                </td>    
+                                            <td><input type="text" name="document_printed_copies" value="{{ $grid->document_printed_copies }}">
+                                            </td>
+                                            <td><input type="text" name="print_reason" value="{{ $grid->print_reason }}">
+                                            </td>
+                                            <td><div class="group-input new-date-data-field mb-0">
+                                                <div class="input-date "><div
+                                                    class="calenderauditee">
+                                                <input type="text" id="retrieval_date' + serialNumber +'" readonly placeholder="DD-MMM-YYYY" value="{{ $grid->retrieval_date }}"/>
+                                                <input type="date" name="distribution[{{ $loop->index }}][retrieval_date]" class="hide-input" 
+                                                oninput="handleDateInput(this, `retrieval_date' + serialNumber +'`)" value="{{ $grid->retrieval_date }}"/></div></div></div>
+                                            </td>
+                                            <td>
+                                                <select id="select-state" placeholder="Select..."
+                                                    name="distribution[{{ $loop->index }}][retrieval_by]">
+                                                    <option value="" {{ $grid->retrieval_by == '' ? 'selected' : '' }}>Select a value</option>
+                                                    @foreach ($users as $user)
+                                                        <option value="{{ $user->id }}" {{ $grid->retrieval_by == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                            <select id="select-state" placeholder="Select..." name="department" class="form-control" style="width: 95%; position: relative; left: 13px;">
+                                                <option value='0'>-- Select --</option>
+                                                @foreach($departments as $department)
+                                                    <option value="{{ $department->id }}">{{ $department->full_name }}</option>
+                                                @endforeach
+                                            </select>
                                             </td>    
                                             <td><input type="number" name="distribution[{{ $loop->index }}][retrieved_copies]" value="{{ $grid->retrieved_copies }}">
                                             </td>

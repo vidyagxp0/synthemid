@@ -754,9 +754,12 @@ class DocumentController extends Controller
             
         }
 
-        $pp = PrintHistory::where('document_id',$id)->firstorcreate();
-        
-        // dd($pp);
+        $PH = PrintHistory::where('document_id', $id)->get();
+        // $PH = PrintHistory::where('document_id', $id)->with('department')->get();
+
+        // foreach($PH as $p)
+        // return $p;
+
         $print_history = PrintHistory::join('users', 'print_histories.user_id', 'users.id')->select('print_histories.*', 'users.name as user_name')->where('document_id', $id)->get();
         $document = Document::find($id);
         $document->date = Carbon::parse($document->created_at)->format('d-M-Y');
@@ -793,6 +796,8 @@ class DocumentController extends Controller
         $approversgroup = Grouppermission::where('role_id', 1)->get();
         $user = User::all();
         $departments = Department::all();
+        // foreach ($departments as $d)
+        // return $departments;
         $documentTypes = DocumentType::all();
         $documentLanguages = DocumentLanguage::all();
 
@@ -846,7 +851,8 @@ class DocumentController extends Controller
             'ccrecord',
             'annexure',
             'documentsubTypes',
-            'document_distribution_grid'
+            'document_distribution_grid',
+            'PH'
         ));
     }
 
@@ -2011,11 +2017,11 @@ class DocumentController extends Controller
 
         $document_print_by = request('user_id');
 
-        $documentNo = request('document_id');
+        $documentNo = request('document_number');
 
         $NoofCopies = request('document_printed_copies');
 
-        $IssueDate = request('issuance_date');
+        $IssueDate = request('date');
 
         $IssuanceTo = request('issuance_to');
 
@@ -2024,19 +2030,23 @@ class DocumentController extends Controller
         $reasonIssue = request('issued_reason');
 
         $depart = request('department');
+
+        $date = request('date');
       
 
         if (intval($issue_copies) < 1)
         {
             return "Cannot issue less than 1 copies! Requested $issue_copies no. of copies.";
         }
+        $new = Document::find($id);
+        $addNew = $new->id;
 
         $ModalData = New PrintHistory;
         $ModalData->issue_copies = $issue_copies;
         $ModalData->print_reason = $print_reason;
         $ModalData->user_id = $document_print_by;
-        $ModalData->document_id = $documentNo;
-        $ModalData->date = date('Y-m-d'); 
+        $ModalData->document_id = $addNew;
+        $ModalData->document_number = $documentNo;
         $ModalData->document_printed_copies = $NoofCopies;
         $ModalData->date = $IssueDate;
         $ModalData->issuance_to = $IssuanceTo;
@@ -2044,14 +2054,13 @@ class DocumentController extends Controller
         $ModalData->issued_reason = $reasonIssue;
         $ModalData->department = $depart;
         $ModalData->save();
-        // dd($ModalData);
 
         $roles = Auth::user()->userRoles()->select('role_id')->distinct()->pluck('role_id')->toArray();
         $controls = PrintControl::whereIn('role_id', $roles)->first();
     
 
         if ($controls) {
-            set_time_limit(30);
+            set_time_limit(250);
 
             $document = Document::find($id);
             $data = Document::find($id);
@@ -2064,7 +2073,6 @@ class DocumentController extends Controller
             $data['document_division'] = Division::where('id', $data->division_id)->value('name');
             $data['issue_copies'] = $issue_copies;
 
-// dd($departments);
             $data['year'] = Carbon::parse($data->created_at)->format('Y');
             // $document = Document::where('id', $id)->get();
             // $pdf = PDF::loadView('frontend.documents.pdfpage', compact('data'))->setOption(['dpi' => 150, 'defaultFont' => 'sans-serif']);
@@ -2073,7 +2081,7 @@ class DocumentController extends Controller
             $time = Carbon::now();
             
             
-            $pdf = PDF::loadview('frontend.documents.pdfpage', compact('data', 'time', 'document', 'issue_copies', 'print_reason','departments','document_distribution_grid'))
+            $pdf = PDF::loadview('frontend.documents.pdfpage', compact('data', 'time', 'document', 'issue_copies', 'print_reason'))
                 ->setOptions([
                     'defaultFont' => 'sans-serif',
                     'isHtml5ParserEnabled' => true,

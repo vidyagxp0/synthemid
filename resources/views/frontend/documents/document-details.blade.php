@@ -1245,14 +1245,6 @@
                     @csrf
                     <!-- Modal body -->
                     <div class="modal-body">
-                        <div class="group-input mb-3">
-                            <label for="issue_copies">No. Of Copies <span class="text-danger">*</span></label>
-                            <input type="number" name="issue_copies" value="1" min="1" class="form-control w-100" required>
-                        </div>
-                        <div class="group-input mb-3">
-                            <label for="print_reason">Print Reason<span class="text-danger">*</span></label>
-                            <textarea name="print_reason" class="form-control w-100" maxlength="255" required></textarea>
-                        </div>
                         <div class = "group-input mb-3">
                             <label for="print_document_title">Document Title</label>
                             <input type = "text" name="document_name" class="form-control w-100" maxlength="255"  value = "{{$document->document_name}}" Readonly>
@@ -1267,17 +1259,36 @@
                                       
                         <div class = "group-input mb-3">
                             <label for="print_document_number">Document Number</label>
-                            <input type = "text" name="document_id"  value = "{{ $doc_number }}"  class="form-control w-100" maxlength="255" readonly>
+                            <input type = "text" name="document_number"  value = "{{ $doc_number }}"  class="form-control w-100" maxlength="255" readonly>
+                        </div>
+                        @php
+                               $currentUser = Auth::user();
+                        @endphp
+               <div class="group-input mb-3">
+                   <label for="Document_Printed_By" >Document Printed By</label>
+                   <input type="text" id="Document_Printed_By" name="user_name" class="form-control w-100"   value="{{ $currentUser->name }}" readonly>
+                   <input type="hidden" name="user_id" value="{{ $currentUser->id }}">
+                   @error('document_printed_by')
+                       <p class="text-danger">{{ $message }}</p>
+                   @enderror
+               </div>
+                        <div class="group-input mb-3">
+                            <label for="issue_copies">No. Of Copies <span class="text-danger">*</span></label>
+                            <input type="number" name="issue_copies" value="1" min="1" class="form-control w-100" required>
+                        </div>
+                        <div class="group-input mb-3">
+                            <label for="print_reason">Print Reason<span class="text-danger">*</span></label>
+                            <textarea name="print_reason" class="form-control w-100" maxlength="255" required></textarea>
                         </div>
                         <!-- <div class = "group-input mb-3">
                             <label for="Document_Printed_By">Document Printed By</label>
                             <textarea name="document_printed_by" class="form-control w-100" maxlength="255"></textarea>
                         </div> -->
                         
-    @php
-        $users = DB::table('users')->get();
-    @endphp
-                        <div class="group-input mb-3">
+                            @php
+                                      $users = DB::table('users')->get();
+                            @endphp
+                                                    <!-- <div class="group-input mb-3">
                                         <label for="Document_Printed_By">
                                         Document Printed By 
                                         </label>
@@ -1290,18 +1301,18 @@
                                         @error('document_printed_by')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
-                                    </div>
+                                    </div> -->
                                 
                         <div class = "group-input mb-3">
-                            <label for="Document_Printed_on">Document Printed on</label>
-                            <textarea name="date" class="form-control w-100" maxlength="255">{{$document->create_at}}</textarea>
+                            <!-- <label for="Document_Printed_on" hidden>Document Printed on</label> -->
+                            <textarea name="date" class="form-control w-100" maxlength="255" hidden>{{$document->create_at}}</textarea>
                         </div>
                         <div class = "group-input mb-3">
                             <label for="Number_of_Print_Copies">Number of Print Copies</label>
                             <input type = 'text' name="document_printed_copies" class="form-control w-100" maxlength="255">
                         </div>
                         <div class="group-input new-date-data-field mb-0">
-                        <label for="Number_of_Print_Copies">Issuance Date</label>
+                        <label for="Number_of_Print_Copies" style="font-weight: normal;">Issuance Date</label>
 
                                                     <div class="input-date "><div
                                                      class="calenderauditee">
@@ -1311,10 +1322,8 @@
                     </div>
 
                     <div class="group-input mb-3">
-                                        <label for="Issued  To">
-                                        Issued To
-                                        </label>
-                                        <select id="select-state" placeholder="Select..." name="issuance_to" class="form-control w-100">
+                                        <label for="Issued  To" style="position: relative; left: 16px;">Issued To</label>
+                                        <select id="select-state" placeholder="Select..." name="issuance_to" class="form-control" style="width: 95%; position: relative; left: 16px; ">
                                             <option value="">Select a value</option>
                                             @foreach ($users as $data)
                                                 <option value="{{ $data->id }}">{{ $data->name }}</option>
@@ -1354,16 +1363,17 @@
                                                             <option value="22">Human Resources</option>
                                                             <option value="23">Banking</option>
                                                             <option value="24">Marketing</option>
-
+                                                            
                                                             
                                                         </select></div>
-
+                                                        
                                                         <div class = "group-input mb-3"><label for="issued_copies" style="position: relative; left: 16px;">Number of Issued Copies</label>
-                            <textarea name="issued_copies" class="form-control" maxlength="255" style="width: 95%; position: relative; left: 16px;"></textarea></div>
-                        <div class = "group-input mb-3">
-                            <label for="Reason_for_Issuance" style="position: relative; left: 16px;">Reason for Issuance</label>
-                            <textarea name="issued_reason" class="form-control" maxlength="255" style="width: 95%; position: relative; left: 16px;"></textarea>  </div>     
-                                                    
+                                                                <input type ="text" name="issued_copies" class="form-control" maxlength="255" style="width: 95%; position: relative; left: 16px;"></div>
+                                                            <div class = "group-input mb-3">
+                                                                <label for="Reason_for_Issuance" style="position: relative; left: 16px;">Reason for Issuance</label>
+                                                                <textarea name="issued_reason" class="form-control" maxlength="255" style="width: 95%; position: relative; left: 16px;"></textarea>  </div>   
+                                                            
+                            
                     <!-- Modal footer -->
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary rounded">Submit</button>
