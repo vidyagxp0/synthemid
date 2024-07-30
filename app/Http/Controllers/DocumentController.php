@@ -650,6 +650,10 @@ class DocumentController extends Controller
             }
 
 
+            // if (!empty($request->short_description)) {
+            //     $content->short_description = serialize($request->short_description);
+            // }
+
             if (!empty($request->materials_and_equipments)) {
                 $content->materials_and_equipments = serialize($request->materials_and_equipments);
             }
@@ -950,7 +954,7 @@ class DocumentController extends Controller
                     if (!empty($request->hod_attachments)) {
                         $files = [];
                         if ($document->hod_attachments) {
-                            $existingFiles = json_decode($document->hod_attachments, true); // Convert to associative array
+                            $existingFiles = json_decode($document->hod_attachments, true);
                             if (is_array($existingFiles)) {
                                 $files = $existingFiles;
                             }
@@ -970,7 +974,7 @@ class DocumentController extends Controller
                     if (!empty($request->qa_attachments)) {
                         $files = [];
                         if ($document->qa_attachments) {
-                            $existingFiles = json_decode($document->qa_attachments, true); // Convert to associative array
+                            $existingFiles = json_decode($document->qa_attachments, true);
                             if (is_array($existingFiles)) {
                                 $files = $existingFiles;
                             }
@@ -1331,26 +1335,112 @@ class DocumentController extends Controller
                 $history->activity_type = 'Draft Document';
                 $history->previous = $lastDocument->attach_draft_doocument;
                 $history->current = $document->attach_draft_doocument;
-                $history->comment = $request->attach_draft_doocument_comment;
+                $history->comment = implode($request->attach_draft_doocument_comment);
                 $history->user_id = Auth::user()->id;
                 $history->user_name = Auth::user()->name;
                 $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
                 $history->origin_state = $lastDocument->status;
                 $history->save();
             }
+            // add comment for drafter
+            if ($lastDocument->drafters != $document->drafters || !empty($request->drafters_comment)) {
+                $history = new DocumentHistory;
+                $history->document_id = $id;
+                $history->activity_type = 'Drafter';
+                $history->previous = $lastDocument->drafters;
+                $history->current = $document->drafters;
+                $history->comment = implode($request->drafters_comment);
+                $history->user_id = Auth::user()->id;
+                $history->user_name = Auth::user()->name;
+                $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
+                $history->origin_state = $lastDocument->status;
+                $history->save();
+            }
+            if ($lastDocument->drafter_remarks != $document->drafter_remarks || !empty($request->drafter_remarks_comment)) {
+                $history = new DocumentHistory;
+                $history->document_id = $id;
+                $history->activity_type = 'Drafter Remarks';
+                $history->previous = $lastDocument->drafter_remarks;
+                $history->current = $document->drafter_remarks;
+                $history->comment = implode($request->drafter_remarks_comment);
+                $history->user_id = Auth::user()->id;
+                $history->user_name = Auth::user()->name;
+                $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
+                $history->origin_state = $lastDocument->status;
+                $history->save();
+            }
+
+
+            if ($lastDocument->approver_remarks != $document->approver_remarks || !empty($request->approver_remarks_comment)) {
+                $history = new DocumentHistory;
+                $history->document_id = $id;
+                $history->activity_type = 'Approver Remarks';
+                $history->previous = $lastDocument->approver_remarks;
+                $history->current = $document->approver_remarks;
+                $history->comment = implode($request->approver_remarks_comment);
+                $history->user_id = Auth::user()->id;
+                $history->user_name = Auth::user()->name;
+                $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
+                $history->origin_state = $lastDocument->status;
+                $history->save();
+            }
+            if ($lastDocument->qa != $document->qa || !empty($request->qa_comment)) {
+                $history = new DocumentHistory;
+                $history->document_id = $id;
+                $history->activity_type = "QA's";
+                $history->previous = $lastDocument->qa;
+                $history->current = $document->qa;
+                $history->comment = implode($request->qa_comment);
+                $history->user_id = Auth::user()->id;
+                $history->user_name = Auth::user()->name;
+                $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
+                $history->origin_state = $lastDocument->status;
+                $history->save();
+            }
+
             if ($lastDocument->attach_effective_docuement != $document->attach_effective_docuement || !empty($request->attach_effective_docuement_comment)) {
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Effective Document';
                 $history->previous = $lastDocument->attach_effective_docuement;
                 $history->current = $document->attach_effective_docuement;
-                $history->comment = $request->attach_effective_docuement_comment;
+                $history->comment = implode($request->attach_effective_docuement_comment);
                 $history->user_id = Auth::user()->id;
                 $history->user_name = Auth::user()->name;
                 $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
                 $history->origin_state = $lastDocument->status;
                 $history->save();
             }
+
+            // QA and Hod 
+            if ($lastDocument->hods != $document->hods || !empty($request->hods_comment)) {
+                $history = new DocumentHistory;
+                $history->document_id = $id;
+                $history->activity_type = "HOD's";
+                $temp = explode(',', $lastDocument->hods);
+                $revew = [];
+                for ($i = 0; $i < count($temp); $i++) {
+                    $dataRe = User::where('id', $temp[$i])->value('name');
+                    array_push($revew, $dataRe);
+                }
+                $temped = explode(',', $document->hods);
+                $revewnew = [];
+                for ($i = 0; $i < count($temp); $i++) {
+                    $dataRenew = User::where('id', $temped[$i])->value('name');
+                    array_push($revewnew, $dataRenew);
+                }
+
+                $history->previous = implode(',', $revew);
+                $history->current = implode(',', $revewnew);
+                $history->comment = implode($request->hods_comment);
+                $history->user_id = Auth::user()->id;
+                $history->user_name = Auth::user()->name;
+                $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
+                $history->origin_state = $lastDocument->status;
+                $history->save();
+            }
+
+
             if ($lastDocument->reviewers != $document->reviewers || !empty($request->reviewers_comment)) {
                 $history = new DocumentHistory;
                 $history->document_id = $id;
@@ -1370,7 +1460,7 @@ class DocumentController extends Controller
 
                 $history->previous = implode(',', $revew);
                 $history->current = implode(',', $revewnew);
-                $history->comment = $request->reviewers_comment;
+                $history->comment = implode($request->reviewers_comment);
                 $history->user_id = Auth::user()->id;
                 $history->user_name = Auth::user()->name;
                 $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
@@ -1396,7 +1486,7 @@ class DocumentController extends Controller
 
                 $history->previous = implode(',', $revew);
                 $history->current = implode(',', $revewnew);
-                $history->comment = $request->approvers_comment;
+                $history->comment = implode($request->approvers_comment);
                 $history->user_id = Auth::user()->id;
                 $history->user_name = Auth::user()->name;
                 $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
@@ -1492,6 +1582,8 @@ class DocumentController extends Controller
             $documentcontet->procedure = $request->procedure;
             $documentcontet->safety_precautions = $request->safety_precautions;
 
+            $documentcontet->short_description = $request->short_description ? serialize($request->short_description) : serialize([]);
+
             $documentcontet->responsibility = $request->responsibility ? serialize($request->responsibility) : serialize([]);
             $documentcontet->accountability = $request->accountability ? serialize($request->accountability) : serialize([]);
             $documentcontet->abbreviation = $request->abbreviation ? serialize($request->abbreviation) : serialize([]);
@@ -1527,6 +1619,7 @@ class DocumentController extends Controller
 
             //     $documentcontet->references = $image_name;
             // }
+
             if (!empty($request->ann)) {
                 $documentcontet->ann = serialize($request->ann);
             }
