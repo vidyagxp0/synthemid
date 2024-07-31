@@ -21,11 +21,11 @@ class StageSeeder extends Seeder
         $stage->save();
 
         $stage = new Stage();
-        $stage->name = "Draft";
+        $stage->name = "Pending Draft Creation";
         $stage->save();
 
         $stage = new Stage();
-        $stage->name = "HOD/CFT Review";
+        $stage->name = "HOD Review";
         $stage->save();
 
         $stage = new Stage();

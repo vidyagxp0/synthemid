@@ -68,8 +68,8 @@
         <div class="container-fluid">
             <div class="tab">
                 <button class="tablinks active" onclick="openData(event, 'doc-info')" id="defaultOpen">Document information</button>
-                <button class="tablinks" onclick="openData(event, 'drafters')">Drafter Input</button>
-                <button class="tablinks" onclick="openData(event, 'hodcft')">HOD/CFTs Input</button>
+                <button class="tablinks" onclick="openData(event, 'drafters')">Author Input</button>
+                <button class="tablinks" onclick="openData(event, 'hodcft')">HODs Input</button>
                 <button class="tablinks" onclick="openData(event, 'qa')">QA Input</button>
                 <button class="tablinks" onclick="openData(event, '456')">Reviewer Input</button>
                 <button class="tablinks" onclick="openData(event, '123')">Approver Input</button>
@@ -95,7 +95,7 @@
                             <div class="col-md-6">
                                 <div class="group-input">
                                     <label for="originator">Originator</label>
-                                    <div class="default-name">{{ $document->originator_name }}</div>
+                                    <div class="default-name">{{Helpers::getInitiatorName($document->originator_id)}}</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -323,7 +323,7 @@
 
                             <div class="col-md-6">
                                 <div class="group-input">
-                                    <label for="drafter">Drafter</label>
+                                    <label for="drafter">Author</label>
                                     <select   @if($document->stage != 1 && !Helpers::userIsQA()) disabled @endif id="choices-multiple-remove-button" class="choices-multiple-approver" {{ !Helpers::userIsQA() ? Helpers::isRevised($document->stage) : ''}} 
                                         name="drafters[]" placeholder="Select Drafter" multiple>
                                         @if (!empty($drafter))
@@ -366,7 +366,7 @@
                                         @endif
                                     @endforeach
                                 </div>
-                                <p id="approverError" style="color:red">**Drafter are required</p>
+                                <p id="approverError" style="color:red">**Authors are required</p>
 
                                 @if (Auth::user()->role != 3 && $document->stage < 8)
                                     {{-- Add Comment  --}}
@@ -687,19 +687,19 @@
                 </div>
                 <div id="drafters" class="tabcontent">
                     <div class="orig-head">
-                        Drafter Input
+                        Author Input
                     </div>
                     <div class="input-fields">
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="group-input">
-                                    <label for="comments">Drafter Remarks <span @if (in_array(Auth::user()->id, explode(",", $document->drafters)) && $document->stage == 2)  @else style="display: none" @endif class="text-danger">*</span></label>
+                                    <label for="comments">Author Remarks <span @if (in_array(Auth::user()->id, explode(",", $document->drafters)) && $document->stage == 2)  @else style="display: none" @endif class="text-danger">*</span></label>
                                     <textarea {{Helpers::isRevised($document->stage)}} @if (in_array(Auth::user()->id, explode(",", $document->drafters)) && $document->stage == 2) required @else readonly @endif name="drafter_remarks">{{$document->drafter_remarks}}</textarea>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="group-input">
-                                    <label for="QA Initial Attachments">Drafter Attachments</label>
+                                    <label for="QA Initial Attachments">Author Attachments</label>
                                     <div><small class="text-primary">Please Attach all relevant or supporting
                                             documents</small></div>
                                     <div class="file-attachment-field">
@@ -733,7 +733,7 @@
                             </div>
                             <div class="col-md-6 mb-3 warehouse">
                                 <div class="group-input">
-                                    <label for="Warehousefeedback">Drafted By</label>
+                                    <label for="Warehousefeedback">Author By</label>
                                     <input readonly type="text" name="drafted_by" id="drafted_by" value="{{Helpers::getInitiatorName($document->drafted_by)}}">
 
                                 </div>
@@ -741,7 +741,7 @@
 
                             <div class="col-lg-6 new-date-data-field warehouse">
                                 <div class="group-input input-date">
-                                    <label for="Drafted On" style="font-weight: 100;">Drafted On</label>
+                                    <label for="Drafted On" style="font-weight: 100;">Author On</label>
                                     <div class="calenderauditee">
                                         <input type="text" id="drafted_on" value="{{Helpers::getdateFormat($document->drafted_on)}}" disabled placeholder="DD-MM-YYYY" />
                                     </div>
@@ -909,19 +909,19 @@
 
                 <div id="hodcft" class="tabcontent">
                     <div class="orig-head">
-                        HOD/CFTs Input
+                        HODs Input
                     </div>
                     <div class="input-fields">
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="group-input">
-                                    <label for="comments">HOD/CFTs Remarks <span @if (in_array(Auth::user()->id, explode(",", $document->hods)) && $document->stage == 3)  @else style="display: none" @endif class="text-danger">*</span></label>
+                                    <label for="comments">HODs Remarks <span @if (in_array(Auth::user()->id, explode(",", $document->hods)) && $document->stage == 3)  @else style="display: none" @endif class="text-danger">*</span></label>
                                     <textarea {{Helpers::isRevised($document->stage)}} @if (in_array(Auth::user()->id, explode(",", $document->hods)) && $document->stage == 3) required @else readonly @endif  name="hod_remarks">{{$document->hod_remarks}}</textarea>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="group-input">
-                                    <label for="QA Initial Attachments">HOD/CFTs Attachments</label>
+                                    <label for="QA Initial Attachments">HODs Attachments</label>
                                     <div><small class="text-primary">Please Attach all relevant or supporting
                                             documents</small></div>
                                     <div class="file-attachment-field">
@@ -955,7 +955,7 @@
                             </div>
                             <div class="col-md-6 mb-3 warehouse">
                                 <div class="group-input">
-                                    <label for="Warehousefeedback">HOD/CFTs Completed By</label>
+                                    <label for="Warehousefeedback">HODs Completed By</label>
                                     <input readonly type="text" name="hod_by" id="hod_by"  value="{{Helpers::getInitiatorName($document->hod_by)}}">
 
                                 </div>
@@ -963,7 +963,7 @@
 
                             <div class="col-lg-6 new-date-data-field warehouse">
                                 <div class="group-input input-date">
-                                    <label for="HOD/CFTs Completed On"  style="font-weight: 100;">HOD/CFTs Completed On</label>
+                                    <label for="HODs Completed On"  style="font-weight: 100;">HODs Completed On</label>
                                     <div class="calenderauditee">
                                         <input type="text" id="hod_on" readonly value="{{Helpers::getdateFormat($document->hod_on)}}" placeholder="DD-MM-YYYY" />
                                     </div>
@@ -2208,29 +2208,37 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @php        
+                                        $doc_number = '';                        
+                                            $doc_number = Helpers::getDivisionName($document->division_id)
+                                                        . '/' . ($document->document_type_name ? $temp . ' /' : '')
+                                                        . $document->created_at->format('Y')
+                                                        . '/000' . $document->id . 'R1.0';
+                                        @endphp
                                         @foreach ($document_distribution_grid as $grid)
                                             <tr>
                                                 <td>
                                                     {{ $loop->index + 1 }}
                                                     {{-- <input type="text" value="{{ $loop->index }}" name="distribution[{{ $loop->index }}][serial_number]"> --}}
                                                 </td>
-                                                <td><input  type="text" value="{{ $grid->document_title }}"  name="distribution[{{ $loop->index }}][document_title]">
+                                                <td><input  type="text" value="{{ $grid->document_name }}"  name="distribution[{{ $loop->index }}][document_name]"> 
                                                 </td>
-                                                <td><input type="text" value="{{ $grid->document_number }}" name="distribution[{{ $loop->index }}][document_number]">
+                                                
+                                                <td><input type="text" name="distribution[{{ $loop->index }}][document_name]" value="{{ $doc_number }}">
                                                 </td>
-                                                <td><input type="text" value="{{ $grid->document_printed_by }}" name="distribution[{{ $loop->index }}][document_printed_by]">
+                                                <td><input type="text" value="{{ Helpers::getInitiatorName($grid->user_id) }}" name="distribution[{{ $loop->index }}][Helpers::getInitiatorName($grid->user_id)]">
                                                 </td>
-                                                <td><input type="text" value="{{ $grid->document_printed_on }}" name="distribution[{{ $loop->index }}][document_printed_on]">
+                                                <td><input type="text" value="{{ Helpers::getdateFormat($grid->created_at) }}" name="distribution[{{ $loop->index }}][Helpers::getdateFormat($grid->created_at)]">
                                                 </td>
-                                                <td><input type="text" value="{{ $grid->document_printed_copies }}" name="distribution[{{ $loop->index }}][document_printed_copies]">
+                                                <td><input type="text" value="{{ $grid->issue_copies }}" name="distribution[{{ $loop->index }}][issue_copies]">
                                                 </td>
                                                 <td><div class="group-input new-date-document_distribution_grid-field mb-0">
                                                 <div class="input-date "><div
                                                     class="calenderauditee">
-                                                <input type="text" id="issuance_date' + serialNumber +'" readonly placeholder="DD-MMM-YYYY" value="{{ $grid->issuance_date }}"/>
+                                                <input type="text" id="issuance_date' + serialNumber +'" readonly placeholder="DD-MMM-YYYY" value="{{ Helpers::getdateFormat($grid->created_at) }}"/>
                                                 <input type="date" name="distribution[{{ $loop->index }}][issuance_date]" 
                                                 class="hide-input" style="position: absolute; top: 0; left: 0; opacity: 0;"
-                                                oninput="handleDateInput(this, `issuance_date' + serialNumber +'`)" value="{{ $grid->issuance_date }}"/></div></div></div>
+                                                oninput="handleDateInput(this, `issuance_date' + serialNumber +'`)" value="{{ Helpers::getdateFormat($grid->created_at) }}"/></div></div></div>
                                             </td>
                                             
                                                 <td>
@@ -2254,9 +2262,9 @@
                                                         @endforeach
                                                     </select>
                                                 </td>    
-                                            <td><input type="text" name="distribution[{{ $loop->index }}][issued_copies]" value="{{ $grid->issued_copies }}">
+                                            <td><input type="text" name="distribution[{{ $loop->index }}][issue_copies]" value="{{ $grid->issue_copies }}">
                                             </td>
-                                            <td><input type="text" name="distribution[{{ $loop->index }}][issued_reason]" value="{{ $grid->issued_reason }}">
+                                            <td><input type="text" name="distribution[{{ $loop->index }}][print_reason]" value="{{ $grid->print_reason }}">
                                             </td>
                                             <td><div class="group-input new-date-data-field mb-0">
                                                 <div class="input-date "><div

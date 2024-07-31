@@ -461,13 +461,13 @@
                                             <label for="CAPA Attachments">Initial Attachment</label>
                                             <div><small class="text-primary">Please Attach all relevant or supporting
                                                     documents</small></div>
-                                            {{-- <input multiple type="file" id="myfile" name="capa_attachment[]"> --}}
+                                            {{-- <input multiple type="file" id="myfile" name="initial_attachment[]"> --}}
                                             <div class="file-attachment-field">
-                                                <div class="file-attachment-list" id="capa_attachment"></div>
+                                                <div class="file-attachment-list" id="initial_attachment"></div>
                                                 <div class="add-btn">
                                                     <div>Add</div>
-                                                    <input type="file" id="myfile" name="capa_attachment[]"
-                                                        oninput="addMultipleFiles(this, 'capa_attachment')" multiple>
+                                                    <input type="file" id="myfile" name="initial_attachment[]"
+                                                        oninput="addMultipleFiles(this, 'initial_attachment')" multiple>
                                                 </div>
                                             </div>
                                         </div>
