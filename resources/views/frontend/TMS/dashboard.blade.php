@@ -43,6 +43,13 @@ $divisions = DB::table('q_m_s_divisions')->select('id', 'name')->get();
         border: 1px solid #ccc;
         border-top: none;
     }
+
+    
+    .tmstablelast td {
+            min-height: 50px; 
+            padding: 5px 5px; 
+        }
+        
 </style>
 <script>
     function openCity(evt, cityName) {
@@ -171,6 +178,7 @@ $divisions = DB::table('q_m_s_divisions')->select('id', 'name')->get();
 
                         </tbody>
                     </table>
+
                 </div>
                 @endif
             </div>
@@ -420,6 +428,73 @@ $divisions = DB::table('q_m_s_divisions')->select('id', 'name')->get();
                     </table>
                 </div>
             </div>
+{{-- ============================================ k======================================== --}}
+<div>
+   
+    <div   class="inner-block tms-block cctabcontent" style="margin-top:50px; display:block;">
+        <div>
+            <div>
+                <label for="">Status :  </label>
+                <select name="" id="">
+                    <option value="">Select</option>
+                    <option value="">Past Due Date</option>
+                    <option value="">Pending</option>
+                    <option value="">Complete</option>
+                    <option value="">All</option>
+        
+        
+                </select>
+                <label for="" style="margin-left: 60%">Search :  </label>
+                <input type="text">
+            </div><br>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Complains</th>
+                        <th>Number</th>
+                        <th>Name</th>
+                        <th>Training Status</th>
+                        <th>Type</th>
+                        <th>Due Date</th>
+                        <th>Complains Date</th>
+    
+                    </tr>
+                </thead>
+                <tbody class="tmstablelast">
+                 <tr>
+                        <td><input type="radio" name="select_complain" ></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><input type="radio" name="select_complain"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><input type="radio" name="select_complain"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+               
+            </table>
+    
+        </div>
+    </div>
+</div>
 
 
             {{-- ========================================== --}}
