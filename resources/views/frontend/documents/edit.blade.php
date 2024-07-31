@@ -83,7 +83,7 @@
                 <button class="tablinks" onclick="openData(event, 'approvers')">Approver Input</button> --}}
             <button class="tablinks" onclick="openData(event, 'add-doc')">Training Information</button>
             <button class="tablinks" onclick="openData(event, 'doc-content')">Document Content</button>
-            <!-- <button class="tablinks" onclick="openData(event, 'hod-remarks-tab')">HOD Remarks</button> -->
+            {{-- <button class="tablinks" onclick="openData(event, 'hod-remarks-tab')">HOD Remarks</button> --}}
             <button class="tablinks" onclick="openData(event, 'annexures')">Annexures</button>
             <button class="tablinks" onclick="openData(event, 'distribution-retrieval')">Distribution & Retrieval</button>
             {{-- <button class="tablinks" onclick="openData(event, 'print-download')">Print and Download Control </button> --}}
@@ -91,6 +91,7 @@
             <button class="tablinks printdoc" style="float: right;" onclick="window.print();return false;">Print</button>
 
         </div>
+
         <form method="POST" action="{{ route('documents.update', $document->id) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
@@ -124,7 +125,6 @@
                             characters remaining
                             <input type="text" name="document_name" id="docname" maxlength="255" {{Helpers::isRevised($document->stage)}} value="{{ $document->document_name }}" required>
 
-
                             @foreach ($history as $tempHistory)
                             @if ($tempHistory->activity_type == 'Document Name' && !empty($tempHistory->comment) )
                             @php
@@ -139,8 +139,6 @@
                                         color: black;" type="text" value="{{ $tempHistory->comment }}" disabled>
                             @endif
                             @endforeach
-
-
 
                         </div>
                         <p id="docnameError" style="color:red">**Document Name is required</p>
@@ -160,7 +158,6 @@
                     @if (Auth::user()->role != 3)
                     @if ($document->stage > 4 && $document->stage <= 10) <div class="comment-section">
                         <div>
-                            <!-- <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p> -->
                             <div id="comment-container1">
                             </div>
                             <div class="button-container">
@@ -168,28 +165,6 @@
                             </div>
                         </div>
                 </div>
-
-                <style>
-                    .comment-section {
-                        margin-bottom: 20px;
-                    }
-
-                    .input-field {
-                        display: block;
-                        margin-bottom: 10px;
-                        padding: 8px;
-                        width: 100%;
-                        box-sizing: border-box;
-                    }
-
-                    .button-container {
-                        margin-top: 10px;
-                    }
-
-                    .button:hover {
-                        background-color: #0056b3;
-                    }
-                </style>
 
                 <script>
                     function addCommentField01() {
@@ -210,8 +185,6 @@
                 </script>
                 @endif
                 @endif
-
-
 
                 <div class="col-md-12">
                     <div class="group-input">
@@ -251,28 +224,6 @@
                         </div>
                     </div>
             </div>
-
-            <style>
-                .comment-section {
-                    margin-bottom: 20px;
-                }
-
-                .input-field {
-                    display: block;
-                    margin-bottom: 10px;
-                    padding: 8px;
-                    width: 100%;
-                    box-sizing: border-box;
-                }
-
-                .button-container {
-                    margin-top: 10px;
-                }
-
-                .button:hover {
-                    background-color: #0056b3;
-                }
-            </style>
 
             <script>
                 function addCommentField() {
@@ -349,28 +300,6 @@
                     </div>
             </div>
 
-            <style>
-                .comment-section {
-                    margin-bottom: 20px;
-                }
-
-                .input-field {
-                    display: block;
-                    margin-bottom: 10px;
-                    padding: 8px;
-                    width: 100%;
-                    box-sizing: border-box;
-                }
-
-                .button-container {
-                    margin-top: 10px;
-                }
-
-                .button:hover {
-                    background-color: #0056b3;
-                }
-            </style>
-
             <script>
                 function addCommentField0() {
                     var newInput = document.createElement("input");
@@ -399,7 +328,6 @@
                     @foreach (Helpers::getDocumentTypes() as $code => $type)
                     {{ $code == $document->document_type_id ? $code : '' }}
                     @endforeach
-
                 </span> </div>
 
         </div>
@@ -444,28 +372,6 @@
                 </div>
             </div>
     </div>
-
-    <style>
-        .comment-section {
-            margin-bottom: 20px;
-        }
-
-        .input-field {
-            display: block;
-            margin-bottom: 10px;
-            padding: 8px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .button-container {
-            margin-top: 10px;
-        }
-
-        .button:hover {
-            background-color: #0056b3;
-        }
-    </style>
 
     <script>
         function addCommentField1() {
@@ -524,7 +430,6 @@
     @if (Auth::user()->role != 3)
     @if ($document->stage > 4 && $document->stage <= 10) <div class="comment-section">
         <div>
-            <!-- <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p> -->
             <div id="comment-container-effective">
             </div>
             <div class="button-container">
@@ -533,27 +438,6 @@
         </div>
 </div>
 
-<style>
-    .comment-section {
-        margin-bottom: 20px;
-    }
-
-    .input-field {
-        display: block;
-        margin-bottom: 10px;
-        padding: 8px;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .button-container {
-        margin-top: 10px;
-    }
-
-    .button:hover {
-        background-color: #0056b3;
-    }
-</style>
 
 <script>
     function addCommentField2() {
@@ -574,6 +458,102 @@
 </script>
 @endif
 @endif
+
+<!-- @if (Auth::user()->role != 3)
+    @if ($document->stage > 4 && $document->stage <= 10) <div class="comment-section">
+        <div id="comment-container-effective">
+            @if(isset($comments) && is_array($comments))
+            @foreach($comments as $comment)
+            <div class="input-container">
+                <input type="text" class="input-field" name="effective_date_comment[]" value="{{ htmlspecialchars($comment) }}" readonly>
+                <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
+                <button type="button" class="remove-button" onclick="removeRow(this)">Remove</button>
+            </div>
+            @endforeach
+            @endif
+        </div>
+        <div class="button-container">
+            <div class="button" style="display: inline-block; padding: 2px 8px; background-color: #fff; color: black; border-radius: 5px; cursor: pointer; text-align: center; box-sizing: border-box; border: 2px solid black;" onclick="addCommentField2()">+ Add Comment</div>
+        </div>
+</div>
+@endif
+@endif
+
+<style>
+    .comment-section {
+        margin-bottom: 20px;
+    }
+
+    .input-field {
+        display: block;
+        margin-bottom: 10px;
+        padding: 8px;
+        width: 100%;
+        box-sizing: border-box;
+        background-color: #f9f9f9;
+    }
+
+    .button-container {
+        margin-top: 10px;
+    }
+
+    .button:hover {
+        background-color: #0056b3;
+    }
+
+    .input-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .input-container .input-field {
+        flex: 1;
+        border: 1px solid #ccc;
+    }
+
+    .input-container .timestamp {
+        margin-left: 10px;
+    }
+
+    .remove-button {
+        display: inline-block;
+        padding: 2px 8px;
+        background-color: #f44336;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+        box-sizing: border-box;
+        border: 2px solid darkred;
+        margin-left: 10px;
+    }
+
+    .remove-button:hover {
+        background-color: darkred;
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function removeRow(button) {
+        var row = button.closest('.input-container');
+        row.remove();
+    }
+
+    function addCommentField2() {
+        var container = document.getElementById("comment-container-effective");
+        var newField = document.createElement('div');
+        newField.classList.add('input-container');
+        newField.innerHTML = `
+            <input type="text" class="input-field" name="effective_date_comment[]">
+            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
+            <button type="button" class="remove-button" onclick="removeRow(this)">Remove</button>
+        `;
+        container.appendChild(newField);
+    }
+</script> -->
+
 
 </div>
 <div class="col-md-2">
@@ -617,28 +597,6 @@
             </div>
         </div>
 </div>
-
-<style>
-    .comment-section {
-        margin-bottom: 20px;
-    }
-
-    .input-field {
-        display: block;
-        margin-bottom: 10px;
-        padding: 8px;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .button-container {
-        margin-top: 10px;
-    }
-
-    .button:hover {
-        background-color: #0056b3;
-    }
-</style>
 
 <script>
     function addCommentField3() {
@@ -703,28 +661,6 @@
             </div>
         </div>
 </div>
-
-<style>
-    .comment-section {
-        margin-bottom: 20px;
-    }
-
-    .input-field {
-        display: block;
-        margin-bottom: 10px;
-        padding: 8px;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .button-container {
-        margin-top: 10px;
-    }
-
-    .button:hover {
-        background-color: #0056b3;
-    }
-</style>
 
 <script>
     function addCommentField4() {
@@ -801,7 +737,6 @@
             </div>
         </div>
 </div>
-
 <style>
     .comment-section {
         margin-bottom: 20px;
@@ -823,7 +758,6 @@
         background-color: #0056b3;
     }
 </style>
-
 <script>
     function addCommentField5() {
         var newInput = document.createElement("input");
@@ -875,7 +809,6 @@
     @if (Auth::user()->role != 3)
     @if ($document->stage > 4 && $document->stage <= 10) <div class="comment-section">
         <div>
-            <!-- <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p> -->
             <div id="comment-container-effective-doc">
             </div>
             <div class="button-container">
@@ -883,28 +816,6 @@
             </div>
         </div>
 </div>
-
-<style>
-    .comment-section {
-        margin-bottom: 20px;
-    }
-
-    .input-field {
-        display: block;
-        margin-bottom: 10px;
-        padding: 8px;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .button-container {
-        margin-top: 10px;
-    }
-
-    .button:hover {
-        background-color: #0056b3;
-    }
-</style>
 
 <script>
     function addCommentField6() {
@@ -992,28 +903,6 @@
                 </div>
         </div>
 
-        <style>
-            .comment-section {
-                margin-bottom: 20px;
-            }
-
-            .input-field {
-                display: block;
-                margin-bottom: 10px;
-                padding: 8px;
-                width: 100%;
-                box-sizing: border-box;
-            }
-
-            .button-container {
-                margin-top: 10px;
-            }
-
-            .button:hover {
-                background-color: #0056b3;
-            }
-        </style>
-
         <script>
             function addCommentField7() {
                 var newInput = document.createElement("input");
@@ -1086,28 +975,6 @@
                 </div>
             </div>
     </div>
-
-    <style>
-        .comment-section {
-            margin-bottom: 20px;
-        }
-
-        .input-field {
-            display: block;
-            margin-bottom: 10px;
-            padding: 8px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .button-container {
-            margin-top: 10px;
-        }
-
-        .button:hover {
-            background-color: #0056b3;
-        }
-    </style>
 
     <script>
         function addCommentField8() {
@@ -1183,28 +1050,6 @@
             </div>
         </div>
 </div>
-
-<style>
-    .comment-section {
-        margin-bottom: 20px;
-    }
-
-    .input-field {
-        display: block;
-        margin-bottom: 10px;
-        padding: 8px;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .button-container {
-        margin-top: 10px;
-    }
-
-    .button:hover {
-        background-color: #0056b3;
-    }
-</style>
 
 <script>
     function addCommentField9() {
@@ -1282,28 +1127,6 @@
         </div>
 </div>
 
-<style>
-    .comment-section {
-        margin-bottom: 20px;
-    }
-
-    .input-field {
-        display: block;
-        margin-bottom: 10px;
-        padding: 8px;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .button-container {
-        margin-top: 10px;
-    }
-
-    .button:hover {
-        background-color: #0056b3;
-    }
-</style>
-
 <script>
     function addCommentField10() {
         var newInput = document.createElement("input");
@@ -1323,7 +1146,6 @@
 </script>
 @endif
 @endif
-
 
 </div>
 
@@ -1370,7 +1192,6 @@
     </div>
     {{-- <p id="approverError" style="color:red">**Approvers are required</p> --}}
 
-
     @if (Auth::user()->role != 3)
     @if ($document->stage > 4 && $document->stage <= 10) <div class="comment-section">
         <div>
@@ -1381,28 +1202,6 @@
             </div>
         </div>
 </div>
-
-<style>
-    .comment-section {
-        margin-bottom: 20px;
-    }
-
-    .input-field {
-        display: block;
-        margin-bottom: 10px;
-        padding: 8px;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .button-container {
-        margin-top: 10px;
-    }
-
-    .button:hover {
-        background-color: #0056b3;
-    }
-</style>
 
 <script>
     function addCommentField12() {
@@ -1459,7 +1258,6 @@
         <div class="group-input">
             <label for="Warehousefeedback">Initiated By</label>
             <input readonly type="text" name="initiated_by" value="{{Helpers::getInitiatorName($document->initiated_by)}}" id="initiated_by">
-
         </div>
     </div>
 
@@ -1490,16 +1288,7 @@
                     <textarea {{Helpers::isRevised($document->stage)}} @if (in_array(Auth::user()->id, explode(",", $document->drafters)) && $document->stage == 2) required @else readonly @endif name="drafter_remarks">{{$document->drafter_remarks}}</textarea>
                 </div>
             </div>
-            <!-- @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
-                <div>
-                    <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
-                    <input class="input-field" type="text" name="drafter_remarks_comment">
-                </div>
-                <div class="button">Add Comment</div>
 
-        </div>
-        @endif
-        @endif -->
             <div class="col-12">
                 <div class="group-input">
                     <label for="QA Initial Attachments">Drafter Attachments</label>
@@ -1564,16 +1353,6 @@
                     <textarea {{Helpers::isRevised($document->stage)}} @if (in_array(Auth::user()->id, explode(",", $document->approvers)) && $document->stage == 6) required @else readonly @endif  name="approver_remarks">{{$document->approver_remarks}}</textarea>
                 </div>
             </div>
-            <!-- @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
-                <div>
-                    <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
-                    <input class="input-field" type="text" name="approver_remarks_comment">
-                </div>
-                <div class="button">Add Comment</div>
-
-        </div>
-        @endif
-        @endif -->
 
             <div class="col-12">
                 <div class="group-input">
@@ -1641,16 +1420,6 @@
             </div>
 
 
-            <!-- @if (Auth::user()->role != 3 ) {{-- Add Comment --}} @if ($document->stage > 4 && $document->stage <= 10) <div class="comment">
-                <div>
-                    <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
-                    <input class="input-field" type="text" name="reviewer_remarks_comment">
-                </div>
-                <div class="button">Add Comment</div>
-
-        </div>
-        @endif
-        @endif -->
             <div class="col-12">
                 <div class="group-input">
                     <label for="QA Initial Attachments">Reviewer Attachments</label>
@@ -1856,7 +1625,7 @@
 </div>
 
 
-<!-- ------------------------------------------------------------------------------------------------------------- -->
+<!--  --------------------------------------------------------------------------------------------------------------->
 <div id="add-doc" class="tabcontent">
     <div class="orig-head">
         Training Information
@@ -1946,6 +1715,7 @@
                                     </select>
                                 </div>
                             </div> --}}
+
             {{-- <div class="col-md-12">
                                 <div class="group-input">
                                     <label for="test">
@@ -1991,6 +1761,7 @@
             </table>
         </div>
     </div> --}}
+
     <div class="col-md-12">
         <div class="group-input">
             <label for="comments">Comments</label>
@@ -2599,7 +2370,7 @@
                             {{ $tempHistory->created_at }}
                         </p>
                         <input class="input-field" style="background: #ffff0061;
-                                    color: black;" type="text" value="{{ $tempHistory->comment }}" disabled>
+                            color: black;" type="text" value="{{ $tempHistory->comment }}" disabled>
                         @endif
                         @endforeach
                     </div>
@@ -2610,7 +2381,6 @@
                         <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at
                             {{ date('d-M-Y h:i:s') }}
                         </p>
-
                         <input class="input-field" type="text" name="reporting_comment">
                     </div>
                     <div class="button">Add Comment</div>
@@ -2811,7 +2581,6 @@
                                         <input type="file" id="myfile" name="hod_attachments[]" class="add-hod-attachment-file" oninput="addMultipleFiles(this, 'hod_attachments')" multiple>
                                     </div>
                                 </div>
-
                             </div>
 
                             <div class="button-block">
@@ -2891,10 +2660,6 @@
                             color: black;" type="text" value="{{ $tempHistory->comment }}" disabled>
                             @endif
                             @endforeach
-
-
-
-
                         </div>
                         </div>
 
@@ -2936,7 +2701,6 @@
                                                     <th class="copy-long">Reason for Retrieval</th>
                                                     <th class="copy-long">Remarks</th>
                                                     <th class="copy-long">Action</th>
-
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -2958,12 +2722,13 @@
 
                                                     <td><input type="text" name="distribution[{{ $loop->index }}][document_name]" value="{{ $doc_number }}">
                                                     </td>
-                                                    <td><input type="text" value="{{ Helpers::getInitiatorName($grid->user_id) }}" name="distribution[{{ $loop->index }}][Helpers::getInitiatorName($grid->user_id)]">
+                                                    <td><input type="text" value="{{ Helpers::getInitiatorName($grid->user_id) }}" name="distribution[{{$loop->index }}][Helpers::getInitiatorName($grid->user_id)]">
                                                     </td>
                                                     <td><input type="text" value="{{ Helpers::getdateFormat($grid->created_at) }}" name="distribution[{{ $loop->index }}][Helpers::getdateFormat($grid->created_at)]">
                                                     </td>
                                                     <td><input type="text" value="{{ $grid->issue_copies }}" name="distribution[{{ $loop->index }}][issue_copies]">
                                                     </td>
+
                                                     <td>
                                                         <div class="group-input new-date-document_distribution_grid-field mb-0">
                                                             <div class="input-date ">
@@ -2983,6 +2748,7 @@
                                                             @endforeach
                                                         </select>
                                                     </td>
+
                                                     <td>
                                                         <select id="select-state" placeholder="Select..." name="distribution[{{ $loop->index }}][location]">
                                                             <option value='0' {{ $grid->location == '0' ? 'selected' : '' }}>-- Select --</option>
@@ -2997,6 +2763,7 @@
                                                     </td>
                                                     <td><input type="text" name="distribution[{{ $loop->index }}][print_reason]" value="{{ $grid->print_reason }}">
                                                     </td>
+
                                                     <td>
                                                         <div class="group-input new-date-data-field mb-0">
                                                             <div class="input-date ">
@@ -3007,6 +2774,7 @@
                                                             </div>
                                                         </div>
                                                     </td>
+
                                                     <td>
                                                         <select id="select-state" placeholder="Select..." name="distribution[{{ $loop->index }}][retrieval_by]">
                                                             <option value="" {{ $grid->retrieval_by == '' ? 'selected' : '' }}>Select a value</option>

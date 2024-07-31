@@ -49,6 +49,13 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Js;
 use PDF;
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\IOFactory;
+use Illuminate\Support\Facades\View;
+use DOMDocument;
+
+use Illuminate\Support\Facades\Response;
+
 
 class DocumentController extends Controller
 {
@@ -748,6 +755,9 @@ class DocumentController extends Controller
                 }
             }
         }
+
+
+
         $print_history = PrintHistory::join('users', 'print_histories.user_id', 'users.id')->select('print_histories.*', 'users.name as user_name')->where('document_id', $id)->get();
         $document = Document::find($id);
         $document->date = Carbon::parse($document->created_at)->format('d-M-Y');
@@ -1362,7 +1372,7 @@ class DocumentController extends Controller
                 $history->activity_type = 'Drafter Remarks';
                 $history->previous = $lastDocument->drafter_remarks;
                 $history->current = $document->drafter_remarks;
-                $history->comment = implode($request->drafter_remarks_comment);
+                $history->comment = $request->drafter_remarks_comment;
                 $history->user_id = Auth::user()->id;
                 $history->user_name = Auth::user()->name;
                 $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
@@ -1377,13 +1387,14 @@ class DocumentController extends Controller
                 $history->activity_type = 'Approver Remarks';
                 $history->previous = $lastDocument->approver_remarks;
                 $history->current = $document->approver_remarks;
-                $history->comment = implode($request->approver_remarks_comment);
+                $history->comment = $request->approver_remarks_comment;
                 $history->user_id = Auth::user()->id;
                 $history->user_name = Auth::user()->name;
                 $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
                 $history->origin_state = $lastDocument->status;
                 $history->save();
             }
+
             if ($lastDocument->qa != $document->qa || !empty($request->qa_comment)) {
                 $history = new DocumentHistory;
                 $history->document_id = $id;
@@ -1467,6 +1478,7 @@ class DocumentController extends Controller
                 $history->origin_state = $lastDocument->status;
                 $history->save();
             }
+
             if ($lastDocument->approvers != $document->approvers || !empty($request->approvers_comment)) {
                 $history = new DocumentHistory;
                 $history->document_id = $id;
@@ -1493,6 +1505,7 @@ class DocumentController extends Controller
                 $history->origin_state = $lastDocument->status;
                 $history->save();
             }
+
             if ($lastDocument->reviewers_group != $document->reviewers_group || !empty($request->reviewers_group_comment)) {
                 $history = new DocumentHistory;
                 $history->document_id = $id;
@@ -1519,6 +1532,7 @@ class DocumentController extends Controller
                 $history->origin_state = $lastDocument->status;
                 $history->save();
             }
+
             if ($lastDocument->approver_group != $document->approver_group || !empty($request->approver_group_comment)) {
                 $history = new DocumentHistory;
                 $history->document_id = $id;
@@ -1545,6 +1559,7 @@ class DocumentController extends Controller
                 $history->origin_state = $lastDocument->status;
                 $history->save();
             }
+
             if ($lastDocument->revision_summary != $document->revision_summary || !empty($request->revision_summary_comment)) {
                 $history = new DocumentHistory;
                 $history->document_id = $id;
@@ -1569,6 +1584,7 @@ class DocumentController extends Controller
             if (!empty($request->annexure_number)) {
                 $annexure->annexure_no = serialize($request->annexure_number);
             }
+
             if (!empty($request->annexure_data)) {
                 $annexure->annexure_title = serialize($request->annexure_data);
             }
@@ -2536,5 +2552,155 @@ class DocumentController extends Controller
         // }
 
 
+    }
+
+
+    // public function downloadWord($id)
+    // {
+    //     $data = Document::find($id);
+
+    //     $pdfData = $this->viewPdf($id);
+
+    //     $phpWord = new PhpWord();
+
+    //     $section = $phpWord->addSection();
+
+    //     if ($data['document_content']) {
+    //         $section->addText($data['document_content']);
+    //     } else {
+    //         $section->addText('No content available');
+    //     }
+
+    //     $directoryPath = public_path("user/word/doc");
+    //     $filePath = $directoryPath . '/Document_' . $id . '.docx';
+
+    //     if (!File::isDirectory($directoryPath)) {
+    //         File::makeDirectory($directoryPath, 0755, true, true);
+    //     }
+
+    //     $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
+    //     $objWriter->save($filePath);
+
+    //     return response()->download($filePath)->deleteFileAfterSend(true);
+    // }
+
+
+
+    // public function downloadWord($id)
+    // {
+    //     $depaArr = ['ACC' => 'Accounting', 'ACC3' => 'Accounting',];
+    //     $data = Document::find($id);
+
+    //     $department = Department::find(Auth::user()->departmentid);
+    //     $document = Document::find($id);
+
+    //     if ($department) {
+    //         $data['department_name'] = $department->name;
+    //     } else {
+    //         $data['department_name'] = '';
+    //     }
+    //     $data->department = $department;
+
+    //     $data['originator'] = User::where('id', $data->originator_id)->value('name');
+    //     $data['originator_email'] = User::where('id', $data->originator_id)->value('email');
+    //     $data['document_type_name'] = DocumentType::where('id', $data->document_type_id)->value('name');
+    //     $data['document_type_code'] = DocumentType::where('id', $data->document_type_id)->value('typecode');
+
+    //     $data['document_division'] = Division::where('id', $data->division_id)->value('name');
+    //     $data['year'] = Carbon::parse($data->created_at)->format('Y');
+    //     $data['document_content'] = DocumentContent::where('document_id', $id)->first();
+
+    //     $view = View::make('frontend.documents.pdfpage', compact('data', 'document'));
+    //     $html = $view->render();
+
+    //     //chaeck HTML 
+    //     $dom = new DOMDocument();
+    //     libxml_use_internal_errors(true);
+    //     $dom->loadHTML($html);
+    //     libxml_clear_errors();
+    //     $html = $dom->saveHTML();
+
+    //     // create new word file
+    //     $phpWord = new PhpWord();
+    //     $section = $phpWord->addSection();
+
+    //     // add HTML to Word
+    //     \PhpOffice\PhpWord\Shared\Html::addHtml($section, $html, false, false);
+
+    //     // create a path for save file
+    //     $directoryPath = public_path("user/word/doc");
+    //     $filePath = $directoryPath . '/Document_' . $id . '.docx';
+
+    //     if (!File::isDirectory($directoryPath)) {
+    //         File::makeDirectory($directoryPath, 0755, true, true); // Recursive creation with read/write permissions
+    //     }
+
+    //     // save Word file
+    //     $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
+    //     $objWriter->save($filePath);
+
+    //     return response()->download($filePath)->deleteFileAfterSend(true);
+    // }
+
+
+
+    public function downloadWord($id)
+    {
+        // Fetch the document data by ID
+        $data = Document::find($id);
+
+        // Generate the PDF data using the viewPdf method
+        $pdfData = $this->viewPdf($id);
+
+        // Create a new PhpWord instance
+        $phpWord = new PhpWord();
+
+        // Add a section to the Word document
+        $section = $phpWord->addSection();
+
+        // Convert PDF data to text
+        $pdfText = $this->extractTextFromPdf($pdfData);
+
+        // Add the extracted text to the Word document
+        if ($pdfText) {
+            $section->addText($pdfText);
+        } else {
+            $section->addText('No content available');
+        }
+
+        // Define the directory path and file path for the Word document
+        $directoryPath = public_path("user/word/doc");
+        $filePath = $directoryPath . '/Document_' . $id . '.docx';
+
+        // Create the directory if it doesn't exist
+        if (!File::isDirectory($directoryPath)) {
+            File::makeDirectory($directoryPath, 0755, true, true);
+        }
+
+        // Save the Word document
+        $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
+        $objWriter->save($filePath);
+
+        // Return the Word document as a download and delete the file after sending
+        return response()->download($filePath)->deleteFileAfterSend(true);
+    }
+
+    // Helper function to extract text from PDF data
+    private function extractTextFromPdf($pdfData)
+    {
+        // Load the PDF file into TCPDF
+        $pdf = new \TCPDF();
+        $pdf->setSourceData($pdfData);
+        $numPages = $pdf->getNumPages();
+
+        $text = '';
+
+        // Loop through each page and extract text
+        for ($i = 1; $i <= $numPages; $i++) {
+            $pdf->setPage($i);
+            $text .= $pdf->getText();
+        }
+
+        return $text;
     }
 }

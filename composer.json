@@ -18,8 +18,10 @@
         "laravel/ui": "^4.5",
         "maatwebsite/excel": "*",
         "phpoffice/phpspreadsheet": "^1.28",
+        "phpoffice/phpword": "^1.2",
         "psr/simple-cache": "1.0",
         "setasign/fpdi": "^2.3",
+        "smalot/pdfparser": "^2.10",
         "spatie/pdf-to-text": "^1.52",
         "yoeunes/toastr": "^2.3"
     },
@@ -39,7 +41,8 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Helpers.php"
+            "app/Helpers.php",
+            "app/Helpers/HtmlHelper.php"
         ]
     },
     "autoload-dev": {

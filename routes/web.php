@@ -17,7 +17,7 @@ use App\Http\Controllers\rcms\DesktopController;
 use App\Http\Controllers\UserLoginController;
 use App\Http\Controllers\MytaskController;
 use App\Http\Controllers\CabinateController;
-use App\Http\Controllers\rcms\{CCController,DeviationController, IncidentController};
+use App\Http\Controllers\rcms\{CCController, DeviationController, IncidentController};
 use App\Http\Controllers\rcms\EffectivenessCheckController;
 use App\Http\Controllers\rcms\ObservationController;
 use App\Http\Controllers\DashboardController;
@@ -153,6 +153,7 @@ Route::middleware(['auth', 'prevent-back-history', 'user-activity'])->group(func
     Route::resource('quize', QuizeController::class);
     Route::get('data/{id}', [QuizeController::class, 'datag'])->name('data');
     Route::get('datag/{id}', [QuizeController::class, 'data'])->name('datag');
+
     //-----------------------QMS----------------
     Route::get('qms-dashboard', [RcmsDashboardController::class, 'index']);
 });
@@ -264,9 +265,6 @@ Route::get('audit-program', [AuditProgramController::class, 'auditprogram']);
 
 
 
-
-
-
 Route::get('data-fields', function () {
     return view('frontend.data-fields');
 });
@@ -333,16 +331,14 @@ Route::view('trainer_qualification', 'frontend.TMS.Trainer_qualification.trainer
 
 // ====================induction training =================
 
-// // Route::view('induction_training', 'frontend.TMS.Induction_training.induction_training')->name('induction_training');
+// Route::view('induction_training', 'frontend.TMS.Induction_training.induction_training')->name('induction_training');
 // Route::view('job_training', 'frontend.TMS.Job_Training.job_training')->name('job_training');
-Route::get('job_training',[JobTrainingController::class ,'index'])->name('job_training');
-Route::get('job_training/show/{id}',[JobTrainingController::class ,'edit'])->name('job_training_view');
+
+Route::get('job_training', [JobTrainingController::class, 'index'])->name('job_training');
+Route::get('job_training/show/{id}', [JobTrainingController::class, 'edit'])->name('job_training_view');
 
 Route::post('job_trainingcreate', [JobTrainingController::class, 'store'])->name('job_trainingcreate');
 Route::put('job_trainingupdate/{id}', [JobTrainingController::class, 'update'])->name('job_trainingupdate');
-
-
-
 
 
 Route::get('induction_training', [InductionTrainingcontroller::class, 'index'])->name('induction_training.index');
@@ -354,6 +350,7 @@ Route::put('induction_training/{id}', [InductionTrainingcontroller::class, 'upda
 //! ============================================
 //!                    RCMS
 //! ============================================
+
 Route::get('chart-data', [DesktopController::class, 'fetchChartData']);
 
 Route::view('rcms_login', 'frontend.rcms.login');
@@ -362,6 +359,7 @@ Route::view('rcms_dashboard', 'frontend.rcms.dashboard');
 Route::get('rcms_desktop', [DesktopController::class, 'rcms_desktop']);
 Route::post('dashboard_search', [DesktopController::class, 'dashboard_search'])->name('dashboard_search');
 Route::post('dashboard_search', [DesktopController::class, 'main_dashboard_search'])->name('main_dashboard_search');
+
 // Route::view('rcms_desktop', 'frontend.rcms.desktop');
 
 Route::view('rcms_reports', 'frontend.rcms.reports');
@@ -373,11 +371,9 @@ Route::view('Supplier-Dashboard-Report', 'frontend.rcms.Supplier-Dashboard');
 Route::view('QMSDashboardFormat', 'frontend.rcms.QMSDashboardFormat');
 
 
-
 //! ============================================
 //!                    FORMS
 //! ============================================
-
 
 Route::view('deviation', 'frontend.forms.deviation');
 
@@ -391,10 +387,10 @@ Route::view('out-of-specification', 'frontend.forms.out-of-specification');
 
 // Route::view('risk-management', 'frontend.forms.risk-management');
 
-
 Route::view('action-item', 'frontend.forms.action-item');
 
 // Route::view('effectiveness-check', 'frontend.forms.effectiveness-check');
+
 Route::get('effectiveness-check', [EffectivenessCheckController::class, 'effectiveness_check']);
 
 Route::view('quality-event', 'frontend.forms.quality-event');
@@ -402,6 +398,7 @@ Route::view('quality-event', 'frontend.forms.quality-event');
 Route::view('vendor-entity', 'frontend.forms.vendor-entity');
 
 // Route::view('auditee', 'frontend.forms.auditee');
+
 Route::get('auditee', [AuditeeController::class, 'external_audit']);
 
 
@@ -460,6 +457,7 @@ Route::view('review-management-report', 'frontend.review-management.review-manag
 
 
 //  ===================== OOS OOT OOC Form Route====================================
+
 Route::view('OOT_form', 'frontend.OOT.OOT_form');
 Route::get('out_of_calibration', [OOCController::class, 'index'])->name('ooc.index');
 Route::get('OOC/view', [OOCController::class, 'edit'])->name('ooc.edit');
@@ -475,9 +473,6 @@ Route::post('OOCChildCapa/{id}', [OOCController::class, 'oo_c_capa_child'])->nam
 Route::get('OOCAuditTrial/{id}', [OOCController::class, 'OOCAuditTrial'])->name('audittrialooc');
 Route::get('auditDetailsooc/{id}', [OOCController::class, 'auditDetailsooc'])->name('OOCauditDetails');
 Route::get('/rcms/ooc_Audit_Report/{id}', [OOCController::class, 'auditReportooc'])->name('ooc_Audit_Report');
-
-
-
 
 
 Route::get('out_of_calibration_ooc', [OOCController::class, 'ooc']);
@@ -515,8 +510,6 @@ Route::view('Failure_invst_log', 'frontend.forms.Logs.Failure_investigation_Log'
 Route::view('internal_audit_log', 'frontend.forms.Logs.Internal_audit_Log');
 
 // =================LOGS=========================================
-
-
 
 
 // ====================OOS/OOT======================================
@@ -561,7 +554,6 @@ Route::get('errata_new', [ErrataController::class, 'index'])->name('errata_new')
 
 // ----------------------Stages----------------------------------------
 
-
 // extensionchild========================
 // Route::view('extension_new', 'frontend.extension.extension_new');
 // Route::view('extension_view', 'frontend.extension.extension_view');
@@ -581,6 +573,10 @@ Route::get('trainer_qualification', [TrainerController::class, 'index'])->name('
 //=====================================================================
 // >>>>>>> B-backup
 
+// pdf to word
+Route::get('/document/download-word/{id}', [DocumentController::class, 'downloadWord'])->name('download.word');
+
+
 //=====================  Print Request ================================================
 // Route::resource('print-request', PrintRequestController::class);
 Route::get('print-request', [PrintRequestController::class, 'index']);
@@ -588,9 +584,8 @@ Route::get('print-request/create', [PrintRequestController::class, 'create'])->n
 Route::post('print-request/store', [PrintRequestController::class, 'store'])->name('print-request.store');
 Route::get('print-request/edit/{id}', [PrintRequestController::class, 'show']);
 Route::post('print-request/update/{id}', [PrintRequestController::class, 'update'])->name('print-request.update');
-Route::post('print-request/stage/{id}',[PrintRequestController::class, 'stageChange'])->name('print-request.stage');
-Route::post('print-request/stage-reject/{id}',[PrintRequestController::class, 'stageReject'])->name('print-request.stagereject');
-Route::post('print-request/stage-cancel/{id}',[PrintRequestController::class, 'erratacancelstage'])->name('print-request.cancel');
+Route::post('print-request/stage/{id}', [PrintRequestController::class, 'stageChange'])->name('print-request.stage');
+Route::post('print-request/stage-reject/{id}', [PrintRequestController::class, 'stageReject'])->name('print-request.stagereject');
+Route::post('print-request/stage-cancel/{id}', [PrintRequestController::class, 'erratacancelstage'])->name('print-request.cancel');
 
 Route::get('print-request/single-report/{id}', [PrintRequestController::class, 'singleReport']);
-
