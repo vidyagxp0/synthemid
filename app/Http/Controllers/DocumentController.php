@@ -2641,45 +2641,63 @@ class DocumentController extends Controller
 
     public function downloadWord($id)
     {
-        // Fetch the document data
-        $data = Document::find($id);
-        if (!$data) {
-            return redirect()->back()->with('error', 'Document not found.');
+        $depaArr = ['ACC' => 'Accounting', 'ACC3' => 'Accounting'];
+        $document = Document::find($id);
+
+        if (!$document) {
+            return response()->json(['error' => 'Document not found'], 404);
         }
 
-        // Fetch related data
         $department = Department::find(Auth::user()->departmentid);
-        if ($department) {
-            $data['department_name'] = $department->name;
-        } else {
-            $data['department_name'] = '';
-        }
-        $data->department = $department;
 
-        $data['originator'] = User::where('id', $data->originator_id)->value('name');
-        $data['originator_email'] = User::where('id', $data->originator_id)->value('email');
-        $data['document_type_name'] = DocumentType::where('id', $data->document_type_id)->value('name');
-        $data['document_type_code'] = DocumentType::where('id', $data->document_type_id)->value('typecode');
-        $data['document_division'] = Division::where('id', $data->division_id)->value('name');
-        $data['year'] = Carbon::parse($data->created_at)->format('Y');
-        $data['document_content'] = DocumentContent::where('document_id', $id)->first();
+        $data = [
+            'department_name' => $department ? $department->name : '',
+            'originator' => User::where('id', $document->originator_id)->value('name'),
+            'originator_email' => User::where('id', $document->originator_id)->value('email'),
+            'document_type_name' => DocumentType::where('id', $document->document_type_id)->value('name'),
+            'document_type_code' => DocumentType::where('id', $document->document_type_id)->value('typecode'),
+            'document_division' => Division::where('id', $document->division_id)->value('name'),
+            'year' => Carbon::parse($document->created_at)->format('Y'),
+            'document_content' => DocumentContent::where('document_id', $id)->first()
+        ];
 
         // Create a new PHPWord object
-        $phpWord = new PhpWord();
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
         $section = $phpWord->addSection();
 
         // Add the content to the Word document
-        $section->addTitle('PDF Title', 1);
+        $section->addTitle('Document Details', 1);
         $section->addTextBreak(1);
-        $section->addText('Document Name: ' . $data->document_name, ['bold' => true]);
+        $section->addText('Document Name: ' . $document->document_name, ['bold' => true]);
         $section->addText('Department: ' . $data['department_name']);
         $section->addText('Originator: ' . $data['originator'] . ' (' . $data['originator_email'] . ')');
-        $section->addText('Document Type: ' . $data['document_type_name'] . ' (' . $data['document_type_code'] . ')');
-        $section->addText('Division: ' . $data['document_division']);
+        $section->addText('Document Type: ' . ($data['document_type_name'] ?? 'N/A') . ' (' . ($data['document_type_code'] ?? 'N/A') . ')');
+        $section->addText('Division: ' . ($data['document_division'] ?? 'N/A'));
         $section->addText('Year: ' . $data['year']);
-
         $section->addText('Content:');
-        $section->addText(htmlspecialchars($data['document_content']->content), ['alignment' => 'left']);
+
+        // Check if document_content exists and is not null
+        if ($data['document_content'] && $data['document_content']->content) {
+            $htmlContent = $data['document_content']->content;
+
+            // Convert HTML to plain text if necessary
+            $plainTextContent = strip_tags($htmlContent);
+
+            // Add the text content to the document
+            $section->addText($plainTextContent);
+        } else {
+            $section->addText('No content available', ['italic' => true]);
+        }
+
+        // Add watermark text if needed
+        if ($document->stage) {
+            $header = $section->addHeader();
+            $textRun = $header->addTextRun(['align' => 'center', 'valign' => 'center']);
+            $textRun->addText(
+                Helpers::getDocStatusByStage($document->stage),
+                ['bold' => true, 'color' => 'cccccc', 'size' => 120, 'font' => 'Arial']
+            );
+        }
 
         // Save the document as a .docx file in the public directory
         $directoryPath = public_path("user/word/doc");
@@ -2687,10 +2705,10 @@ class DocumentController extends Controller
         $filePath = $directoryPath . '/' . $fileName;
 
         if (!File::isDirectory($directoryPath)) {
-            File::makeDirectory($directoryPath, 0755, true, true); // Recursive creation with read/write permissions
+            File::makeDirectory($directoryPath, 0755, true, true);
         }
 
-        $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
+        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
         $objWriter->save($filePath);
 
         // Return the file as a download response
