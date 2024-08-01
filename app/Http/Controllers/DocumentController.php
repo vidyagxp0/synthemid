@@ -2500,7 +2500,6 @@ class DocumentController extends Controller
                 throw new Exception($revision_history['message']);
             }
 
-
             return view('frontend.documents.revision_history', compact('revised_document', 'parent_document', 'document', 'revision_history'));
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -2543,7 +2542,6 @@ class DocumentController extends Controller
         }
 
 
-
         // $documentName = $request->document_name;
         // $pdfPath = $documentToPdfMap[$documentName] ?? null;
 
@@ -2551,14 +2549,12 @@ class DocumentController extends Controller
         //     return response()->file(public_path($pdfPath));
         // }
 
-
     }
 
 
     // public function downloadWord($id)
     // {
-    //     $data = Document::find($id);
-
+    //     $data = Document::find($id); 
     //     $pdfData = $this->viewPdf($id);
 
     //     $phpWord = new PhpWord();
@@ -2643,64 +2639,61 @@ class DocumentController extends Controller
     // }
 
 
-
     public function downloadWord($id)
     {
-        // Fetch the document data by ID
+        // Fetch the document data
         $data = Document::find($id);
+        if (!$data) {
+            return redirect()->back()->with('error', 'Document not found.');
+        }
 
-        // Generate the PDF data using the viewPdf method
-        $pdfData = $this->viewPdf($id);
+        // Fetch related data
+        $department = Department::find(Auth::user()->departmentid);
+        if ($department) {
+            $data['department_name'] = $department->name;
+        } else {
+            $data['department_name'] = '';
+        }
+        $data->department = $department;
 
-        // Create a new PhpWord instance
+        $data['originator'] = User::where('id', $data->originator_id)->value('name');
+        $data['originator_email'] = User::where('id', $data->originator_id)->value('email');
+        $data['document_type_name'] = DocumentType::where('id', $data->document_type_id)->value('name');
+        $data['document_type_code'] = DocumentType::where('id', $data->document_type_id)->value('typecode');
+        $data['document_division'] = Division::where('id', $data->division_id)->value('name');
+        $data['year'] = Carbon::parse($data->created_at)->format('Y');
+        $data['document_content'] = DocumentContent::where('document_id', $id)->first();
+
+        // Create a new PHPWord object
         $phpWord = new PhpWord();
-
-        // Add a section to the Word document
         $section = $phpWord->addSection();
 
-        // Convert PDF data to text
-        $pdfText = $this->extractTextFromPdf($pdfData);
+        // Add the content to the Word document
+        $section->addTitle('PDF Title', 1);
+        $section->addTextBreak(1);
+        $section->addText('Document Name: ' . $data->document_name, ['bold' => true]);
+        $section->addText('Department: ' . $data['department_name']);
+        $section->addText('Originator: ' . $data['originator'] . ' (' . $data['originator_email'] . ')');
+        $section->addText('Document Type: ' . $data['document_type_name'] . ' (' . $data['document_type_code'] . ')');
+        $section->addText('Division: ' . $data['document_division']);
+        $section->addText('Year: ' . $data['year']);
 
-        // Add the extracted text to the Word document
-        if ($pdfText) {
-            $section->addText($pdfText);
-        } else {
-            $section->addText('No content available');
-        }
+        $section->addText('Content:');
+        $section->addText(htmlspecialchars($data['document_content']->content), ['alignment' => 'left']);
 
-        // Define the directory path and file path for the Word document
+        // Save the document as a .docx file in the public directory
         $directoryPath = public_path("user/word/doc");
-        $filePath = $directoryPath . '/Document_' . $id . '.docx';
+        $fileName = 'SOP' . $id . '.docx';
+        $filePath = $directoryPath . '/' . $fileName;
 
-        // Create the directory if it doesn't exist
         if (!File::isDirectory($directoryPath)) {
-            File::makeDirectory($directoryPath, 0755, true, true);
+            File::makeDirectory($directoryPath, 0755, true, true); // Recursive creation with read/write permissions
         }
 
-        // Save the Word document
         $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
         $objWriter->save($filePath);
 
-        // Return the Word document as a download and delete the file after sending
+        // Return the file as a download response
         return response()->download($filePath)->deleteFileAfterSend(true);
-    }
-
-    // Helper function to extract text from PDF data
-    private function extractTextFromPdf($pdfData)
-    {
-        // Load the PDF file into TCPDF
-        $pdf = new \TCPDF();
-        $pdf->setSourceData($pdfData);
-        $numPages = $pdf->getNumPages();
-
-        $text = '';
-
-        // Loop through each page and extract text
-        for ($i = 1; $i <= $numPages; $i++) {
-            $pdf->setPage($i);
-            $text .= $pdf->getText();
-        }
-
-        return $text;
     }
 }
