@@ -45,7 +45,7 @@
                     </a>
                 </td>
                 <td class="division">
-                    {{ Helpers::getFullNewDepartmentName($doc->document_type_id) }}
+                    {{ Helpers::getFullDepartmentTypeName($doc->document_type_id) }}
                 </td>
                 <td class="division">
                     {{ Helpers::getDivisionName($doc->division_id) }}

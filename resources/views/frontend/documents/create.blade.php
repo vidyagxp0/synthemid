@@ -88,12 +88,11 @@
         <div class="container-fluid">
             <div class="tab">
                 <button class="tablinks active" onclick="openData(event, 'doc-info')" id="defaultOpen">General information</button> 
-                <button class="tablinks" onclick="openData(event, 'drafters')">Drafter Input</button>
-                <button class="tablinks" onclick="openData(event, 'hodcft')">HOD/CFTs Input</button>
+                <button class="tablinks" onclick="openData(event, 'drafters')">Author Input</button>
+                <button class="tablinks" onclick="openData(event, 'hodcft')">HODs Input</button>
                 <button class="tablinks" onclick="openData(event, 'qa')">QA Input</button>
                 <button class="tablinks" onclick="openData(event, 'reviewers')">Reviewer Input</button>
                 <button class="tablinks" onclick="openData(event, 'approvers')">Approver Input</button>
-
                 <button class="tablinks" onclick="openData(event, 'doc-content')">Document Content</button>
                 <!-- <button class="tablinks" onclick="openData(event, 'hod-remarks-tab')">HOD Remarks</button> -->
                 <button class="tablinks" onclick="openData(event, 'annexures')">Annexures</button>
@@ -128,8 +127,7 @@
                                         <div class="default-name">{{ $recordNumber }}</div>
                                     </div>
                                 </div> --}}
-                                           
-
+                                        
                                 <div class="col-lg-12">
                                     <div class="group-input">
                                         @if(isset($_GET['id']))
@@ -180,10 +178,12 @@
                                             </select>
                                         </div>
                                 </div>
-
+                                <div class="col-md-6">
+                                    
+                                </div>
                                 <div class="col-md-6">
                                     <div class="group-input">
-                                        <label for="doc-type">Department Type<span class="text-danger">*</span></label>
+                                        <label for="doc-type">Document Type<span class="text-danger">*</span></label>
                                         <select name="document_type_id" id="doc-type" required>
                                             <option value="" selected>Enter your Selection</option>
                                             @foreach (Helpers::getDocumentTypes() as $code => $type)
@@ -192,12 +192,12 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <p id="doc-typeError" style="color:red">** Department is required</p>
+                                    <p id="doc-typeError" style="color:red">** Document is required</p>
 
                                 </div>
                                 <div class="col-md-6">
                                     <div class="group-input">
-                                        <label for="doc-code">Department Type Code</label>
+                                        <label for="doc-code">Document Type Code</label>
                                         <div class="default-name"> <span id="document_type_code">Not selected</span></div>               
                                      </div>
                                 </div>
@@ -227,9 +227,9 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="group-input">
-                                        <label for="drafter">Drafters<span class="text-danger">*</span></label>
+                                        <label for="drafter">Author<span class="text-danger">*</span></label>
                                         <select id="choices-multiple-remove-button" class="choices-multiple-reviewer"
-                                            name="drafters[]" placeholder="Select Drafter" multiple required>
+                                            name="drafters[]" placeholder="Select Author" multiple required>
                                             @if (!empty($drafter))
                                                 @foreach ($drafter as $lan)
                                                     @if(Helpers::checkUserRolesDrafter($lan))
@@ -246,9 +246,9 @@
 
                                 <div class="col-md-6">
                                     <div class="group-input">
-                                        <label for="hods">HOD/CFTs<span class="text-danger">*</span></label>
+                                        <label for="hods">HODs<span class="text-danger">*</span></label>
                                         <select id="choices-multiple-remove-button" class="choices-multiple-reviewer"
-                                            name="hods[]" placeholder="Select HOD/CFTs" multiple required>
+                                            name="hods[]" placeholder="Select HODs" multiple required>
                                             @foreach ($hods as $hod)
                                                 <option value="{{ $hod->id }}">
                                                     {{ $hod->name }}
@@ -361,7 +361,7 @@
                     </div>
                     <div id="drafters" class="tabcontent">
                         <div class="orig-head">
-                            Drafter Input
+                            Author Input
                         </div>
                         <div class="input-fields">
                             <div class="row">
@@ -418,19 +418,19 @@
                     </div>
                     <div id="hodcft" class="tabcontent">
                         <div class="orig-head">
-                            HOD/CFTs Input
+                            HODs Input
                         </div>
                         <div class="input-fields">
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="group-input">
-                                        <label for="comments">HOD/CFTs Remarks</label>
+                                        <label for="comments">HODs Remarks</label>
                                         <textarea disabled name="hod_remarks"></textarea>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
                                     <div class="group-input">
-                                        <label for="Audit Attachments">HOD/CFTs Attachments</label>
+                                        <label for="Audit Attachments">HODs Attachments</label>
                                         <div><small class="text-primary">Please Attach all relevant or supporting
                                                 documents</small></div>
                                         <div class="file-attachment-field">
@@ -445,7 +445,7 @@
                                 </div>
                                 <div class="col-md-6 mb-3 warehouse">
                                     <div class="group-input">
-                                        <label for="Warehousefeedback">HOD/CFTs Completed By</label>
+                                        <label for="Warehousefeedback">HODs Completed By</label>
                                         <input readonly type="text" name="hod_by" id="hod_by">
         
                                     </div>
@@ -453,7 +453,7 @@
         
                                 <div class="col-lg-6 new-date-data-field warehouse">
                                     <div class="group-input input-date">
-                                        <label for="HOD/CFTs Completed On">HOD/CFTs Completed On</label>
+                                        <label for="HODs Completed On">HODs Completed On</label>
                                         <div class="calenderauditee">
                                             <input type="text" id="hod_on" readonly placeholder="DD-MM-YYYY" />
                                             <input type="date" name="hod_on"

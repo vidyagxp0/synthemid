@@ -140,11 +140,11 @@
                                                     Send to Initiate&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                                 <button data-bs-toggle="modal" data-bs-target="#review-sign">
-                                                    Send for HOD/CFT Review&nbsp;<i class="fa-regular fa-paper-plane"></i>
+                                                    Send for HOD Review&nbsp;<i class="fa-regular fa-paper-plane"></i>
                                                 </button>
                                             @elseif($document->stage == 2)
                                                 <button data-bs-toggle="modal" data-bs-target="#review-sign">
-                                                    Send for HOD/CFT Review&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                    Send for HOD Review&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                             @endif
                                         @endif
@@ -155,24 +155,19 @@
                                     <div class="progress-bars">
                                         
                                         @if ($document->stage < 13)
-                                            @if ($document->stage >= 1)
-                                                <div class="active">Initiate</div>
-                                            @else
-                                                <div>Initiate</div>
-                                            @endif
                                             @if ($document->stage >= 2)
-                                                <div class="active">Draft</div>
+                                                <div class="active">Pending Draft Creation</div>
                                             @else
-                                                <div>Draft</div>
+                                                <div>Pending Draft Creation</div>
                                             @endif
                                             @if ($drafter)
                                                 @if ($drafter->stage == 'HOD Review Submit' AND $document->stage >= 2)
-                                                    <div class="active">Send for HOD/CFT Review</div>
+                                                    <div class="active">Send for HOD Review</div>
                                                 @else
-                                                    <div>Send for HOD/CFT Review</div>
+                                                    <div>Send for HOD Review</div>
                                                 @endif
                                             @else
-                                                <div>Send for HOD/CFT Review</div>
+                                                <div>Send for HOD Review</div>
                                             @endif
                                         @else 
                                             <div class="bg-danger rounded-pill text-white">{{ Helpers::getDocStatusByStage($document->stage) }}</div>
@@ -194,11 +189,8 @@
                                         @if (empty($hod_reject))
                                             @if ($stagehod && empty($stagehod_submit))
                                                 @if($document->stage < 4)
-                                                <button data-bs-toggle="modal" data-bs-target="#review-cancel">
-                                                    Send to Initiate&nbsp;<i class="fa-regular fa-circle-xmark"></i>
-                                                </button>
                                                 <button data-bs-toggle="modal" data-bs-target="#sendtodraft">
-                                                    Send to Draft&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                    Send to Author&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                                 @endif
                                             @endif
@@ -206,18 +198,15 @@
 
                                         @if (empty($stagehod) && $document->stage == 3)
                                             @if (empty($hod_reject))
-                                                <button data-bs-toggle="modal" data-bs-target="#review-cancel">
-                                                    Send to Initiate&nbsp;<i class="fa-regular fa-circle-xmark"></i>
-                                                </button>
                                                 <button data-bs-toggle="modal" data-bs-target="#sendtodraft">
-                                                    Send to Draft&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                    Send to Author&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                                 <button data-bs-toggle="modal" data-bs-target="#review-sign">
-                                                    HOD/CFT Review Complete&nbsp;<i class="fa-regular fa-paper-plane"></i>
+                                                    HOD Review Complete&nbsp;<i class="fa-regular fa-paper-plane"></i>
                                                 </button>
                                             @elseif($document->stage == 3)
                                                 <button data-bs-toggle="modal" data-bs-target="#review-sign">
-                                                    HOD/CFT Review Complete&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                    HOD Review Complete&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                             @endif
                                         @endif
@@ -228,24 +217,19 @@
                                     <div class="progress-bars">
                                         
                                         @if ($document->stage < 13)
-                                            @if ($document->stage > 1)
-                                                <div class="active">Initiate</div>
-                                            @else
-                                                <div>Initiate</div>
-                                            @endif
                                             @if ($document->stage > 2)
-                                                <div class="active">Draft</div>
+                                                <div class="active">Pending Draft Creation</div>
                                             @else
-                                                <div>Draft</div>
+                                                <div>Pending Draft Creation</div>
                                             @endif
                                             @if ($stagehod)
                                                 @if ($stagehod->stage == 'HOD Review Submit' AND $document->stage >= 3)
-                                                    <div class="active">HOD/CFT Review Complete</div>
+                                                    <div class="active">HOD Review Complete</div>
                                                 @else
-                                                    <div>HOD/CFT Review Complete</div>
+                                                    <div>HOD Review Complete</div>
                                                 @endif
                                             @else
-                                                <div>HOD/CFT Review Complete</div>
+                                                <div>HOD Review Complete</div>
                                             @endif
                                         @else 
                                             <div class="bg-danger rounded-pill text-white">{{ Helpers::getDocStatusByStage($document->stage) }}</div>
@@ -267,11 +251,8 @@
                                         @if (empty($qa_reject))
                                             @if ($stageqa && empty($qa_submit))
                                                 @if($document->stage < 5)
-                                                <button data-bs-toggle="modal" data-bs-target="#review-cancel">
-                                                    Send to Initiate&nbsp;<i class="fa-regular fa-circle-xmark"></i>
-                                                </button>
                                                 <button data-bs-toggle="modal" data-bs-target="#sendtodraft">
-                                                    Send to Draft&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                    Send to HOD Review&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                                 @endif
                                             @endif
@@ -279,11 +260,8 @@
 
                                         @if (empty($stageqa) && $document->stage == 4)
                                             @if (empty($qa_reject))
-                                                <button data-bs-toggle="modal" data-bs-target="#review-cancel">
-                                                    Send to Initiate&nbsp;<i class="fa-regular fa-circle-xmark"></i>
-                                                </button>
                                                 <button data-bs-toggle="modal" data-bs-target="#sendtodraft">
-                                                    Send to Draft&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                    Send to HOD Review&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                                 <button data-bs-toggle="modal" data-bs-target="#review-sign">
                                                     QA Review Complete&nbsp;<i class="fa-regular fa-paper-plane"></i>
@@ -301,15 +279,10 @@
                                     <div class="progress-bars">
                                         
                                         @if ($document->stage < 13)
-                                            @if ($document->stage > 1)
-                                                <div class="active">Initiate</div>
+                                            @if ($document->stage > 3)
+                                                <div class="active">HOD Review</div>
                                             @else
-                                                <div>Initiate</div>
-                                            @endif
-                                            @if ($document->stage > 2)
-                                                <div class="active">Draft</div>
-                                            @else
-                                                <div>Draft</div>
+                                                <div>HOD Review</div>
                                             @endif
                                             @if ($stageqa)
                                                 @if ($stageqa->stage == 'QA Review Submit' AND $document->stage >= 4)
@@ -340,11 +313,8 @@
                                         @if (empty($review_reject))
                                             @if ($stagereview && empty($stagereview_submit))
                                                 @if($document->stage < 6)
-                                                <button data-bs-toggle="modal" data-bs-target="#review-cancel">
-                                                    Send to Initiate&nbsp;<i class="fa-regular fa-circle-xmark"></i>
-                                                </button>
                                                 <button data-bs-toggle="modal" data-bs-target="#sendtodraft">
-                                                    Send to Draft&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                    Send to QA Review&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                                 @endif
                                             @endif
@@ -352,11 +322,8 @@
 
                                         @if (empty($stagereview) && $document->stage == 5)
                                             @if (empty($review_reject))
-                                                <button data-bs-toggle="modal" data-bs-target="#review-cancel">
-                                                    Send to Initiate&nbsp;<i class="fa-regular fa-circle-xmark"></i>
-                                                </button>
                                                 <button data-bs-toggle="modal" data-bs-target="#sendtodraft">
-                                                    Send to Draft&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                    Send to QA Review&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                                 <button data-bs-toggle="modal" data-bs-target="#review-sign">
                                                     Reviewer Review&nbsp;<i class="fa-regular fa-paper-plane"></i>
@@ -374,15 +341,10 @@
                                     <div class="progress-bars">
                                         
                                         @if ($document->stage < 13)
-                                            @if ($document->stage > 1)
-                                                <div class="active">Initiate</div>
+                                            @if ($document->stage > 4)
+                                                <div class="active">QA Review</div>
                                             @else
-                                                <div>Initiate</div>
-                                            @endif
-                                            @if ($document->stage > 2)
-                                                <div class="active">Draft</div>
-                                            @else
-                                                <div>Draft</div>
+                                                <div>QA Review</div>
                                             @endif
                                             @if ($stagereview)
                                                 @if ($stagereview->stage == 'Review-Submit' AND $document->stage >= 5)
@@ -413,11 +375,8 @@
                                         @if (empty($approval_reject))
                                             @if ($stageapprove && empty($stageapprove_submit))
                                                 @if($document->stage < 7)
-                                                <button data-bs-toggle="modal" data-bs-target="#review-cancel">
-                                                    Send to Initiate&nbsp;<i class="fa-regular fa-circle-xmark"></i>
-                                                </button>
                                                 <button data-bs-toggle="modal" data-bs-target="#sendtodraft">
-                                                    Send to Draft&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                    Send to Reviewer Review&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                                 @endif
                                             @endif
@@ -429,7 +388,7 @@
                                                     Send to Initiate&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                                 <button data-bs-toggle="modal" data-bs-target="#sendtodraft">
-                                                    Send to Draft&nbsp;<i class="fa-regular fa-circle-xmark"></i>
+                                                    Send to Reviewer Review&nbsp;<i class="fa-regular fa-circle-xmark"></i>
                                                 </button>
                                                 <button data-bs-toggle="modal" data-bs-target="#review-sign">
                                                     Approved&nbsp;<i class="fa-regular fa-paper-plane"></i>
@@ -447,15 +406,10 @@
                                     <div class="progress-bars">
                                         
                                         @if ($document->stage < 13)
-                                            @if ($document->stage > 1)
-                                                <div class="active">Initiate</div>
+                                            @if ($document->stage > 5)
+                                                <div class="active">Reviewer Review</div>
                                             @else
-                                                <div>Initiate</div>
-                                            @endif
-                                            @if ($document->stage > 2)
-                                                <div class="active">Draft</div>
-                                            @else
-                                                <div>Draft</div>
+                                                <div>Reviewer Review</div>
                                             @endif
                                             @if ($stageapprove)
                                                 @if ($stageapprove->stage == 'Approval-Submit' AND $document->stage >= 6)
@@ -477,7 +431,58 @@
                     @endif
                     <div class="col-4">
                         <div>
-                            <div class="inner-block person-table">
+                            @if ($document->stage == 2)
+                                <div class="inner-block person-table">
+                                    <div class="main-title mb-0">
+                                        Authors
+                                    </div>
+                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#doc-drafter">
+                                        View
+                                    </button>
+                                </div>
+                            @elseif ($document->stage == 3)
+                                <div class="">
+                                    <div class="inner-block person-table">
+                                        <div class="main-title mb-0">
+                                            HOD
+                                        </div>
+                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#doc-hods">
+                                            View
+                                        </button>
+                                    </div>
+                                </div>
+                            @elseif ($document->stage == 4)
+                                <div class="">
+                                    <div class="inner-block person-table">
+                                        <div class="main-title mb-0">
+                                            QAs
+                                        </div>
+                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#doc-qa">
+                                            View
+                                        </button>
+                                    </div>
+                                </div>
+                            @elseif ($document->stage == 5)
+                                <div class="inner-block person-table">
+                                    <div class="main-title mb-0">
+                                        Reviewers
+                                    </div>
+                                    <button data-bs-toggle="modal" data-bs-target="#doc-reviewers">
+                                        View
+                                    </button>
+                                </div>
+                            @elseif ($document->stage == 6)
+                                <div class="inner-block person-table">
+                                    <div class="main-title mb-0">
+                                        Approvers
+                                    </div>
+                                    <button data-bs-toggle="modal" data-bs-target="#doc-approvers">
+                                        View
+                                    </button>
+                                </div>
+                            @else
+                            @endif
+                            {{-- <div class="inner-block person-table">
                                 <div class="main-title mb-0">
                                     Reviewers
                                 </div>
@@ -492,7 +497,7 @@
                                 <button data-bs-toggle="modal" data-bs-target="#doc-approvers">
                                     View
                                 </button>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
 
@@ -508,7 +513,310 @@
             </div>
         </div>
     </div>
+    <div class="modal fade modal-lg" id="doc-hods">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
 
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">HOD/CFTs</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+
+                <div class="modal-body">
+                    <div class="reviewer-table table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>HOD/CFTs</th>
+                                    <th>Department</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $hod_data = explode(',', $document->hods);
+                                    $i = 0;
+                                @endphp
+                                @for ($i = 0; $i < count($hod_data); $i++)
+                                    @php
+                                        $user = DB::table('users')
+                                            ->where('id', $hod_data[$i])
+                                            ->first();
+                                        $user->department = DB::table('departments')
+                                            ->where('id', $user->departmentid)
+                                            ->value('name');
+                                            $user->status = DB::table('stage_manages')
+                                            ->where('user_id', $hod_data[$i])
+                                            ->where('document_id', $document->id)
+                                            ->where('stage', 'HOD Review Complete') 
+                                            ->where('deleted_at', null)                                                
+                                            ->latest()
+                                            ->first();
+                                            $user->statusReject = DB::table('stage_manages')
+                                            ->where('user_id', $hod_data[$i])
+                                            ->where('document_id', $document->id)
+                                            ->where('stage', 'Cancel-by-HOD')
+                                            ->where('deleted_at', null)
+                                            ->latest()
+                                            ->first();
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $user->name }}</td>
+                                        <td>{{ $user->department }}</td>
+                                        @if ($user->status)
+                                            <td>HOD Review Complete <i class="fa-solid fa-circle-check text-success"></i></td>
+                                        @elseif($user->statusReject)
+                                            <td>Rejected <i class="fa-solid fa-circle-xmark text-danger"></i></td>
+                                        @else
+                                            <td>HOD Review Pending</td>
+                                        @endif
+                                        {{-- <td><a
+                                                href="{{ url('audit-individual/') }}/{{ $document->id }}/{{ $user->id }}"><button
+                                                    type="button">Audit Trial</button></a></td> --}}
+                                    </tr>
+                                @endfor
+
+                            </tbody>
+                        </table>
+                    </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade modal-lg" id="doc-drafter">
+    <form action="{{ route('update-doc', $document->id) }}" method="post">
+        @csrf
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Authors</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+
+                <div class="modal-body">
+                    @if ($document->stage <= 2)
+                        <div class="add-reviewer">
+                            <select id="choices-multiple-remove-button" name="reviewers[]"
+                                placeholder="Select Reviewers" multiple>
+                                @if (!empty($drafter))
+                                    @foreach ($drafter as $lan)
+                                        <option value="{{ $lan->id }}">
+                                            @if ($document->drafters)
+                                                @php
+                                                    $data = explode(',', $document->drafters);
+                                                    $count = count($data);
+                                                    $i = 0;
+                                                @endphp
+                                                @for ($i = 0; $i < $count; $i++)
+                                                    @if ($data[$i] == $lan->id)
+                                                        selected
+                                                    @endif
+                                                @endfor
+                                            @endif>
+                                            {{ $lan->name }}
+                                        </option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+                    @endif
+                    <div class="reviewer-table table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Authors</th>
+                                    <th>Department</th>
+                                    <th>Status</th>
+                                    <th>Audit Trial</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $rev_data = explode(',', $document->drafters);
+                                    $i = 0;
+                                @endphp
+                                @for ($i = 0; $i < count($rev_data); $i++)
+                                    @php
+                                        $user = DB::table('users')
+                                            ->where('id', $rev_data[$i])
+                                            ->first();
+                                        $user->department = DB::table('departments')
+                                            ->where('id', $user->departmentid)
+                                            ->value('name');
+                                            $user->status = DB::table('stage_manages')
+                                            ->where('user_id', $rev_data[$i])
+                                            ->where('document_id', $document->id)
+                                            ->where('stage', 'Draft Review Complete') 
+                                            ->where('deleted_at', null)                                                
+                                            ->latest()
+                                            ->first();
+                                            $user->statusReject = DB::table('stage_manages')
+                                            ->where('user_id', $rev_data[$i])
+                                            ->where('document_id', $document->id)
+                                            ->where('stage', 'Cancel-by-Drafter')
+                                            ->where('deleted_at', null)
+                                            ->latest()
+                                            ->first();
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $user->name }}</td>
+                                        <td>{{ $user->department }}</td>
+                                        @if ($user->status)
+                                            <td>Drafter Review Complete <i class="fa-solid fa-circle-check text-success"></i></td>
+                                        @elseif($user->statusReject)
+                                            <td>Rejected <i class="fa-solid fa-circle-xmark text-danger"></i></td>
+                                        @else
+                                            <td>Drafter Review Pending</td>
+                                        @endif
+                                        <td><a
+                                                href="{{ url('audit-individual/') }}/{{ $document->id }}/{{ $user->id }}"><button
+                                                    type="button">Audit Trial</button></a></td>
+                                    </tr>
+                                @endfor
+
+                            </tbody>
+                        </table>
+                    </div>
+                    
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                {{-- @if ($document->stage <= 2)
+                    <button type="submit">Update</button>
+                @endif --}}
+                <button type="button" data-bs-dismiss="modal">Close</button>
+            </div>
+    </form>
+
+    </div>
+    </div>
+</div>
+<div class="modal fade modal-lg" id="doc-qa">
+    <form action="{{ route('update-doc', $document->id) }}" method="post">
+        @csrf
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">QAs</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+
+                <div class="modal-body">
+                    @if ($document->stage <= 2)
+                        <div class="add-reviewer">
+                            <select id="choices-multiple-remove-button" name="reviewers[]"
+                                placeholder="Select Reviewers" multiple>
+                                @if (!empty($qas))
+                                    @foreach ($qas as $lan)
+                                        <option value="{{ $lan->id }}">
+                                            @if ($document->qa)
+                                                @php
+                                                    $data = explode(',', $document->qa);
+                                                    $count = count($data);
+                                                    $i = 0;
+                                                @endphp
+                                                @for ($i = 0; $i < $count; $i++)
+                                                    @if ($data[$i] == $lan->id)
+                                                        selected
+                                                    @endif
+                                                @endfor
+                                            @endif>
+                                            {{ $lan->name }}
+                                        </option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+                    @endif
+                    <div class="reviewer-table table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>QAs</th>
+                                    <th>Department</th>
+                                    <th>Status</th>
+                                    <th>Audit Trial</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $rev_data = explode(',', $document->qa);
+                                    $i = 0;
+                                @endphp
+                                @for ($i = 0; $i < count($rev_data); $i++)
+                                    @php
+                                        $user = DB::table('users')
+                                            ->where('id', $rev_data[$i])
+                                            ->first();
+                                        $user->department = DB::table('departments')
+                                            ->where('id', $user->departmentid)
+                                            ->value('name');
+                                            $user->status = DB::table('stage_manages')
+                                            ->where('user_id', $rev_data[$i])
+                                            ->where('document_id', $document->id)
+                                            ->where('stage', 'QA Review Complete') 
+                                            ->where('deleted_at', null)                                                
+                                            ->latest()
+                                            ->first();
+                                            $user->statusReject = DB::table('stage_manages')
+                                            ->where('user_id', $rev_data[$i])
+                                            ->where('document_id', $document->id)
+                                            ->where('stage', 'Cancel-by-QA')
+                                            ->where('deleted_at', null)
+                                            ->latest()
+                                            ->first();
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $user->name }}</td>
+                                        <td>{{ $user->department }}</td>
+                                        @if ($user->status)
+                                            <td>QA Review Complete <i class="fa-solid fa-circle-check text-success"></i></td>
+                                        @elseif($user->statusReject)
+                                            <td>Rejected <i class="fa-solid fa-circle-xmark text-danger"></i></td>
+                                        @else
+                                            <td>QA Review Pending</td>
+                                        @endif
+                                        <td><a
+                                                href="{{ url('audit-individual/') }}/{{ $document->id }}/{{ $user->id }}"><button
+                                                    type="button">Audit Trial</button></a></td>
+                                    </tr>
+                                @endfor
+
+                            </tbody>
+                        </table>
+                    </div>
+                    
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                {{-- @if ($document->stage <= 2)
+                    <button type="submit">Update</button>
+                @endif --}}
+                <button type="button" data-bs-dismiss="modal">Close</button>
+            </div>
+    </form>
+
+    </div>
+    </div>
+</div>
     <div class="modal fade modal-lg" id="doc-reviewers">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -997,10 +1305,10 @@
                         @endphp
 
                         @if ($document->stage == 2 && empty($document->drafter_remarks))
-                            <div style="color: red">Note: Please ensure that all required fields in the Drafter input are completed before proceeding with the activity to send it for HOD/CFT review.</div>
+                            <div style="color: red">Note: Please ensure that all required fields in the Drafter input are completed before proceeding with the activity to send it for HOD review.</div>
                             @php $hideSubmitButton = true; @endphp
                         @elseif ($document->stage == 3 && empty($document->hod_remarks))
-                            <div style="color: red">Note: Please ensure that all required fields in the HOD/CFT input are completed before proceeding with the activity to HOD/CFT Review Complete.</div>
+                            <div style="color: red">Note: Please ensure that all required fields in the HOD input are completed before proceeding with the activity to HOD Review Complete.</div>
                             @php $hideSubmitButton = true; @endphp
                         @elseif ($document->stage == 4 && empty($document->qa_remarks))
                             <div style="color: red">Note: Please ensure that all required fields in the QA input are completed before proceeding with the activity to QA Review Complete.</div>
@@ -1179,6 +1487,7 @@
                             <textarea required name="comment" value="{{ old('comment') }}"></textarea>
                         </div> 
                     </div>
+                    
                         <input type="hidden" name="stage_id" value="2" />
                         <input type="hidden" name="status" value={{$document->status}} />
 

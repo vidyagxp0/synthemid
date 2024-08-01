@@ -106,7 +106,7 @@
                                 @if ($document->stage == 1)
                                     <input type="hidden" name="stage_id" value="2" />
                                     <button class="button_theme1" data-bs-toggle="modal" data-bs-target="#approve-sign">
-                                        Send For Draft<i class="fa-regular fa-paper-plane"></i>
+                                        Send For Author<i class="fa-regular fa-paper-plane"></i>
                                     </button>
                                 @endif
                                 @if ($document->training_required == 'yes')
@@ -130,14 +130,14 @@
                                             <div class="">Initiate</div>
                                         @endif
                                         @if ($document->stage >= 2)
-                                            <div class="active">Draft</div>
+                                            <div class="active">Pending Draft Creation</div>
                                         @else
-                                            <div class="">Draft</div>
+                                            <div class="">Pending Draft Creation</div>
                                         @endif
                                         @if ($document->stage >= 3)
-                                            <div class="active">HOD/CFT Review</div>
+                                            <div class="active">HOD Review</div>
                                         @else
-                                            <div class="">HOD/CFT Review</div>
+                                            <div class="">HOD Review</div>
                                         @endif
                                         @if ($document->stage >= 4)
                                             <div class="active">QA Review</div>
@@ -196,7 +196,7 @@
                             <div class="col-2">
                                 <div class="inner-block person-table">
                                     <div class="main-title mb-0">
-                                        Drafters
+                                        Authors
                                     </div>
                                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#doc-drafter">
                                         View
@@ -206,7 +206,7 @@
                             <div class="col-2">
                                 <div class="inner-block person-table">
                                     <div class="main-title mb-0">
-                                        HOD/CFTs
+                                        HODs
                                     </div>
                                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#doc-hods">
                                         View
@@ -272,7 +272,7 @@
 
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">HOD/CFTs</h4>
+                    <h4 class="modal-title">HODs</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
@@ -283,7 +283,7 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>HOD/CFTs</th>
+                                    <th>HODs</th>
                                     <th>Department</th>
                                     <th>Status</th>
                                 </tr>
@@ -352,7 +352,7 @@
 
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">Drafters</h4>
+                    <h4 class="modal-title">Authors</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
@@ -389,7 +389,7 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Drafters</th>
+                                    <th>Authors</th>
                                     <th>Department</th>
                                     <th>Status</th>
                                     <th>Audit Trial</th>
