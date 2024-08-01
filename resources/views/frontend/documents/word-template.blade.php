@@ -1,15 +1,3 @@
-@php
-$printing = false;
-
-$printing = isset($print_reason) && isset($issue_copies);
-
-$total_copies = isset($issue_copies) ? $issue_copies : 1;
-
-$total_copies_static = $total_copies;
-
-@endphp
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -327,17 +315,6 @@ $total_copies_static = $total_copies;
             /* Optional: Add a border at the top of the footer */
         }
 
-        .footer-info {
-            position: fixed;
-            bottom: 50px;
-            left: 0;
-            right: 0;
-            width: 100%;
-            display: block;
-            border-top: 1px solid #ddd;
-            /* Optional: Add a border at the top of the footer */
-        }
-
 
         .other-container {
             margin: 0 0 0 0;
@@ -465,35 +442,44 @@ $total_copies_static = $total_copies;
 <body>
 
     <header class="">
-        <table class="border" style="height: 147px;">
+        <table class="border" style="height: 80px;">
             <tbody>
                 <tr>
                     <td class="logo w-20">
-                        <img src="{{ asset('user/images/vidyagxplogo.png') }}" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem;">
+                        <!-- <img src="https://navin.mydemosoftware.com/public/user/images/logo.png" alt="" class="w-100"> -->
+
+                        <img src="https://navin.mydemosoftware.com/public/user/images/logo.png" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem;">
                     </td>
-                    <td class="title w-60" style="height: 150px; padding: 0px;  margin: 0px; border-left: 1px solid rgb(104, 104, 104); border-right: 1px solid rgb(104, 104, 104);">
-                        <p style="margin-top: -0.1rem; border-bottom: 1px solid rgb(104, 104, 104);">{{ config('site.pdf_title') }}</p>
-                        <br>
+                    <td class="title w-60" style="height: 100px; padding: 0px;  margin: 0px; border-left: 1px solid rgb(104, 104, 104); border-right: 1px solid rgb(104, 104, 104);">
+                        <p style="margin-top: -0.1rem; border-bottom: 0px solid rgb(104, 104, 104);">{{ config('site.pdf_title') }}</p>
+                        <hr style="border: 0; border-top: 1px solid rgb(104, 104, 104); margin: 0;">
                         <p style="margin-top: -2rem; margin-bottom: 0px;">
-                            {{ $data->document_name }}
+
                         </p>
                     </td>
+
                     <td class="logo w-20">
-                        <img src="{{ asset('user/images/vidyagxplogo.png') }}" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem;">
+                        <img src="{{ asset('user/images/agio.jpg') }}" style="max-height: 55px; max-width: 40px;">
+                        <!-- <img src="http://127.0.0.1:8000/user/images/agio.jpg" style="max-height: 55px; max-width: 40px;"> -->
+
                     </td>
                 </tr>
             </tbody>
         </table>
-        <table class="border border-top-none p-10">
+        <table class="border border-top-none p-6">
             <tbody>
                 <tr>
-                    <td class="doc-num w-100">
-                        @php
+                    <td class="doc-num w-30">
+                        {{-- {{($data->sop_type)}} --}}
+
+                    </td>
+                    <td class="doc-num w-40">
+                        {{-- @php
                         $temp = DB::table('document_types')
                         ->where('name', $data->document_type_name)
                         ->value('typecode');
-                        @endphp
-                        @if($data->revised === 'Yes')
+                        @endphp --}}
+                        {{-- @if($data->revised === 'Yes')
 
                         {{ Helpers::getDivisionName($data->division_id) }}
                         /@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}
@@ -503,18 +489,58 @@ $total_copies_static = $total_copies;
                         {{ Helpers::getDivisionName($data->division_id) }}
                         /@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}
                         /000{{ $data->document_number }}/R{{$data->major}}.{{$data->minor}}
-                        @endif
+                        @endif --}}
+
+                        {{-- @if($data->revised === 'Yes')
+
+                        {{ Helpers::getSopTypeShortName($data->document_id) }}
+                        /@if($data->sop_type_short){{ $temp }} /@endif{{ $data->year }}
+                        /000{{ $data->document_number }}/R{{$data->major}}.{{$data->minor}}
+
+                        @else
+                        {{$data->sop_type_short}}/{{$data->department_id}}/000{{ $data->id }}/R{{$data->major}}.{{$data->minor}}
+                        @endif --}}
+
+                    </td>
+                    <td class="doc-num w-30">
+                        {{-- {{ Helpers::getFullDepartmentName($data->department_id) }} --}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="border border-top-none p-8">
+            <tbody>
+                <tr>
+                    <td class="doc-num w-60">
+                        Address : 82, M.I.D.C, Bhosari, Maharashtra 411026
+                    </td>
+                    <!-- <td class="w-60">
+                        Address : 82, M.I.D.C, Bhosari, Maharashtra 411026
+                    </td> -->
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="border border-top-none p-7">
+            <tbody>
+                <tr>
+                    <td class="doc-num w-50">
+                        Effective Date: {{ \Carbon\Carbon::parse($data->effective_date)->format('d-M-Y') }}
+                    </td>
+                    <td class="doc-num w-50">
+                        Next Review Date: {{ \Carbon\Carbon::parse($data->next_review_date)->format('d-M-Y') }}
+                    </td>
+
                 </tr>
             </tbody>
         </table>
     </header>
-
     <footer class="footer">
         <table class="border p-20">
             <tbody>
-
                 <tr>
-                    <td class="text-left w-36">
+                    <td class="text-left w-25">
                         @php
                         $temp = DB::table('document_types')
                         ->where('name', $data->document_type_name)
@@ -526,42 +552,26 @@ $total_copies_static = $total_copies;
                         /000{{ $data->document_number }}/R{{$data->major}}.{{$data->minor}}
 
                         @else
-                        {{ Helpers::getDivisionName($data->division_id) }}
-                        /@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}
-                        /000{{ $data->document_number }}/R{{$data->major}}.{{$data->minor}}
+                        {{$data->sop_type_short}}/{{$data->department_id}}/000{{ $data->id }}/R{{$data->major}}.{{$data->minor}}
                         @endif
 
-                    <td class="w-36">Printed On : {{ $time }}</td>
+
+                        {{-- <td class="w-42">Printed On: {{ \Carbon\Carbon::parse($time)->format('d-M-Y h:i A') }}
+                    </td> --}}
                     <td class="text-right w-20"></td>
                 </tr>
             </tbody>
         </table>
     </footer>
 
-    @if ($printing)
-    <div class="footer-info">
-        <table class="border p-10">
-            <tbody>
-                <tr class="border">
-                    <td class="w-100">
-                        <span style="font-weight: bold;">Print Reason</span>: {{ $print_reason }}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    @endif
-
-    @while ($total_copies != 0)
-
-    <section class="main-section" id="pdf-page" style="position: relative; {{ $printing ? 'margin-bottom: 150px;' : '' }}">
+    <section class="main-section" id="pdf-page" style="margin-top: 15px;">
         <section style="page-break-after: never;">
-            <div class="other-container" style="margin-bottom: 15px;">
+            <div class="other-container" style="margin-bottom: 10px;">
                 <table>
                     <thead>
                         <tr>
                             <th class="text-right">
-                                <div> <span class="bold">Legacy Document Number:</span> {{ !empty($document->legacy_number) ? $document->legacy_number : 'NA' }}</div>
+                                <div> <span class="bold">Legacy Document Number:</span>{{ !empty($document->legacy_number) ? $document->legacy_number : 'NA' }}</div>
                             </th>
                         </tr>
                     </thead>
@@ -616,7 +626,7 @@ $total_copies_static = $total_copies;
                 </div>
             </div>
 
-            <table class="mb-20">
+            <table class="mb-15">
                 <tbody>
                     <tr>
                         <th class="w-5 vertical-baseline">3.</th>
@@ -663,7 +673,7 @@ $total_copies_static = $total_copies;
                 </div>
             </div>
 
-            <table class="mb-20">
+            <table class="mb-15">
                 <tbody>
                     <tr>
                         <th class="w-5 vertical-baseline">4.</th>
@@ -711,7 +721,7 @@ $total_copies_static = $total_copies;
             </div>
 
             {{-- REFERENCES START --}}
-            <table class="mb-20">
+            <table class="mb-15">
                 <tbody>
                     <tr>
                         <th class="w-5 vertical-baseline">5.</th>
@@ -752,8 +762,9 @@ $total_copies_static = $total_copies;
                     </div>
                 </div>
             </div>
+            {{-- REFERENCES END --}}
 
-            <table class="mb-20">
+            <table class="mb-15">
                 <tbody>
                     <tr>
                         <th class="w-5 vertical-baseline">6.</th>
@@ -799,7 +810,7 @@ $total_copies_static = $total_copies;
             </div>
 
             {{-- DEFINITIONS START --}}
-            <table class="mb-20">
+            <table class="mb-15">
                 <tbody>
                     <tr>
                         <th class="w-5 vertical-baseline">7.</th>
@@ -847,7 +858,7 @@ $total_copies_static = $total_copies;
             {{-- DEFINITIONS END --}}
 
             {{-- MATERIALS AND EQUIPMENTS START --}}
-            <table class="mb-20">
+            <table class="mb-15">
                 <tbody>
                     <tr>
                         <th class="w-5 vertical-baseline">8.</th>
@@ -936,7 +947,7 @@ $total_copies_static = $total_copies;
                 {{-- PROCEDURE END --}}
 
                 {{-- REPORTING START --}}
-                <table class="mb-20 ">
+                <table class="mb-15 ">
                     <tbody>
                         <tr>
                             <th class="w-5 vertical-baseline">10.</th>
@@ -982,7 +993,7 @@ $total_copies_static = $total_copies;
 
 
                 {{-- ANNEXSURE START --}}
-                <table class="mb-20">
+                <table class="mb-15">
                     <tbody>
                         <tr>
                             <th class="w-5 vertical-baseline">11.</th>
@@ -1030,23 +1041,23 @@ $total_copies_static = $total_copies;
                 $i = 1;
                 @endphp
                 {{-- @if ($data->document_content && !empty($data->document_content->annexuredata))
-                        @foreach (unserialize($data->document_content->annexuredata) as $res)
-                            @if (!empty($res))
-                                <div class="annexure-block">
-                                    <div class="w-100">
-                                        <div class="w-100" style="display:inline-block;">
-                                            <div class="w-100">
-                                                <div style="height:auto; overflow-x:hidden; width:650px; ">
-                                                    {!! strip_tags($res, '<br><table><th><td><tbody><tr><p><img><a><img><span><h1><h2><h3><h4><h5><h6><div><b><ol><li>') !!}
-                                                    </div>
+                    @foreach (unserialize($data->document_content->annexuredata) as $res)
+                        @if (!empty($res))
+                            <div class="annexure-block">
+                                <div class="w-100">
+                                    <div class="w-100" style="display:inline-block;">
+                                        <div class="w-100">
+                                            <div style="height:auto; overflow-x:hidden; width:650px; ">
+                                                {!! strip_tags($res, '<br><table><th><td><tbody><tr><p><img><a><img><span><h1><h2><h3><h4><h5><h6><div><b><ol><li>') !!}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            @endif
-                        @endforeach
-                    @endif --}}
+                            </div>
+                        @endif
+                    @endforeach
+                @endif --}}
         </section>
 
         <section class="doc-control" style="page-break-after: never;">
@@ -1078,29 +1089,26 @@ $total_copies_static = $total_copies;
                                         /000{{ $data->document_number }}/R{{$data->major}}.{{$data->minor}}
 
                                         @else
-                                        {{ Helpers::getDivisionName($data->division_id) }}
-                                        /@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}
-                                        /000{{ $data->document_number }}/R{{$data->major}}.{{$data->minor}}
-
+                                        {{$data->sop_type_short}}/{{$data->department_id}}/000{{ $data->id }}/R{{$data->major}}.{{$data->minor}}
                                         @endif
                                     </td>
                                 </tr>
                                 <tr>
                                     <th class="w-30 text-left vertical-baseline">Title</th>
-                                    <td class="w-70 text-left">{{ $data->document_name }}</td>
+                                    {{-- <td class="w-70 text-left">{{ $data->document_name }}</td> --}}
                                 </tr>
                                 <tr>
                                     <th class="w-30 text-left vertical-baseline">
                                         Short Description
                                     </th>
                                     <td class="w-70 text-left">
-                                        {{ $data->short_description }}
+                                        {{-- {{ $data->short_description }} --}}
                                     </td>
                                 </tr>
                                 <tr>
                                     <th class="w-30 text-left vertical-baseline">Description</th>
                                     <td class="w-70 text-left">
-                                        {{ $data->description }}
+                                        {{-- {{ $data->description }} --}}
                                     </td>
                                 </tr>
                                 @php
@@ -1114,9 +1122,11 @@ $total_copies_static = $total_copies;
                                     <th class="w-30 text-left vertical-baseline">Last Changed</th>
                                     <td class="w-70 text-left">
                                         @if ($last)
-                                        {{ $last->created_at }}
+                                        <!-- {{ $last->created_at }} -->
+                                        {{ \Carbon\Carbon::parse($last->created_at )->format('d-M-Y') }}
                                         @else
-                                        {{ $data->created_at }}
+                                        <!-- {{ $data->created_at }} -->
+                                        {{ \Carbon\Carbon::parse($data->created_at )->format('d-M-Y') }}
                                         @endif
                                     </td>
                                 </tr>
@@ -1150,6 +1160,7 @@ $total_copies_static = $total_copies;
                 ->where('document_id', $data->id)
                 ->where('stage', 'Reviewed')
                 ->get();
+                // dd($signatureReviewerData);
                 $signatureApprovalData = DB::table('stage_manages')
                 ->where('document_id', $data->id)
                 ->where('stage', 'Approved')
@@ -1200,7 +1211,7 @@ $total_copies_static = $total_copies;
                                     <th class="text-left w-25">Comments</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            {{-- <tbody>
                                 @if ($data->hods)
                                 @php
                                 $hod = explode(',', $data->hods);
@@ -1235,76 +1246,77 @@ $total_copies_static = $total_copies;
                                     @endphp
                                     <tr>
                                         <td class="text-left w-25">{{ $user->name }}</td>
+
+                            <td class="text-left w-25">{{ $dept }}</td>
+                            @if ($date)
+                            <td class="text-left w-25">HOD Review Complete</td>
+                            @elseif(!empty($reject))
+                            <td>HOD Rejected</td>
+                            @else
+                            <td class="text-left w-25">HOD Review Pending</td>
+                            @endif
+
+                            <td class="text-left w-25">{{ $user->email }}</td>
+                            <td class="text-left w-25">
+                                @if($comment)
+                                {{ $comment->comment }}
+                                @endif
+                            </td>
+                            </tr>
+                            @endfor
+                            @endif
+                            @if ($data->approver_group)
+                            @php
+                            $group = explode(',', $data->approver_group);
+                            $i = 0;
+
+                            @endphp
+                            @for ($i = 0; $i < count($group); $i++) @php $users_id=DB::table('group_permissions') ->where('id', $group[$i])
+                                ->value('user_ids');
+                                $reviewer = explode(',', $users_id);
+                                $i = 0;
+                                @endphp
+                                @if ($users_id)
+                                @for ($i = 0; $i < count($reviewer); $i++) @php $user=DB::table('users') ->where('id', $reviewer[$i])
+                                    ->first();
+                                    $dept = DB::table('departments')
+                                    ->where('id', $user->departmentid)
+                                    ->value('name');
+                                    $date = DB::table('stage_manages')
+                                    ->where('document_id', $data->id)
+                                    ->where('user_id', $reviewer[$i])
+                                    ->where('stage', 'Approval-Submit')
+                                    ->latest()
+                                    ->first();
+                                    $reject = DB::table('stage_manages')
+                                    ->where('document_id', $data->id)
+                                    ->where('user_id', $reviewer[$i])
+                                    ->where('stage', 'Cancel-by-Approver')
+                                    ->latest()
+                                    ->first();
+
+                                    @endphp
+                                    <tr>
+                                        <td class="text-left w-25">{{ $user->name }}</td>
                                         <td class="text-left w-25">{{ $dept }}</td>
                                         @if ($date)
-                                        <td class="text-left w-25">HOD Review Complete</td>
+                                        <td class="text-left w-25">Approval Completed</td>
                                         @elseif(!empty($reject))
-                                        <td>HOD Rejected</td>
+                                        <td class="text-left w-25">Approval Rejected </td>
                                         @else
-                                        <td class="text-left w-25">HOD Review Pending</td>
+                                        <td class="text-left w-25">Approval Pending</td>
                                         @endif
 
                                         <td class="text-left w-25">{{ $user->email }}</td>
-                                        <td class="text-left w-25">
-                                            @if($comment)
-                                            {{ $comment->comment }}
-                                            @endif
-                                        </td>
                                     </tr>
                                     @endfor
                                     @endif
-                                    @if ($data->approver_group)
-                                    @php
-                                    $group = explode(',', $data->approver_group);
-                                    $i = 0;
-
-                                    @endphp
-                                    @for ($i = 0; $i < count($group); $i++) @php $users_id=DB::table('group_permissions') ->where('id', $group[$i])
-                                        ->value('user_ids');
-                                        $reviewer = explode(',', $users_id);
-                                        $i = 0;
-                                        @endphp
-                                        @if ($users_id)
-                                        @for ($i = 0; $i < count($reviewer); $i++) @php $user=DB::table('users') ->where('id', $reviewer[$i])
-                                            ->first();
-                                            $dept = DB::table('departments')
-                                            ->where('id', $user->departmentid)
-                                            ->value('name');
-                                            $date = DB::table('stage_manages')
-                                            ->where('document_id', $data->id)
-                                            ->where('user_id', $reviewer[$i])
-                                            ->where('stage', 'Approval-Submit')
-                                            ->latest()
-                                            ->first();
-                                            $reject = DB::table('stage_manages')
-                                            ->where('document_id', $data->id)
-                                            ->where('user_id', $reviewer[$i])
-                                            ->where('stage', 'Cancel-by-Approver')
-                                            ->latest()
-                                            ->first();
-
-                                            @endphp
-                                            <tr>
-                                                <td class="text-left w-25">{{ $user->name }}</td>
-                                                <td class="text-left w-25">{{ $dept }}</td>
-                                                @if ($date)
-                                                <td class="text-left w-25">Approval Completed</td>
-                                                @elseif(!empty($reject))
-                                                <td class="text-left w-25">Approval Rejected </td>
-                                                @else
-                                                <td class="text-left w-25">Approval Pending</td>
-                                                @endif
-
-                                                <td class="text-left w-25">{{ $user->email }}</td>
-                                            </tr>
-                                            @endfor
-                                            @endif
-                                            @endfor
+                                    @endfor
 
 
-                                            @endif
+                                    @endif
 
-                            </tbody>
+                                    </tbody> --}}
                         </table>
                     </div>
                 </div>
@@ -1323,127 +1335,6 @@ $total_copies_static = $total_copies;
                                     <th class="text-left w-25">Comments</th>
 
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @if ($data->reviewers)
-                                @php
-                                $reviewer = explode(',', $data->reviewers);
-                                $i = 0;
-                                @endphp
-                                @for ($i = 0; $i < count($reviewer); $i++) @php $user=DB::table('users') ->where('id', $reviewer[$i])
-                                    ->first();
-                                    $dept = DB::table('departments')
-                                    ->where('id', $user->departmentid)
-                                    ->value('name');
-                                    $date = DB::table('stage_manages')
-                                    ->where('document_id', $data->id)
-                                    ->where('user_id', $reviewer[$i])
-                                    ->where('stage', 'Reviewed')
-                                    ->where('deleted_at', null)
-                                    ->latest()
-                                    ->first();
-
-                                    $comment = DB::table('stage_manages')
-                                    ->where('document_id', $data->id)
-                                    ->where('user_id', $reviewer[$i])
-                                    ->where('stage', 'Reviewed')
-                                    ->latest()
-                                    ->first();
-
-
-                                    $reject = DB::table('stage_manages')
-                                    ->where('document_id', $data->id)
-                                    ->where('user_id', $reviewer[$i])
-                                    ->where('stage', 'Cancel-by-Reviewer')
-                                    ->where('deleted_at', null)
-                                    ->latest()
-                                    ->first();
-
-                                    @endphp
-                                    <tr>
-                                        <td class="text-left w-25">{{ $user->name }}</td>
-                                        <td class="text-left w-25">{{ $dept }}</td>
-                                        @if ($date)
-                                        <td class="text-left w-25">Review Completed</td>
-                                        @elseif(!empty($reject))
-                                        <td class="text-left w-25">Review Rejected </td>
-                                        @else
-                                        <td class="text-left w-25">Review Pending</td>
-                                        @endif
-
-                                        <td class="text-left w-25">{{ $user->email }}</td>
-                                        <td class="text-left w-25">
-                                            @if($comment)
-                                            {{ $comment->comment }}
-                                            @endif
-                                        </td>
-                                        {{-- <td class="text-left w-25">{{ !$comment || $signatureReviewerData->comment == null ? " " : $signatureReviewerData->comment }}</td> --}}
-
-                                    </tr>
-                                    @endfor
-                                    @endif
-                                    @if ($data->reviewers_group)
-                                    @php
-                                    $group = explode(',', $data->reviewers_group);
-                                    $i = 0;
-
-                                    @endphp
-                                    @for ($i = 0; $i < count($group); $i++) @php $users_id=DB::table('group_permissions') ->where('id', $group[$i])
-                                        ->value('user_ids');
-                                        $reviewer = explode(',', $users_id);
-                                        $i = 0;
-                                        @endphp
-                                        @if ($users_id)
-                                        @for ($i = 0; $i < count($reviewer); $i++) @php $user=DB::table('users') ->where('id', $reviewer[$i])
-                                            ->first();
-                                            $dept = DB::table('departments')
-                                            ->where('id', $user->departmentid)
-                                            ->value('name');
-                                            $date = DB::table('stage_manages')
-                                            ->where('document_id', $data->id)
-                                            ->where('user_id', $reviewer[$i])
-                                            ->where('stage', 'Review-Submit')
-                                            ->where('deleted_at', null)
-                                            ->latest()
-                                            ->first();
-
-                                            $reject = DB::table('stage_manages')
-                                            ->where('document_id', $data->id)
-                                            ->where('user_id', $reviewer[$i])
-                                            ->where('stage', 'Cancel-by-Reviewer')
-                                            ->latest()
-                                            ->first();
-
-                                            @endphp
-                                            <tr>
-                                                <td class="text-left w-25">{{ $user->name }}</td>
-                                                <td class="text-left w-25">{{ $dept }}</td>
-                                                @if ($date)
-                                                <td class="text-left w-25">Review Completed</td>
-                                                @elseif(!empty($reject))
-                                                <td class="text-left w-25">Review Rejected </td>
-                                                @else
-                                                <td class="text-left w-25">Review Pending</td>
-                                                @endif
-
-                                                <td class="text-left w-25">{{ $user->email }}</td>
-                                            </tr>
-                                            @endfor
-                                            @endif
-                                            @endfor
-
-
-                                            @endif
-
-                            </tbody>
-                            {{-- <tbody>
-                                        <tr>
-                                            <td class="text-left w-25">Vivek</td>
-                                            <td class="text-left w-25">Quality Control</td>
-                                            <td class="text-left w-25">12-12-2023 11:12PM</td>
-                                            <td class="text-left w-25">vivek@gmail.com</td>
-                                        </tr>
-                                    </tbody> --}}
                         </table>
                     </div>
                 </div>
@@ -1462,132 +1353,15 @@ $total_copies_static = $total_copies;
                                     <th class="text-left w-25">Comments</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @if ($data->approvers)
-                                @php
-                                $reviewer = explode(',', $data->approvers);
-                                $i = 0;
-                                @endphp
-                                @for ($i = 0; $i < count($reviewer); $i++) @php $user=DB::table('users') ->where('id', $reviewer[$i])
-                                    ->first();
-                                    $dept = DB::table('departments')
-                                    ->where('id', $user->departmentid)
-                                    ->value('name');
-                                    $date = DB::table('stage_manages')
-                                    ->where('document_id', $data->id)
-                                    ->where('user_id', $reviewer[$i])
-                                    ->where('stage', 'Approved')
-                                    ->where('deleted_at', null)
-                                    ->latest()
-                                    ->first();
-                                    $comment = DB::table('stage_manages')
-                                    ->where('document_id', $data->id)
-                                    ->where('user_id', $reviewer[$i])
-                                    ->where('stage', 'Approved')
-                                    ->latest()
-                                    ->first();
-                                    $reject = DB::table('stage_manages')
-                                    ->where('document_id', $data->id)
-                                    ->where('user_id', $reviewer[$i])
-                                    ->where('stage', 'Cancel-by-Approver')
-                                    ->where('deleted_at', null)
-                                    ->latest()
-                                    ->first();
 
-                                    @endphp
-                                    <tr>
-                                        <td class="text-left w-25">{{ $user->name }}</td>
-                                        <td class="text-left w-25">{{ $dept }}</td>
-                                        @if ($date)
-                                        <td class="text-left w-25">Approval Completed</td>
-                                        @elseif(!empty($reject))
-                                        <td>Approval Rejected</td>
-                                        @else
-                                        <td class="text-left w-25">Approval Pending</td>
-                                        @endif
-
-                                        <td class="text-left w-25">{{ $user->email }}</td>
-                                        <td class="text-left w-25">
-                                            @if($comment)
-                                            {{ $comment->comment }}
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    @endfor
-                                    @endif
-                                    @if ($data->approver_group)
-                                    @php
-                                    $group = explode(',', $data->approver_group);
-                                    $i = 0;
-
-                                    @endphp
-                                    @for ($i = 0; $i < count($group); $i++) @php $users_id=DB::table('group_permissions') ->where('id', $group[$i])
-                                        ->value('user_ids');
-                                        $reviewer = explode(',', $users_id);
-                                        $i = 0;
-                                        @endphp
-                                        @if ($users_id)
-                                        @for ($i = 0; $i < count($reviewer); $i++) @php $user=DB::table('users') ->where('id', $reviewer[$i])
-                                            ->first();
-                                            $dept = DB::table('departments')
-                                            ->where('id', $user->departmentid)
-                                            ->value('name');
-                                            $date = DB::table('stage_manages')
-                                            ->where('document_id', $data->id)
-                                            ->where('user_id', $reviewer[$i])
-                                            ->where('stage', 'Approval-Submit')
-                                            ->latest()
-                                            ->first();
-                                            $reject = DB::table('stage_manages')
-                                            ->where('document_id', $data->id)
-                                            ->where('user_id', $reviewer[$i])
-                                            ->where('stage', 'Cancel-by-Approver')
-                                            ->latest()
-                                            ->first();
-
-                                            @endphp
-                                            <tr>
-                                                <td class="text-left w-25">{{ $user->name }}</td>
-                                                <td class="text-left w-25">{{ $dept }}</td>
-                                                @if ($date)
-                                                <td class="text-left w-25">Approval Completed</td>
-                                                @elseif(!empty($reject))
-                                                <td class="text-left w-25">Approval Rejected </td>
-                                                @else
-                                                <td class="text-left w-25">Approval Pending</td>
-                                                @endif
-
-                                                <td class="text-left w-25">{{ $user->email }}</td>
-                                            </tr>
-                                            @endfor
-                                            @endif
-                                            @endfor
-
-
-                                            @endif
-
-                            </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </section>
 
-        {{-- @if ($printing)
-                <div style="position: fixed; right: 10; bottom: -25;">
-                    Print Copy: {{ ($total_copies_static - ($total_copies-1)) . '/' . $total_copies_static }}
-        </div>
-        @endif --}}
     </section>
-    @php
-    $total_copies--;
-    @endphp
 
-    @if ($printing && $total_copies != 0)
-    <div style="page-break-after: always;"></div>
-    @endif
-
-    @endwhile
 
     <script type="text/php">
         if ( isset($pdf) ) {
@@ -1597,13 +1371,12 @@ $total_copies_static = $total_copies;
                     $size = 12;
                     $pageText = "Page " . $PAGE_NUM . " of " . $PAGE_COUNT;
                     $y = 788;
-                    $x = 480;
+                    $x = 485;
                     $pdf->text($x, $y, $pageText, $font, $size);
                 }
             ');
         }
     </script>
-
 </body>
 
 </html>

@@ -2676,15 +2676,19 @@ class DocumentController extends Controller
         $section->addText('Year: ' . $data['year']);
         $section->addText('Content:');
 
-        // Check if document_content exists and is not null
-        if ($data['document_content'] && $data['document_content']->content) {
-            $htmlContent = $data['document_content']->content;
+        // Handle document content
+        if ($data['document_content']) {
+            // Unserialize data if necessary
+            foreach ($data['document_content']->toArray() as $key => $value) {
+                if (is_string($value) && $this->isSerialized($value)) {
+                    $data['document_content']->$key = unserialize($value);
+                }
+            }
 
-            // Convert HTML to plain text if necessary
-            $plainTextContent = strip_tags($htmlContent);
-
-            // Add the text content to the document
-            $section->addText($plainTextContent);
+            // Add document content to the Word document
+            foreach ($data['document_content']->toArray() as $key => $content) {
+                $section->addText($key . ': ' . $this->formatContent($content));
+            }
         } else {
             $section->addText('No content available', ['italic' => true]);
         }
@@ -2713,5 +2717,28 @@ class DocumentController extends Controller
 
         // Return the file as a download response
         return response()->download($filePath)->deleteFileAfterSend(true);
+    }
+
+    private function isSerialized($data)
+    {
+        // If it isn't a string, it isn't serialized
+        if (!is_string($data)) {
+            return false;
+        }
+        // Check for valid serialization format
+        return (@unserialize($data) !== false || $data === 'b:0;');
+    }
+
+    private function formatContent($content)
+    {
+        if (is_array($content)) {
+            $result = '';
+            foreach ($content as $key => $value) {
+                $result .= $this->formatContent($value) . ', ';
+            }
+            return rtrim($result, ', ');
+        } else {
+            return (string) $content;
+        }
     }
 }
