@@ -1598,7 +1598,7 @@ class DocumentController extends Controller
             $documentcontet->procedure = $request->procedure;
             $documentcontet->safety_precautions = $request->safety_precautions;
 
-            $documentcontet->short_description = $request->short_description ? serialize($request->short_description) : serialize([]);
+            // $documentcontet->short_description = $request->short_description ? serialize($request->short_description) : serialize([]);
 
             $documentcontet->responsibility = $request->responsibility ? serialize($request->responsibility) : serialize([]);
             $documentcontet->accountability = $request->accountability ? serialize($request->accountability) : serialize([]);
