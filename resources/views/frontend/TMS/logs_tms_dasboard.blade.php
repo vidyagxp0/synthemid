@@ -79,10 +79,9 @@
                     <th>Trainee Name</th>
                     <th>Trainee Plan Id</th>
                     <th>Due Date</th>
-                    <th>Att</th>
-                    <th>Type</th>
-                    <th>Due Date</th>
-                    <th>Complains Date</th>
+                    <th>Attendance </th>
+                    <th>Pass/Fail</th>
+                    <th>Remark</th>
                 </tr>
             </thead>
             <tbody class="tmstablelast">
