@@ -1130,7 +1130,23 @@ class DocumentController extends Controller
                 $history->activity_type = 'Document Name';
                 $history->previous = $lastDocument->document_name;
                 $history->current = $document->document_name;
-                $history->comment = implode($request->document_name_comment);
+
+                $stage = $request->stage; // Assuming stage is being passed in the request
+
+if (is_array($request->document_name_comment)) {
+    if ($stage >= 5 && $stage <= 11) {
+        // Custom handling for stages 5 to 11
+        $history->comment = implode(',', $request->document_name_comment);
+    } else {
+        // Normal handling for other stages
+        $history->comment = implode(',', $request->document_name_comment);
+    }
+} else {
+    // Handle the case where document_name_comment is not an array
+    $history->comment = $request->document_name_comment;
+}
+
+                // $history->comment = implode($request->document_name_comment);
                 $history->user_id = Auth::user()->id;
                 $history->user_name = Auth::user()->name;
                 $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
@@ -1358,7 +1374,21 @@ class DocumentController extends Controller
                 $history->activity_type = 'Draft Document';
                 $history->previous = $lastDocument->attach_draft_doocument;
                 $history->current = $document->attach_draft_doocument;
-                $history->comment = implode($request->attach_draft_doocument_comment);
+                $stage = $request->stage; // Assuming stage is being passed in the request
+
+                if (is_array($request->attach_draft_doocument_comment)) {
+                    if ($stage > 4 && $stage <= 10) {
+                        // Custom handling for stages 5 to 11
+                        $history->comment = implode(',', $request->attach_draft_doocument_comment);
+                    } else {
+                        // Normal handling for other stages
+                        $history->comment = implode(',', $request->attach_draft_doocument_comment);
+                    }
+                } else {
+                    // Handle the case where attach_draft_doocument_comment is not an array
+                    $history->comment = $request->attach_draft_doocument_comment;
+                }
+                // $history->comment = implode($request->attach_draft_doocument_comment);
                 $history->user_id = Auth::user()->id;
                 $history->user_name = Auth::user()->name;
                 $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
@@ -1428,7 +1458,22 @@ class DocumentController extends Controller
                 $history->activity_type = 'Effective Document';
                 $history->previous = $lastDocument->attach_effective_docuement;
                 $history->current = $document->attach_effective_docuement;
-                $history->comment = implode($request->attach_effective_docuement_comment);
+                $stage = $request->stage; // Assuming stage is being passed in the request
+
+if (is_array($request->attach_effective_docuement_comment)) {
+    if ($stage > 4 && $stage <= 10) {
+        // Custom handling for stages 5 to 11
+        $history->comment = implode(',', $request->attach_effective_docuement_comment);
+    } else {
+        // Normal handling for other stages
+        $history->comment = implode(',', $request->attach_effective_docuement_comment);
+    }
+} else {
+    // Handle the case where attach_effective_docuement_comment is not an array
+    $history->comment = $request->attach_effective_docuement_comment;
+}
+
+                // $history->comment = implode($request->attach_effective_docuement_comment);
                 $history->user_id = Auth::user()->id;
                 $history->user_name = Auth::user()->name;
                 $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
@@ -1811,18 +1856,18 @@ class DocumentController extends Controller
             }
 
             toastr()->success('Document Updated');
-            return redirect()->back();
+            // return redirect()->back();
 
 
-            // if (Helpers::checkRoles(3)) {
-            //     return redirect('doc-details/' . $id);
-            // } else {
-            //     return redirect('rev-details/' . $id);
-            // }
+            if (Helpers::checkRoles(3)) {
+                return redirect('doc-details/' . $id);
+            } else {
+                return redirect('rev-details/' . $id);
+            }
         } else {
             toastr()->error('Not working');
 
-            // return redirect()->back();
+            return redirect()->back();
         }
 
         toastr()->success('Document Updated');

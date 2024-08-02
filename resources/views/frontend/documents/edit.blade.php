@@ -395,7 +395,6 @@
 
 </div>
 
-
 <div class="col-md-5 new-date-data-field">
     <div class="group-input input-date">
         <label for="effective-date">Effective Date</label>
@@ -458,102 +457,6 @@
 </script>
 @endif
 @endif
-
-<!-- @if (Auth::user()->role != 3)
-    @if ($document->stage > 4 && $document->stage <= 10) <div class="comment-section">
-        <div id="comment-container-effective">
-            @if(isset($comments) && is_array($comments))
-            @foreach($comments as $comment)
-            <div class="input-container">
-                <input type="text" class="input-field" name="effective_date_comment[]" value="{{ htmlspecialchars($comment) }}" readonly>
-                <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
-                <button type="button" class="remove-button" onclick="removeRow(this)">Remove</button>
-            </div>
-            @endforeach
-            @endif
-        </div>
-        <div class="button-container">
-            <div class="button" style="display: inline-block; padding: 2px 8px; background-color: #fff; color: black; border-radius: 5px; cursor: pointer; text-align: center; box-sizing: border-box; border: 2px solid black;" onclick="addCommentField2()">+ Add Comment</div>
-        </div>
-</div>
-@endif
-@endif
-
-<style>
-    .comment-section {
-        margin-bottom: 20px;
-    }
-
-    .input-field {
-        display: block;
-        margin-bottom: 10px;
-        padding: 8px;
-        width: 100%;
-        box-sizing: border-box;
-        background-color: #f9f9f9;
-    }
-
-    .button-container {
-        margin-top: 10px;
-    }
-
-    .button:hover {
-        background-color: #0056b3;
-    }
-
-    .input-container {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-
-    .input-container .input-field {
-        flex: 1;
-        border: 1px solid #ccc;
-    }
-
-    .input-container .timestamp {
-        margin-left: 10px;
-    }
-
-    .remove-button {
-        display: inline-block;
-        padding: 2px 8px;
-        background-color: #f44336;
-        color: white;
-        border-radius: 5px;
-        cursor: pointer;
-        text-align: center;
-        box-sizing: border-box;
-        border: 2px solid darkred;
-        margin-left: 10px;
-    }
-
-    .remove-button:hover {
-        background-color: darkred;
-    }
-</style>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    function removeRow(button) {
-        var row = button.closest('.input-container');
-        row.remove();
-    }
-
-    function addCommentField2() {
-        var container = document.getElementById("comment-container-effective");
-        var newField = document.createElement('div');
-        newField.classList.add('input-container');
-        newField.innerHTML = `
-            <input type="text" class="input-field" name="effective_date_comment[]">
-            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at {{ date('d-M-Y h:i:s') }}</p>
-            <button type="button" class="remove-button" onclick="removeRow(this)">Remove</button>
-        `;
-        container.appendChild(newField);
-    }
-</script> -->
-
 
 </div>
 <div class="col-md-2">

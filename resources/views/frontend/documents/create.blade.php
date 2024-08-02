@@ -218,6 +218,57 @@
                                     <p id="due_dateDocError" style="color:red">**Due Date is required</p>
 
                                 </div>
+
+                <div class="col-md-5 new-date-data-field">
+                    <div class="group-input input-date">
+                        <label for="effective-date">Effective Date</label>
+                        <div> <small class="text-primary">The effective date will be automatically populated once the record becomes effective</small></div>
+                        <div class="calenderauditee">
+                            <input type="text" name="effective_date" id="effective_date" placeholder="DD-MMM-YYYY" />
+                            <input type="date" name="effective_date" id="effective_date" class="hide-input" min="{{ Carbon\Carbon::today()->format('Y-m-d') }}" oninput="handleDateInput(this, 'effective_date')" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2 new-date-data-field">
+                    <div class="group-input ">
+                        <label for="review-period">Review Period (in years)</label>
+
+                        <input type="number" name="review_period" id="review_period" style="margin-top: 25px;" value="3" min="0" oninput="validateInput(this)">
+                    </div>
+                </div>
+                <script>
+                    function validateInput(input) {
+                        if (input.value < 0) {
+                            input.value = 0;
+                        }
+                    }
+                </script>
+
+                <div class="col-md-5 new-date-data-field">
+                    <div class="group-input input-date">
+                        <label for="next_review_date">Next Review Date</label>
+                        <div class="calenderauditee">
+                            <input type="text" name="next_review_date" id="next_review_date" style="margin-top: 25px;" class="new_review_date_show" readonly placeholder="DD-MMM-YYYY" />
+                            <input type="date" name="next_review_date" id="next_review_date" class="hide-input new_review_date_hide" readonly min="{{ Carbon\Carbon::today()->format('Y-m-d') }}" oninput="handleDateInput(this, 'next_review_date')" />
+                        </div>
+                    </div>
+                </div>
+
+                
+<div class="col-md-6">
+                    <div class="group-input">
+                        <label for="draft-doc">Attach Draft document</label>
+                        <input type="file" name="attach_draft_doocument">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="group-input">
+                        <label for="effective-doc">Attach Effective document</label>
+                        <input type="file" name="attach_effective_docuement">
+                    </div>
+                </div>
+
                             </div>
                         </div>                                
                         <div class="orig-head">
