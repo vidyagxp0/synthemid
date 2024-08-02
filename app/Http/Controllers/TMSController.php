@@ -979,4 +979,11 @@ class TMSController extends Controller
 
         return view('frontend.TMS.training-overall-status',compact('trainingStatus','sops','training','trainingUsers'));
     }
+
+
+    public function logsTms_dashboard(){
+
+        return view('frontend.TMS.logs_tms_dasboard');
+        
+    }
 }

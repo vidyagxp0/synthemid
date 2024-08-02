@@ -12,6 +12,8 @@
         </a> --}}
 
             <a href="{{ route('TMS.index') }}" class="tms-link">Dashboard</a>
+            {{-- <a href="{{ route('') }}" class="tms-link">Logs</a> --}}
+            <a data-bs-toggle="modal" data-bs-target="#logsid">Logs</a>
             <a href="{{ route('employee_new') }}" class="tms-link">Employee</a>
             <a href="{{ route('trainer_qualification') }}" class="tms-link">Trainer Qualification</a>
             <div class="tms-drop-block">
@@ -30,6 +32,46 @@
                     <a href="{{ url('induction_training') }}">Induction Training</a>
                     <a href="{{ url('job_training') }}">On The Job Training</a>
 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ============================================= --}}
+    <div class="modal fade" id="logsid">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Logs</h4>
+                </div>
+                <div class="model-body">
+                <form action="{{ route('logstms') }}" method="POST">
+                    @csrf
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <div class="group-input">
+                            <label style="  display: flex;     gap: 18px;" for="capa-child">
+                                <input type="radio" name="revision" >
+                               Training Logs
+                            </label>
+                        </div><br>
+                        <div class="group-input">
+                            <label style=" display: flex;     gap: 16px;" for="root-item">
+                                <input type="radio" name="revision" id="root-item" >
+                              <span style="width: 100px;">Trainees Logs</span>
+                            </label>
+                        </div>
+                       
+                    </div>
+
+                   
+                    <div class="modal-footer">
+                              <button type="submit">Submit</button>
+                             <button type="button" data-bs-dismiss="modal">Close</button>                         
+                   </div>
+                </form>
                 </div>
             </div>
         </div>

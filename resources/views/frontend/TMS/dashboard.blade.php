@@ -46,8 +46,8 @@ $divisions = DB::table('q_m_s_divisions')->select('id', 'name')->get();
 
     
     .tmstablelast td {
-            min-height: 50px; 
-            padding: 5px 5px; 
+            min-height: 60px; 
+            padding: 14px 5px; 
         }
         
 </style>
@@ -428,73 +428,7 @@ $divisions = DB::table('q_m_s_divisions')->select('id', 'name')->get();
                     </table>
                 </div>
             </div>
-{{-- ============================================ k======================================== --}}
-<div>
-   
-    <div   class="inner-block tms-block cctabcontent" style="margin-top:50px; display:block;">
-        <div>
-            <div>
-                <label for="">Status :  </label>
-                <select name="" id="">
-                    <option value="">Select</option>
-                    <option value="">Past Due Date</option>
-                    <option value="">Pending</option>
-                    <option value="">Complete</option>
-                    <option value="">All</option>
-        
-        
-                </select>
-                <label for="" style="margin-left: 60%">Search :  </label>
-                <input type="text">
-            </div><br>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Complains</th>
-                        <th>Number</th>
-                        <th>Name</th>
-                        <th>Training Status</th>
-                        <th>Type</th>
-                        <th>Due Date</th>
-                        <th>Complains Date</th>
-    
-                    </tr>
-                </thead>
-                <tbody class="tmstablelast">
-                 <tr>
-                        <td><input type="radio" name="select_complain" ></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td><input type="radio" name="select_complain"></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td><input type="radio" name="select_complain"></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </tbody>
-               
-            </table>
-    
-        </div>
-    </div>
-</div>
+
 
 
             {{-- ========================================== --}}
@@ -695,7 +629,73 @@ $divisions = DB::table('q_m_s_divisions')->select('id', 'name')->get();
 @endif
 </div> --}}
 </div>
+{{-- ============================================ k ======================================== --}}
+<div>
+    <div class="inner-block tms-block cctabcontent" style="margin-top:50px; display:block;">
+        <div>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center;">
+                    <label for="status" style="margin-right: 10px;"><b>Status:</b></label>
+                    <select name="status" id="status" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc;">
+                        <option value="">Select</option>
+                        <option value="past_due_date">Past Due Date</option>
+                        <option value="pending">Pending</option>
+                        <option value="complete">Complete</option>
+                        <option value="all">All</option>
+                    </select>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <label for="search" style="margin-right: 10px;"><b>Search:</b></label>
+                    <input type="text" id="search" name="search" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc; width: 200px;">
+                </div>
+            </div><br>
+            <table class="table table-bordered" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th>Complains</th>
+                        <th>Number</th>
+                        <th>Name</th>
+                        <th>Training Status</th>
+                        <th>Type</th>
+                        <th>Due Date</th>
+                        <th>Complains Date</th>
+                    </tr>
+                </thead>
+                <tbody class="tmstablelast">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+</div>  
+
 </div>
 
 {{-- ======================================
