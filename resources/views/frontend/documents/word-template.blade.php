@@ -11,8 +11,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     {{-- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> --}}
     {{-- <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet"> --}}
-
-    <style>
+    <link rel="" href="public/css/style.css">
+    {{-- <style>
         * {
             font-family: "Open Sans", "Roboto", "Noto Sans KR", "Poppins", sans-serif;
             font-optical-sizing: auto;
@@ -435,134 +435,213 @@
         .main-section {
             text-align: left;
         }
-    </style>
+    </style> --}}
+
 
 </head>
 
 <body>
 
-    <header class="">
-        <table class="border" style="height: 80px;">
+    <header style="
+        width: 100%;
+        position: fixed;
+        top: -215px;
+        right: 0;
+        left: 0;
+        display: block;
+        font-family: Arial, sans-serif;
+        padding: 10px;
+        box-sizing: border-box;
+        background-color: #f8f8f8;
+        border-bottom: 1px solid #ddd;
+    ">
+        <!-- First Table: Logo and Title -->
+        <table style="
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            border: 1px solid black;
+            background-color: #fff;
+            ">
             <tbody>
                 <tr>
-                    <td class="logo w-20">
-                        <!-- <img src="https://navin.mydemosoftware.com/public/user/images/logo.png" alt="" class="w-100"> -->
-
-                        <img src="https://navin.mydemosoftware.com/public/user/images/logo.png" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem;">
+                    <td style="
+                        width: 20%;
+                        text-align: center;
+                        padding: 10px;
+                        ">
+                        <img src="https://navin.mydemosoftware.com/public/user/images/logo.png" alt="Logo" style="max-height: 80px;">
                     </td>
-                    <td class="title w-60" style="height: 100px; padding: 0px;  margin: 0px; border-left: 1px solid rgb(104, 104, 104); border-right: 1px solid rgb(104, 104, 104);">
-                        <p style="margin-top: -0.1rem; border-bottom: 0px solid rgb(104, 104, 104);">{{ config('site.pdf_title') }}</p>
-                        <hr style="border: 0; border-top: 1px solid rgb(104, 104, 104); margin: 0;">
-                        <p style="margin-top: -2rem; margin-bottom: 0px;">
-
-                        </p>
+                    <td style="
+                        width: 60%;
+                        text-align: center;
+                        padding: 10px;
+                        border-left: 1px solid black;
+                        border-right: 1px solid black;
+                        ">
+                        <p style="margin: 0; font-size: 18px; font-weight: bold;">{{ config('site.pdf_title') }}</p>
+                        <hr style="border: 0; border-top: 1px solid black; margin: 5px 0;">
+                        <p style="margin: 0; font-size: 16px;">{{ $data['document_name'] }}</p>
                     </td>
-
-                    <td class="logo w-20">
-                        <img src="{{ asset('user/images/agio.jpg') }}" style="max-height: 55px; max-width: 40px;">
-                        <!-- <img src="http://127.0.0.1:8000/user/images/agio.jpg" style="max-height: 55px; max-width: 40px;"> -->
-
+                    <td style="
+                        width: 20%;
+                        text-align: center;
+                        padding: 10px;
+                        ">
+                        <img src="{{ asset('user/images/agio.jpg') }}" alt="Additional Logo" style="max-height: 55px; max-width: 40px;">
                     </td>
                 </tr>
             </tbody>
         </table>
-        <table class="border border-top-none p-6">
+
+        <!-- Second Table: Document Number and Type -->
+        <table style="
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            border: 1px solid black;
+            background-color: #fff;
+            ">
             <tbody>
                 <tr>
-                    <td class="doc-num w-30">
-                        {{-- {{($data->sop_type)}} --}}
-
+                    <td style="
+                        width: 30%;
+                        text-align: center;
+                        padding: 8px;
+                        ">
+                        {{ isset($data['sop_type']) ? $data['sop_type'] : 'N/A' }}
                     </td>
-                    <td class="doc-num w-40">
-                        {{-- @php
+                    <td style="
+                        width: 40%;
+                        text-align: center;
+                        padding: 8px;
+                        border-left: 1px solid black;
+                        border-right: 1px solid black;
+                        ">
+                        @php
                         $temp = DB::table('document_types')
-                        ->where('name', $data->document_type_name)
+                        ->where('name', isset($data['document_type_name']) ? $data['document_type_name'] : '')
                         ->value('typecode');
-                        @endphp --}}
-                        {{-- @if($data->revised === 'Yes')
-
-                        {{ Helpers::getDivisionName($data->division_id) }}
-                        /@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}
-                        /000{{ $data->document_number }}/R{{$data->major}}.{{$data->minor}}
-
+                        @endphp
+                        @if(isset($data['revised']) && $data['revised'] === 'Yes')
+                        {{ isset($data['sop_type_short']) ? Helpers::getSopTypeShortName($data['document_id']) : 'N/A' }}
+                        /@if(isset($data['sop_type_short'])){{ $temp }} /@endif{{ isset($data['year']) ? $data['year'] : '' }}
+                        /000{{ isset($data['document_number']) ? $data['document_number'] : '' }}/R{{ isset($data['major']) ? $data['major'] : '' }}.{{ isset($data['minor']) ? $data['minor'] : '' }}
                         @else
-                        {{ Helpers::getDivisionName($data->division_id) }}
-                        /@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}
-                        /000{{ $data->document_number }}/R{{$data->major}}.{{$data->minor}}
-                        @endif --}}
-
-                        {{-- @if($data->revised === 'Yes')
-
-                        {{ Helpers::getSopTypeShortName($data->document_id) }}
-                        /@if($data->sop_type_short){{ $temp }} /@endif{{ $data->year }}
-                        /000{{ $data->document_number }}/R{{$data->major}}.{{$data->minor}}
-
-                        @else
-                        {{$data->sop_type_short}}/{{$data->department_id}}/000{{ $data->id }}/R{{$data->major}}.{{$data->minor}}
-                        @endif --}}
-
+                        {{ isset($data['sop_type_short']) ? $data['sop_type_short'] : 'N/A' }}/{{ isset($data['department_id']) ? $data['department_id'] : '' }}/000{{ isset($data['id']) ? $data['id'] : '' }}/R{{ isset($data['major']) ? $data['major'] : '' }}.{{ isset($data['minor']) ? $data['minor'] : '' }}
+                        @endif
                     </td>
-                    <td class="doc-num w-30">
-                        {{-- {{ Helpers::getFullDepartmentName($data->department_id) }} --}}
+                    <td style="
+                        width: 30%;
+                        text-align: center;
+                        padding: 8px;
+                        ">
+                        {{ isset($data['department_id']) ? Helpers::getFullDepartmentName($data['department_id']) : 'N/A' }}
                     </td>
                 </tr>
             </tbody>
         </table>
 
-        <table class="border border-top-none p-8">
+        <!-- Third Table: Address -->
+        <table style="
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            border: 1px solid black;
+            background-color: #fff;
+            ">
             <tbody>
                 <tr>
-                    <td class="doc-num w-60">
+                    <td style="
+                        width: 60%;
+                        text-align: center;
+                        padding: 8px;
+                        ">
                         Address : 82, M.I.D.C, Bhosari, Maharashtra 411026
                     </td>
-                    <!-- <td class="w-60">
-                        Address : 82, M.I.D.C, Bhosari, Maharashtra 411026
-                    </td> -->
                 </tr>
             </tbody>
         </table>
 
-        <table class="border border-top-none p-7">
+        <!-- Fourth Table: Dates -->
+        <table style="
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            border: 1px solid black;
+            background-color: #fff;
+            ">
             <tbody>
                 <tr>
-                    <td class="doc-num w-50">
-                        Effective Date: {{ \Carbon\Carbon::parse($data->effective_date)->format('d-M-Y') }}
+                    <td style="
+                        width: 50%;
+                        text-align: center;
+                        padding: 8px;
+                        ">
+                        Effective Date: {{ isset($data['effective_date']) ? \Carbon\Carbon::parse($data['effective_date'])->format('d-M-Y') : 'N/A' }}
                     </td>
-                    <td class="doc-num w-50">
-                        Next Review Date: {{ \Carbon\Carbon::parse($data->next_review_date)->format('d-M-Y') }}
+                    <td style="
+                        width: 50%;
+                        text-align: center;
+                        padding: 8px;
+                        ">
+                        Next Review Date: {{ isset($data['next_review_date']) ? \Carbon\Carbon::parse($data['next_review_date'])->format('d-M-Y') : 'N/A' }}
                     </td>
-
                 </tr>
             </tbody>
         </table>
     </header>
-    <footer class="footer">
-        <table class="border p-20">
+
+    <footer class="footer" style="
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        display: block;
+        border-top: 1px solid #ddd;
+        background-color: #fff;
+        padding: 10px;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+        ">
+        <table style="
+            width: 100%;
+            border-collapse: collapse;
+            ">
             <tbody>
                 <tr>
-                    <td class="text-left w-25">
+                    <td style="
+                        width: 25%;
+                        text-align: left;
+                        padding: 8px;
+                        ">
                         @php
                         $temp = DB::table('document_types')
-                        ->where('name', $data->document_type_name)
+                        ->where('name', $data['document_type_name'] ?? '')
                         ->value('typecode');
                         @endphp
-                        @if($data->revised === 'Yes')
-                        {{ Helpers::getDivisionName($data->division_id) }}
-                        /@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}
-                        /000{{ $data->document_number }}/R{{$data->major}}.{{$data->minor}}
-
+                        @if(isset($data['revised']) && $data['revised'] === 'Yes')
+                        {{ isset($data['division_id']) ? Helpers::getDivisionName($data['division_id']) : 'N/A' }}
+                        /@if(isset($data['document_type_name'])){{ $temp }} /@endif{{ $data['year'] ?? '' }}
+                        /000{{ $data['document_number'] ?? '' }}/R{{ $data['major'] ?? '' }}.{{ $data['minor'] ?? '' }}
                         @else
-                        {{$data->sop_type_short}}/{{$data->department_id}}/000{{ $data->id }}/R{{$data->major}}.{{$data->minor}}
+                        {{ $data['sop_type_short'] ?? 'N/A' }}/{{ $data['department_id'] ?? '' }}/000{{ $data['id'] ?? '' }}/R{{ $data['major'] ?? '' }}.{{ $data['minor'] ?? '' }}
                         @endif
+                    </td>
+                    <td style="
+                        width: 20%;
+                        text-align: right;
+                        padding: 8px;
+                        ">
 
-
-                        {{-- <td class="w-42">Printed On: {{ \Carbon\Carbon::parse($time)->format('d-M-Y h:i A') }}
-                    </td> --}}
-                    <td class="text-right w-20"></td>
+                    </td>
                 </tr>
             </tbody>
         </table>
     </footer>
+
+
 
     <section class="main-section" id="pdf-page" style="margin-top: 15px;">
         <section style="page-break-after: never;">
@@ -593,13 +672,14 @@
                     <div class="w-100">
                         <div class="w-100" style="display:inline-block; margin-left: 2.5rem;">
                             <div class="w-100">
-                                <div class="text-justify" style="height:auto; overflow-x:hidden; width:650px; ">
-                                    {!! $data->document_content ? nl2br($data->document_content->purpose) : '' !!}
+                                <div class="text-justify" style="height:auto; overflow-x:hidden; width:650px;">
+                                    {!! isset($data['document_content']) && isset($data['document_content']['purpose']) ? nl2br($data['document_content']['purpose']) : '' !!}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
 
             <div class="other-container">
@@ -618,12 +698,13 @@
                         <div class="w-100" style="display:inline-block;">
                             <div class="w-100">
                                 <div class="text-justify" style="height:auto; overflow-x:hidden; width:650px; margin-left: 2.5rem;">
-                                    {!! $data->document_content ? nl2br($data->document_content->scope) : '' !!}
+                                    {!! isset($data['document_content']) && isset($data['document_content']['scope']) ? nl2br($data['document_content']['scope']) : '' !!}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
 
             <table class="mb-15">
@@ -645,8 +726,8 @@
                                 @php
                                 $i = 1;
                                 @endphp
-                                @if ($data->document_content && !empty($data->document_content->responsibility) && is_array(unserialize($data->document_content->materials_and_equipments)))
-                                @foreach (unserialize($data->document_content->responsibility) as $key => $res)
+                                @if (isset($data['document_content']) && !empty($data['document_content']['responsibility']) && is_array(unserialize($data['document_content']['materials_and_equipments'])))
+                                @foreach (unserialize($data['document_content']['responsibility']) as $key => $res)
                                 @php
                                 $isSub = str_contains($key, 'sub');
                                 @endphp
@@ -665,8 +746,6 @@
                                 @endphp
                                 @endforeach
                                 @endif
-
-
                             </div>
                         </div>
                     </div>
@@ -692,8 +771,8 @@
                                 @php
                                 $i = 1;
                                 @endphp
-                                @if ($data->document_content && !empty($data->document_content->accountability) && is_array(unserialize($data->document_content->accountability)))
-                                @foreach (unserialize($data->document_content->accountability) as $key => $res)
+                                @if (isset($data['document_content']) && !empty($data['document_content']['accountability']) && is_array(unserialize($data['document_content']['accountability'])))
+                                @foreach (unserialize($data['document_content']['accountability']) as $key => $res)
                                 @php
                                 $isSub = str_contains($key, 'sub');
                                 @endphp
@@ -712,9 +791,8 @@
                                 @endphp
                                 @endforeach
                                 @endif
-
-
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -737,8 +815,8 @@
                         <div class="w-100">
                             <div style="height:auto; overflow-x:hidden; width:650px; margin-left: 2.5rem;">
                                 @php $i = 1; @endphp
-                                @if ($data->document_content && !empty($data->document_content->references) && is_array(unserialize($data->document_content->references)))
-                                @foreach (unserialize($data->document_content->references) as $key => $res)
+                                @if (isset($data['document_content']) && !empty($data['document_content']['references']) && is_array(unserialize($data['document_content']['references'])))
+                                @foreach (unserialize($data['document_content']['references']) as $key => $res)
                                 @php
                                 $isSub = str_contains($key, 'sub');
                                 @endphp
@@ -758,6 +836,7 @@
                                 @endforeach
                                 @endif
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -783,8 +862,8 @@
                                 @php
                                 $i = 1;
                                 @endphp
-                                @if ($data->document_content && !empty($data->document_content->abbreviation) && is_array(unserialize($data->document_content->abbreviation)))
-                                @foreach (unserialize($data->document_content->abbreviation) as $key => $res)
+                                @if (isset($data['document_content']) && !empty($data['document_content']['abbreviation']) && is_array(unserialize($data['document_content']['abbreviation'])))
+                                @foreach (unserialize($data['document_content']['abbreviation']) as $key => $res)
                                 @php
                                 $isSub = str_contains($key, 'sub');
                                 @endphp
@@ -804,6 +883,7 @@
                                 @endforeach
                                 @endif
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -828,14 +908,16 @@
                             <div style="height:auto; overflow-x:hidden; width:650px; margin-left: 2.5rem;">
                                 @php
                                 $i = 1;
-                                $definitions = $data->document_content ? unserialize($data->document_content->defination) : [];
+                                $definitions = isset($data['document_content']) && !empty($data['document_content']['defination'])
+                                ? unserialize($data['document_content']['defination'])
+                                : [];
                                 @endphp
-                                @if ($data->document_content && !empty($data->document_content->defination) && is_array($definitions))
+                                @if (!empty($definitions) && is_array($definitions))
                                 @foreach ($definitions as $key => $definition)
                                 @php
                                 $isSub = str_contains($key, 'sub');
                                 @endphp
-                                @if (!empty($res))
+                                @if (!empty($definition))
                                 <div style="position: relative;">
                                     <span style="position: absolute; left: -2.5rem; top: 0;">7.{{ $isSub ? $i - 1 . '.' . $sub_index : $i }}</span> {!! nl2br($definition) !!} <br>
                                 </div>
@@ -851,6 +933,7 @@
                                 @endforeach
                                 @endif
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -874,17 +957,27 @@
                     <div class="w-100" style="display:inline-block;">
                         <div class="w-100">
                             <div style="height:auto; overflow-x:hidden; width:650px; margin-left: 3rem;">
-                                @php $i = 1; $sub_index = 1; @endphp
-                                @if ($data->document_content && is_array(unserialize($data->document_content->materials_and_equipments)))
-                                @foreach (unserialize($data->document_content->materials_and_equipments) as $key => $res)
+                                @php
+                                $i = 1;
+                                $sub_index = 1;
+                                $materials_and_equipments = isset($data['document_content']) && is_array(unserialize($data['document_content']['materials_and_equipments']))
+                                ? unserialize($data['document_content']['materials_and_equipments'])
+                                : [];
+                                @endphp
+
+                                @if (!empty($materials_and_equipments))
+                                @foreach ($materials_and_equipments as $key => $res)
                                 @php
                                 $isSub = str_contains($key, 'sub');
                                 @endphp
+
                                 @if (!empty($res))
                                 <div style="position: relative;">
-                                    <span style="position: absolute; left: -2.5rem; top: 0;">8.{{ $isSub ? $i - 1 . '.' . $sub_index : $i }}</span> {!! nl2br($res) !!} <br>
+                                    <span style="position: absolute; left: -2.5rem; top: 0;">8.{{ $isSub ? $i - 1 . '.' . $sub_index : $i }}</span>
+                                    {!! nl2br($res) !!} <br>
                                 </div>
                                 @endif
+
                                 @php
                                 if (!$isSub) {
                                 $i++;
@@ -896,6 +989,7 @@
                                 @endforeach
                                 @endif
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -920,14 +1014,14 @@
                         <div class="w-100" style="display:inline-block;">
                             <div class="w-100">
                                 <div style="height:auto; overflow-x:hidden; width:650px; margin-left: 2.5rem;">
-                                    @if ($data->document_content)
-                                    {!! strip_tags($data->document_content->procedure, '<br>
+                                    @if (isset($data['document_content']))
+                                    {!! strip_tags($data['document_content']['procedure'], '<br>
                                     <table>
                                         <th>
                                         <td>
                                             <tbody>
                                                 <tr>
-                                                    <p><img><a><img><span>
+                                                    <p><img><a><span>
                                                                 <h1>
                                                                     <h2>
                                                                         <h3>
@@ -939,108 +1033,110 @@
                                                                                                     <li>') !!}
                                                                                                         @endif
                                                                                         </div>
+
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                {{-- PROCEDURE END --}}
+                    {{-- PROCEDURE END --}}
 
-                {{-- REPORTING START --}}
-                <table class="mb-15 ">
-                    <tbody>
-                        <tr>
-                            <th class="w-5 vertical-baseline">10.</th>
-                            <th class="w-95 text-left">
-                                <div class="bold">Cross References</div>
-                            </th>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="procedure-block">
-                    <div class="w-100">
-                        <div class="w-100" style="display:inline-block;">
-                            <div class="w-100">
-                                <div style="height:auto; overflow-x:hidden; width:650px; margin-left: 2.5rem;">
-                                    @php $i = 1; @endphp
-                                    @if ($data->document_content && !empty($data->document_content->reporting) && is_array(unserialize($data->document_content->reporting)))
-                                    @foreach (unserialize($data->document_content->reporting) as $key => $res)
-                                    @php
-                                    $isSub = str_contains($key, 'sub');
-                                    @endphp
-                                    @if (!empty($res))
-                                    <div style="position: relative;">
-                                        <span style="position: absolute; left: -3rem; top: 0;">10.{{ $isSub ? $i - 1 . '.' . $sub_index : $i }}</span> {!! nl2br($res) !!} <br>
+                    {{-- REPORTING START --}}
+                    <table class="mb-15 ">
+                        <tbody>
+                            <tr>
+                                <th class="w-5 vertical-baseline">10.</th>
+                                <th class="w-95 text-left">
+                                    <div class="bold">Cross References</div>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="procedure-block">
+                        <div class="w-100">
+                            <div class="w-100" style="display:inline-block;">
+                                <div class="w-100">
+                                    <div style="height:auto; overflow-x:hidden; width:650px; margin-left: 2.5rem;">
+                                        @php $i = 1; $sub_index = 1; @endphp
+                                        @if (isset($data['document_content']) && !empty($data['document_content']['reporting']) && is_array(unserialize($data['document_content']['reporting'])))
+                                        @foreach (unserialize($data['document_content']['reporting']) as $key => $res)
+                                        @php
+                                        $isSub = str_contains($key, 'sub');
+                                        @endphp
+                                        @if (!empty($res))
+                                        <div style="position: relative;">
+                                            <span style="position: absolute; left: -3rem; top: 0;">10.{{ $isSub ? $i - 1 . '.' . $sub_index : $i }}</span> {!! nl2br(e($res)) !!} <br>
+                                        </div>
+                                        @endif
+                                        @php
+                                        if (!$isSub) {
+                                        $i++;
+                                        $sub_index = 1;
+                                        } else {
+                                        $sub_index++;
+                                        }
+                                        @endphp
+                                        @endforeach
+                                        @endif
                                     </div>
-                                    @endif
-                                    @php
-                                    if (!$isSub) {
-                                    $i++;
-                                    $sub_index = 1;
-                                    } else {
-                                    $sub_index++;
-                                    }
-                                    @endphp
-                                    @endforeach
-                                    @endif
+
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                {{-- REPORTING END --}}
+                    {{-- REPORTING END --}}
 
 
 
-                {{-- ANNEXSURE START --}}
-                <table class="mb-15">
-                    <tbody>
-                        <tr>
-                            <th class="w-5 vertical-baseline">11.</th>
-                            <th class="w-95 text-left">
-                                <div class="bold">Annexure</div>
-                            </th>
-                        </tr>
-                    </tbody>
-                </table>
+                    {{-- ANNEXSURE START --}}
+                    <table class="mb-15">
+                        <tbody>
+                            <tr>
+                                <th class="w-5 vertical-baseline">11.</th>
+                                <th class="w-95 text-left">
+                                    <div class="bold">Annexure</div>
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                <div class="procedure-block">
-                    <div class="w-100">
-                        <div class="w-100" style="display:inline-block;">
-                            <div class="w-100">
-                                <div style="height:auto; overflow-x:hidden; width:650px; margin-left: 2.5rem;">
-                                    @php $i = 1; @endphp
-                                    @if ($data->document_content && !empty($data->document_content->ann) && is_array(unserialize($data->document_content->ann)))
-                                    @foreach (unserialize($data->document_content->ann) as $key => $res)
-                                    @php
-                                    $isSub = str_contains($key, 'sub');
-                                    @endphp
-                                    @if (!empty($res))
-                                    <div style="position: relative;">
-                                        <span style="position: absolute; left: -3rem; top: 0;">11.{{ $isSub ? $i - 1 . '.' . $sub_index : $i }}</span> {!! nl2br($res) !!} <br>
+                    <div class="procedure-block">
+                        <div class="w-100">
+                            <div class="w-100" style="display:inline-block;">
+                                <div class="w-100">
+                                    <div style="height:auto; overflow-x:hidden; width:650px; margin-left: 2.5rem;">
+                                        @php $i = 1; $sub_index = 1; @endphp
+                                        @if (isset($data['document_content']) && !empty($data['document_content']['ann']) && is_array(unserialize($data['document_content']['ann'])))
+                                        @foreach (unserialize($data['document_content']['ann']) as $key => $res)
+                                        @php
+                                        $isSub = str_contains($key, 'sub');
+                                        @endphp
+                                        @if (!empty($res))
+                                        <div style="position: relative;">
+                                            <span style="position: absolute; left: -3rem; top: 0;">11.{{ $isSub ? $i - 1 . '.' . $sub_index : $i }}</span> {!! nl2br(e($res)) !!} <br>
+                                        </div>
+                                        @endif
+                                        @php
+                                        if (!$isSub) {
+                                        $i++;
+                                        $sub_index = 1;
+                                        } else {
+                                        $sub_index++;
+                                        }
+                                        @endphp
+                                        @endforeach
+                                        @endif
                                     </div>
-                                    @endif
-                                    @php
-                                    if (!$isSub) {
-                                    $i++;
-                                    $sub_index = 1;
-                                    } else {
-                                    $sub_index++;
-                                    }
-                                    @endphp
-                                    @endforeach
-                                    @endif
+
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                {{-- ANNEXSURE END --}}
+                    {{-- ANNEXSURE END --}}
 
-                @php
-                $i = 1;
-                @endphp
-                {{-- @if ($data->document_content && !empty($data->document_content->annexuredata))
+                    @php
+                    $i = 1;
+                    @endphp
+                    {{-- @if ($data->document_content && !empty($data->document_content->annexuredata))
                     @foreach (unserialize($data->document_content->annexuredata) as $res)
                         @if (!empty($res))
                             <div class="annexure-block">
@@ -1079,54 +1175,60 @@
                                     <td class="w-70 text-left">
                                         @php
                                         $temp = DB::table('document_types')
-                                        ->where('name', $data->document_type_name)
+                                        ->where('name', $data['document_type_name'] ?? null)
                                         ->value('typecode');
                                         @endphp
-                                        @if($data->revised === 'Yes')
 
-                                        {{ Helpers::getDivisionName($data->division_id) }}
-                                        /@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}
-                                        /000{{ $data->document_number }}/R{{$data->major}}.{{$data->minor}}
-
+                                        @if(isset($data['revised']) && $data['revised'] === 'Yes')
+                                        {{ Helpers::getDivisionName($data['division_id'] ?? null) }}
+                                        /@if(isset($data['document_type_name'])){{ $temp }} /@endif{{ $data['year'] ?? '' }}
+                                        /000{{ $data['document_number'] ?? '' }}/R{{$data['major'] ?? ''}}.{{$data['minor'] ?? ''}}
                                         @else
-                                        {{$data->sop_type_short}}/{{$data->department_id}}/000{{ $data->id }}/R{{$data->major}}.{{$data->minor}}
+                                        {{$data['sop_type_short'] ?? ''}}/{{$data['department_id'] ?? ''}}/000{{ $data['id'] ?? '' }}/R{{$data['major'] ?? ''}}.{{$data['minor'] ?? ''}}
                                         @endif
+
+
                                     </td>
                                 </tr>
                                 <tr>
                                     <th class="w-30 text-left vertical-baseline">Title</th>
-                                    {{-- <td class="w-70 text-left">{{ $data->document_name }}</td> --}}
+                                    <td class="w-70 text-left">{{ $data['document_name'] ?? '' }}</td>
+
                                 </tr>
                                 <tr>
                                     <th class="w-30 text-left vertical-baseline">
                                         Short Description
                                     </th>
                                     <td class="w-70 text-left">
-                                        {{-- {{ $data->short_description }} --}}
+                                        {{ $data['short_description'] ?? '' }}
+
                                     </td>
                                 </tr>
                                 <tr>
                                     <th class="w-30 text-left vertical-baseline">Description</th>
                                     <td class="w-70 text-left">
-                                        {{-- {{ $data->description }} --}}
+                                        {{ $data['description'] ?? '' }}
                                     </td>
                                 </tr>
                                 @php
                                 $last = DB::table('document_histories')
-                                ->where('document_id', $data->id)
+                                ->where('document_id', $data['id'] ?? null)
                                 ->latest()
                                 ->first();
                                 @endphp
+
 
                                 <tr>
                                     <th class="w-30 text-left vertical-baseline">Last Changed</th>
                                     <td class="w-70 text-left">
                                         @if ($last)
-                                        <!-- {{ $last->created_at }} -->
+
                                         {{ \Carbon\Carbon::parse($last->created_at )->format('d-M-Y') }}
                                         @else
-                                        <!-- {{ $data->created_at }} -->
-                                        {{ \Carbon\Carbon::parse($data->created_at )->format('d-M-Y') }}
+
+                                        {{-- {{ \Carbon\Carbon::parse($data->created_at )->format('d-M-Y') }} --}}
+                                        {{ isset($data['created_at']) ? \Carbon\Carbon::parse($data['created_at'])->format('d-M-Y') : '' }}
+
                                         @endif
                                     </td>
                                 </tr>
@@ -1136,7 +1238,7 @@
                                         @if ($last)
                                         {{ $last->user_name }}
                                         @else
-                                        {{ $data->originator }}
+                                        {{ $data['originator'] ?? '' }}
                                         @endif
                                     </td>
                                 </tr>
@@ -1146,8 +1248,13 @@
                 </div>
 
                 @php
+                $signatureOriginatorData = null;
+                $signatureReviewerData = null;
+                $signatureApprovalData = null;
+
+                if (isset($data['id'])) {
                 $signatureOriginatorData = DB::table('stage_manages')
-                ->where('document_id', $data->id)
+                ->where('document_id', $data['id'])
                 ->where(function ($query) {
                 $query->where('stage', '4')
                 ->orWhere('stage', 'In-HOD Review')
@@ -1157,16 +1264,18 @@
                 ->first();
 
                 $signatureReviewerData = DB::table('stage_manages')
-                ->where('document_id', $data->id)
+                ->where('document_id', $data['id'])
                 ->where('stage', 'Reviewed')
                 ->get();
-                // dd($signatureReviewerData);
+
                 $signatureApprovalData = DB::table('stage_manages')
-                ->where('document_id', $data->id)
+                ->where('document_id', $data['id'])
                 ->where('stage', 'Approved')
                 ->latest()
                 ->first();
+                }
                 @endphp
+
                 <div class="block mb-40">
                     <div class="block-head">
                         Originator
@@ -1185,11 +1294,26 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="text-left w-25">{{ $data->originator }}</td>
+
+                                    <td class="text-left w-25">{{ $data['originator'] }}</td>
+
+                                    <td class="text-left w-25">
+                                        {{ isset($document['originator']) && isset($document['originator']['department']) ? $document['originator']['department']['name'] : '' }}
+                                    </td>
+
+                                    <td class="text-left w-25">Initiation Completed</td>
+
+                                    <td class="text-left w-25">{{ $data['originator_email'] }}</td>
+
+                                    <td class="text-left w-25">
+                                        {{ !$signatureOriginatorData || $signatureOriginatorData->comment == null ? " " : $signatureOriginatorData->comment }}
+                                    </td>
+
+                                    {{-- <td class="text-left w-25">{{ $data->originator }}</td>
                                     <td class="text-left w-25">{{ $document->originator && $document->originator->department ? $document->originator->department->name : '' }}</td>
                                     <td class="text-left w-25">Initiation Completed</td>
                                     <td class="text-left w-25">{{ $data->originator_email }}</td>
-                                    <td class="text-left w-25">{{ !$signatureOriginatorData || $signatureOriginatorData->comment == null ? " " : $signatureOriginatorData->comment }}</td>
+                                    <td class="text-left w-25">{{ !$signatureOriginatorData || $signatureOriginatorData->comment == null ? " " : $signatureOriginatorData->comment }}</td> --}}
 
                                 </tr>
                             </tbody>
@@ -1211,10 +1335,10 @@
                                     <th class="text-left w-25">Comments</th>
                                 </tr>
                             </thead>
-                            {{-- <tbody>
-                                @if ($data->hods)
+                            <tbody>
+                                @if (isset($data['hods']) && $data['hods'])
                                 @php
-                                $hod = explode(',', $data->hods);
+                                $hod = explode(',', $data['hods']);
                                 $i = 0;
                                 @endphp
                                 @for ($i = 0; $i < count($hod); $i++) @php $user=DB::table('users') ->where('id', $hod[$i])
@@ -1223,100 +1347,93 @@
                                     ->where('id', $user->departmentid)
                                     ->value('name');
                                     $date = DB::table('stage_manages')
-                                    ->where('document_id', $data->id)
+                                    ->where('document_id', $data['id'])
                                     ->where('user_id', $hod[$i])
                                     ->where('stage', 'HOD Review Complete')
                                     ->where('deleted_at', null)
                                     ->latest()
                                     ->first();
                                     $comment = DB::table('stage_manages')
-                                    ->where('document_id', $data->id)
+                                    ->where('document_id', $data['id'])
                                     ->where('user_id', $hod[$i])
                                     ->where('stage', 'HOD Review Complete')
                                     ->latest()
                                     ->first();
                                     $reject = DB::table('stage_manages')
-                                    ->where('document_id', $data->id)
+                                    ->where('document_id', $data['id'])
                                     ->where('user_id', $hod[$i])
                                     ->where('stage', 'Cancel-by-HOD')
                                     ->where('deleted_at', null)
                                     ->latest()
                                     ->first();
-
-                                    @endphp
-                                    <tr>
-                                        <td class="text-left w-25">{{ $user->name }}</td>
-
-                            <td class="text-left w-25">{{ $dept }}</td>
-                            @if ($date)
-                            <td class="text-left w-25">HOD Review Complete</td>
-                            @elseif(!empty($reject))
-                            <td>HOD Rejected</td>
-                            @else
-                            <td class="text-left w-25">HOD Review Pending</td>
-                            @endif
-
-                            <td class="text-left w-25">{{ $user->email }}</td>
-                            <td class="text-left w-25">
-                                @if($comment)
-                                {{ $comment->comment }}
-                                @endif
-                            </td>
-                            </tr>
-                            @endfor
-                            @endif
-                            @if ($data->approver_group)
-                            @php
-                            $group = explode(',', $data->approver_group);
-                            $i = 0;
-
-                            @endphp
-                            @for ($i = 0; $i < count($group); $i++) @php $users_id=DB::table('group_permissions') ->where('id', $group[$i])
-                                ->value('user_ids');
-                                $reviewer = explode(',', $users_id);
-                                $i = 0;
-                                @endphp
-                                @if ($users_id)
-                                @for ($i = 0; $i < count($reviewer); $i++) @php $user=DB::table('users') ->where('id', $reviewer[$i])
-                                    ->first();
-                                    $dept = DB::table('departments')
-                                    ->where('id', $user->departmentid)
-                                    ->value('name');
-                                    $date = DB::table('stage_manages')
-                                    ->where('document_id', $data->id)
-                                    ->where('user_id', $reviewer[$i])
-                                    ->where('stage', 'Approval-Submit')
-                                    ->latest()
-                                    ->first();
-                                    $reject = DB::table('stage_manages')
-                                    ->where('document_id', $data->id)
-                                    ->where('user_id', $reviewer[$i])
-                                    ->where('stage', 'Cancel-by-Approver')
-                                    ->latest()
-                                    ->first();
-
                                     @endphp
                                     <tr>
                                         <td class="text-left w-25">{{ $user->name }}</td>
                                         <td class="text-left w-25">{{ $dept }}</td>
                                         @if ($date)
-                                        <td class="text-left w-25">Approval Completed</td>
+                                        <td class="text-left w-25">HOD Review Complete</td>
                                         @elseif(!empty($reject))
-                                        <td class="text-left w-25">Approval Rejected </td>
+                                        <td>HOD Rejected</td>
                                         @else
-                                        <td class="text-left w-25">Approval Pending</td>
+                                        <td class="text-left w-25">HOD Review Pending</td>
                                         @endif
-
                                         <td class="text-left w-25">{{ $user->email }}</td>
+                                        <td class="text-left w-25">
+                                            @if($comment)
+                                            {{ $comment->comment }}
+                                            @endif
+                                        </td>
                                     </tr>
                                     @endfor
                                     @endif
-                                    @endfor
 
+                                    @if (isset($data['approver_group']) && $data['approver_group'])
+                                    @php
+                                    $group = explode(',', $data['approver_group']);
+                                    $i = 0;
+                                    @endphp
+                                    @for ($i = 0; $i < count($group); $i++) @php $users_id=DB::table('group_permissions') ->where('id', $group[$i])
+                                        ->value('user_ids');
+                                        $reviewer = explode(',', $users_id);
+                                        $i = 0;
+                                        @endphp
+                                        @if ($users_id)
+                                        @for ($i = 0; $i < count($reviewer); $i++) @php $user=DB::table('users') ->where('id', $reviewer[$i])
+                                            ->first();
+                                            $dept = DB::table('departments')
+                                            ->where('id', $user->departmentid)
+                                            ->value('name');
+                                            $date = DB::table('stage_manages')
+                                            ->where('document_id', $data['id'])
+                                            ->where('user_id', $reviewer[$i])
+                                            ->where('stage', 'Approval-Submit')
+                                            ->latest()
+                                            ->first();
+                                            $reject = DB::table('stage_manages')
+                                            ->where('document_id', $data['id'])
+                                            ->where('user_id', $reviewer[$i])
+                                            ->where('stage', 'Cancel-by-Approver')
+                                            ->latest()
+                                            ->first();
+                                            @endphp
+                                            <tr>
+                                                <td class="text-left w-25">{{ $user->name }}</td>
+                                                <td class="text-left w-25">{{ $dept }}</td>
+                                                @if ($date)
+                                                <td class="text-left w-25">Approval Completed</td>
+                                                @elseif(!empty($reject))
+                                                <td class="text-left w-25">Approval Rejected</td>
+                                                @else
+                                                <td class="text-left w-25">Approval Pending</td>
+                                                @endif
+                                                <td class="text-left w-25">{{ $user->email }}</td>
+                                            </tr>
+                                            @endfor
+                                            @endif
+                                            @endfor
+                                            @endif
 
-                                    @endif
-
-                                    </tbody> --}}
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -1335,6 +1452,143 @@
                                     <th class="text-left w-25">Comments</th>
 
                                 </tr>
+                            </thead>
+                            <tbody>
+                                @if (isset($data['reviewers']) && $data['reviewers'])
+                                @php
+                                $reviewer = explode(',', $data['reviewers']);
+                                $i = 0;
+                                @endphp
+                                @for ($i = 0; $i < count($reviewer); $i++) @php $user=DB::table('users') ->where('id', $reviewer[$i])
+                                    ->first();
+                                    $dept = DB::table('departments')
+                                    ->where('id', $user->departmentid)
+                                    ->value('name');
+                                    $date = DB::table('stage_manages')
+                                    ->where('document_id', $data['id'])
+                                    ->where('user_id', $reviewer[$i])
+                                    ->where('stage', 'Reviewed')
+                                    ->where('deleted_at', null)
+                                    ->latest()
+                                    ->first();
+                                    $comment = DB::table('stage_manages')
+                                    ->where('document_id', $data['id'])
+                                    ->where('user_id', $reviewer[$i])
+                                    ->where('stage', 'Reviewed')
+                                    ->latest()
+                                    ->first();
+                                    $reject = DB::table('stage_manages')
+                                    ->where('document_id', $data['id'])
+                                    ->where('user_id', $reviewer[$i])
+                                    ->where('stage', 'Cancel-by-Reviewer')
+                                    ->where('deleted_at', null)
+                                    ->latest()
+                                    ->first();
+                                    @endphp
+                                    <tr>
+                                        <td class="text-left w-25">{{ $user->name }}</td>
+                                        <td class="text-left w-25">{{ $dept }}</td>
+                                        @if ($date)
+                                        <td class="text-left w-25">Reviewed</td>
+                                        @elseif(!empty($reject))
+                                        <td class="text-left w-25">Review Rejected</td>
+                                        @else
+                                        <td class="text-left w-25">Review Pending</td>
+                                        @endif
+                                        <td class="text-left w-25">{{ $user->email }}</td>
+                                        <td class="text-left w-25">
+                                            @if($comment)
+                                            {{ $comment->comment }}
+                                            @endif
+                                        </td>
+                                    </tr>
+
+
+
+                                    <tr>
+                                        <td class="text-left w-25">{{ $user->name }}</td>
+                                        <td class="text-left w-25">{{ $dept }}</td>
+                                        @if ($date)
+                                        <td class="text-left w-25">Review Completed</td>
+                                        @elseif(!empty($reject))
+                                        <td class="text-left w-25">Review Rejected </td>
+                                        @else
+                                        <td class="text-left w-25">Review Pending</td>
+                                        @endif
+
+                                        <td class="text-left w-25">{{ $user->email }}</td>
+                                        <td class="text-left w-25">
+                                            @if($comment)
+                                            {{ $comment->comment }}
+                                            @endif
+                                        </td>
+                                        {{-- <td class="text-left w-25">{{ !$comment || $signatureReviewerData->comment == null ? " " : $signatureReviewerData->comment }}</td> --}}
+
+                                    </tr>
+                                    @endfor
+                                    @endif
+                                    @if ($data['reviewers_group'] ?? '')
+                                    @php
+                                    $group = explode(',', $data->reviewers_group);
+                                    $i = 0;
+
+                                    @endphp
+                                    @for ($i = 0; $i < count($group); $i++) @php $users_id=DB::table('group_permissions') ->where('id', $group[$i])
+                                        ->value('user_ids');
+                                        $reviewer = explode(',', $users_id);
+                                        $i = 0;
+                                        @endphp
+                                        @if ($users_id)
+                                        @for ($i = 0; $i < count($reviewer); $i++) @php $user=DB::table('users') ->where('id', $reviewer[$i])
+                                            ->first();
+                                            $dept = DB::table('departments')
+                                            ->where('id', $user->departmentid)
+                                            ->value('name');
+                                            $date = DB::table('stage_manages')
+                                            ->where('document_id', $data->id)
+                                            ->where('user_id', $reviewer[$i])
+                                            ->where('stage', 'Review-Submit')
+                                            ->where('deleted_at', null)
+                                            ->latest()
+                                            ->first();
+
+                                            $reject = DB::table('stage_manages')
+                                            ->where('document_id', $data->id)
+                                            ->where('user_id', $reviewer[$i])
+                                            ->where('stage', 'Cancel-by-Reviewer')
+                                            ->latest()
+                                            ->first();
+
+                                            @endphp
+                                            <tr>
+                                                <td class="text-left w-25">{{ $user->name }}</td>
+                                                <td class="text-left w-25">{{ $dept }}</td>
+                                                @if ($date)
+                                                <td class="text-left w-25">Review Completed</td>
+                                                @elseif(!empty($reject))
+                                                <td class="text-left w-25">Review Rejected </td>
+                                                @else
+                                                <td class="text-left w-25">Review Pending</td>
+                                                @endif
+
+                                                <td class="text-left w-25">{{ $user->email }}</td>
+                                            </tr>
+                                            @endfor
+                                            @endif
+                                            @endfor
+
+
+                                            @endif
+
+                            </tbody>
+                            {{-- <tbody>
+                                    <tr>
+                                        <td class="text-left w-25">Vivek</td>
+                                        <td class="text-left w-25">Quality Control</td>
+                                        <td class="text-left w-25">12-12-2023 11:12PM</td>
+                                        <td class="text-left w-25">vivek@gmail.com</td>
+                                    </tr>
+                                </tbody> --}}
                         </table>
                     </div>
                 </div>
@@ -1353,7 +1607,111 @@
                                     <th class="text-left w-25">Comments</th>
                                 </tr>
                             </thead>
+                            <tbody>
+                                @if ($data['approvers'] ?? '')
+                                @php
+                                $reviewer = explode(',', $data->approvers);
+                                $i = 0;
+                                @endphp
+                                @for ($i = 0; $i < count($reviewer); $i++) @php $user=DB::table('users') ->where('id', $reviewer[$i])
+                                    ->first();
+                                    $dept = DB::table('departments')
+                                    ->where('id', $user->departmentid)
+                                    ->value('name');
+                                    $date = DB::table('stage_manages')
+                                    ->where('document_id', $data->id)
+                                    ->where('user_id', $reviewer[$i])
+                                    ->where('stage', 'Approved')
+                                    ->where('deleted_at', null)
+                                    ->latest()
+                                    ->first();
+                                    $comment = DB::table('stage_manages')
+                                    ->where('document_id', $data->id)
+                                    ->where('user_id', $reviewer[$i])
+                                    ->where('stage', 'Approved')
+                                    ->latest()
+                                    ->first();
+                                    $reject = DB::table('stage_manages')
+                                    ->where('document_id', $data->id)
+                                    ->where('user_id', $reviewer[$i])
+                                    ->where('stage', 'Cancel-by-Approver')
+                                    ->where('deleted_at', null)
+                                    ->latest()
+                                    ->first();
 
+                                    @endphp
+                                    <tr>
+                                        <td class="text-left w-25">{{ $user->name }}</td>
+                                        <td class="text-left w-25">{{ $dept }}</td>
+                                        @if ($date)
+                                        <td class="text-left w-25">Approval Completed</td>
+                                        @elseif(!empty($reject))
+                                        <td>Approval Rejected</td>
+                                        @else
+                                        <td class="text-left w-25">Approval Pending</td>
+                                        @endif
+
+                                        <td class="text-left w-25">{{ $user->email }}</td>
+                                        <td class="text-left w-25">
+                                            @if($comment)
+                                            {{ $comment->comment }}
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endfor
+                                    @endif
+                                    @if ($data['approver_group'] ?? '')
+                                    @php
+                                    $group = explode(',', $data->approver_group);
+                                    $i = 0;
+
+                                    @endphp
+                                    @for ($i = 0; $i < count($group); $i++) @php $users_id=DB::table('group_permissions') ->where('id', $group[$i])
+                                        ->value('user_ids');
+                                        $reviewer = explode(',', $users_id);
+                                        $i = 0;
+                                        @endphp
+                                        @if ($users_id)
+                                        @for ($i = 0; $i < count($reviewer); $i++) @php $user=DB::table('users') ->where('id', $reviewer[$i])
+                                            ->first();
+                                            $dept = DB::table('departments')
+                                            ->where('id', $user->departmentid)
+                                            ->value('name');
+                                            $date = DB::table('stage_manages')
+                                            ->where('document_id', $data->id)
+                                            ->where('user_id', $reviewer[$i])
+                                            ->where('stage', 'Approval-Submit')
+                                            ->latest()
+                                            ->first();
+                                            $reject = DB::table('stage_manages')
+                                            ->where('document_id', $data->id)
+                                            ->where('user_id', $reviewer[$i])
+                                            ->where('stage', 'Cancel-by-Approver')
+                                            ->latest()
+                                            ->first();
+
+                                            @endphp
+                                            <tr>
+                                                <td class="text-left w-25">{{ $user->name }}</td>
+                                                <td class="text-left w-25">{{ $dept }}</td>
+                                                @if ($date)
+                                                <td class="text-left w-25">Approval Completed</td>
+                                                @elseif(!empty($reject))
+                                                <td class="text-left w-25">Approval Rejected </td>
+                                                @else
+                                                <td class="text-left w-25">Approval Pending</td>
+                                                @endif
+
+                                                <td class="text-left w-25">{{ $user->email }}</td>
+                                            </tr>
+                                            @endfor
+                                            @endif
+                                            @endfor
+
+
+                                            @endif
+
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -1363,7 +1721,7 @@
     </section>
 
 
-    <script type="text/php">
+    {{-- <script type="text/php">
         if ( isset($pdf) ) {
             $pdf->page_script('
                 if ($PAGE_COUNT > 1) {
@@ -1376,7 +1734,7 @@
                 }
             ');
         }
-    </script>
+    </script> --}}
 </body>
 
 </html>

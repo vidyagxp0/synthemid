@@ -52,8 +52,16 @@ use PDF;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\IOFactory;
 use Illuminate\Support\Facades\View;
+use PhpOffice\PhpWord\Shared\Html;
 use DOMDocument;
 
+use PhpOffice\PhpWord\Style\Table as TableStyle;
+
+use PhpOffice\PhpWord\Style\Border;
+use PhpOffice\PhpWord\Shared\Converter;
+use PhpOffice\PhpWord\Style\Font;
+use PhpOffice\PhpWord\Style\Paragraph;
+use PhpOffice\PhpWord\Style\Table;
 use Illuminate\Support\Facades\Response;
 
 
@@ -1823,6 +1831,7 @@ class DocumentController extends Controller
      * @param  \App\Models\Document  $document
      * @return \Illuminate\Http\Response
      */
+
     public function destroy($id)
     {
         $document = Document::find($id);
@@ -2552,193 +2561,466 @@ class DocumentController extends Controller
     }
 
 
+
+    //--------------- working code --------------------
     // public function downloadWord($id)
     // {
-    //     $data = Document::find($id); 
-    //     $pdfData = $this->viewPdf($id);
+    //     $document = Document::find($id);
 
-    //     $phpWord = new PhpWord();
-
-    //     $section = $phpWord->addSection();
-
-    //     if ($data['document_content']) {
-    //         $section->addText($data['document_content']);
-    //     } else {
-    //         $section->addText('No content available');
+    //     if (!$document) {
+    //         return response()->json(['error' => 'Document not found'], 404);
     //     }
 
+    //     $department = Department::find(Auth::user()->departmentid);
+
+    //     $data = [
+    //         'department_name' => $department ? $department->name : '',
+    //         'originator' => User::where('id', $document->originator_id)->value('name'),
+    //         'originator_email' => User::where('id', $document->originator_id)->value('email'),
+    //         'document_type_name' => DocumentType::where('id', $document->document_type_id)->value('name'),
+    //         'document_type_code' => DocumentType::where('id', $document->document_type_id)->value('typecode'),
+    //         'document_division' => Division::where('id', $document->division_id)->value('name'),
+    //         'year' => Carbon::parse($document->created_at)->format('Y'),
+    //         'document_content' => DocumentContent::where('document_id', $id)->first()
+    //     ];
+
+    //     // Create a new PHPWord object
+    //     $phpWord = new \PhpOffice\PhpWord\PhpWord();
+    //     $section = $phpWord->addSection();
+
+    //     // Add header
+    //     $header = $section->addHeader();
+    //     $header->addText('VidyaGxP', ['size' => 20, 'bold' => true], ['alignment' => 'center']);
+    //     $header->addTextBreak(1);
+
+    //     // Add document title
+    //     $section->addTitle('Document Details', 1);
+    //     $section->addTextBreak(1);
+
+    //     // Add a table for document details
+    //     $tableStyle = ['borderSize' => 6, 'borderColor' => '999999', 'cellMargin' => 50];
+    //     $firstRowStyle = ['bgColor' => 'cccccc'];
+    //     $phpWord->addTableStyle('Document Details Table', $tableStyle, $firstRowStyle);
+    //     $table = $section->addTable('Document Details Table');
+
+    //     $table->addRow();
+    //     $table->addCell(2000)->addText('Document Name', ['bold' => true]);
+    //     $table->addCell(4000)->addText($document->document_name);
+
+    //     $table->addRow();
+    //     $table->addCell(2000)->addText('Department', ['bold' => true]);
+    //     $table->addCell(4000)->addText($data['department_name']);
+
+    //     $table->addRow();
+    //     $table->addCell(2000)->addText('Originator', ['bold' => true]);
+    //     $table->addCell(4000)->addText($data['originator'] . ' (' . $data['originator_email'] . ')');
+
+    //     $table->addRow();
+    //     $table->addCell(2000)->addText('Document Type', ['bold' => true]);
+    //     $table->addCell(4000)->addText(($data['document_type_name'] ?? 'N/A') . ' (' . ($data['document_type_code'] ?? 'N/A') . ')');
+
+    //     $table->addRow();
+    //     $table->addCell(2000)->addText('Division', ['bold' => true]);
+    //     $table->addCell(4000)->addText($data['document_division'] ?? 'N/A');
+
+    //     $table->addRow();
+    //     $table->addCell(2000)->addText('Year', ['bold' => true]);
+    //     $table->addCell(4000)->addText($data['year']);
+
+    //     $section->addTextBreak(1);
+    //     $section->addText('Content:', ['bold' => true]);
+
+    //     // Handle document content
+    //     if ($data['document_content']) {
+    //         // Unserialize data if necessary
+    //         foreach ($data['document_content']->toArray() as $key => $value) {
+    //             if (is_string($value) && $this->isSerialized($value)) {
+    //                 $data['document_content']->$key = unserialize($value);
+    //             }
+    //         }
+
+    //         // Add document content to the Word document
+    //         foreach ($data['document_content']->toArray() as $key => $content) {
+    //             $section->addText($key . ': ' . $this->formatContent($content));
+    //         }
+    //     } else {
+    //         $section->addText('No content available', ['italic' => true]);
+    //     }
+
+    //     // Add watermark text if needed
+    //     if ($document->stage) {
+    //         $header = $section->addHeader();
+    //         $textRun = $header->addTextRun(['align' => 'center', 'valign' => 'center']);
+    //         $textRun->addText(
+    //             Helpers::getDocStatusByStage($document->stage),
+    //             ['bold' => true, 'color' => 'cccccc', 'size' => 120, 'font' => 'Arial']
+    //         );
+    //     }
+
+    //     // Add footer
+    //     $footer = $section->addFooter();
+    //     $footer->addText('Footer text here', null, ['alignment' => 'center']);
+
+    //     // Save the document as a .docx file in the public directory
     //     $directoryPath = public_path("user/word/doc");
-    //     $filePath = $directoryPath . '/Document_' . $id . '.docx';
+    //     $fileName = 'SOP' . $id . '.docx';
+    //     $filePath = $directoryPath . '/' . $fileName;
 
     //     if (!File::isDirectory($directoryPath)) {
     //         File::makeDirectory($directoryPath, 0755, true, true);
     //     }
 
-    //     $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
+    //     $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
     //     $objWriter->save($filePath);
 
+    //     // Return the file as a download response
     //     return response()->download($filePath)->deleteFileAfterSend(true);
     // }
 
+    // private function isSerialized($data)
+    // {
+    //     // If it isn't a string, it isn't serialized
+    //     if (!is_string($data)) {
+    //         return false;
+    //     }
+    //     // Check for valid serialization format
+    //     return (@unserialize($data) !== false || $data === 'b:0;');
+    // }
+
+    // private function formatContent($content)
+    // {
+    //     if (is_array($content)) {
+    //         $result = '';
+    //         foreach ($content as $key => $value) {
+    //             $result .= $this->formatContent($value) . ', ';
+    //         }
+    //         return rtrim($result, ', ');
+    //     } else {
+    //         return (string) $content;
+    //     }
+    // }
 
 
+    //////////////////////////////////////////////// write code with proper working
     // public function downloadWord($id)
     // {
-    //     $depaArr = ['ACC' => 'Accounting', 'ACC3' => 'Accounting',];
-    //     $data = Document::find($id);
-
-    //     $department = Department::find(Auth::user()->departmentid);
+    //     // Find the document
     //     $document = Document::find($id);
 
-    //     if ($department) {
-    //         $data['department_name'] = $department->name;
-    //     } else {
-    //         $data['department_name'] = '';
+    //     if (!$document) {
+    //         return response()->json(['error' => 'Document not found'], 404);
     //     }
-    //     $data->department = $department;
 
-    //     $data['originator'] = User::where('id', $data->originator_id)->value('name');
-    //     $data['originator_email'] = User::where('id', $data->originator_id)->value('email');
-    //     $data['document_type_name'] = DocumentType::where('id', $data->document_type_id)->value('name');
-    //     $data['document_type_code'] = DocumentType::where('id', $data->document_type_id)->value('typecode');
+    //     // Fetch related data
+    //     $department = $document->department;
+    //     $originator = $document->originator;
+    //     $documentType = $document->documentType;
+    //     $division = $document->division;
+    //     $documentContent = $document->documentContent;
 
-    //     $data['document_division'] = Division::where('id', $data->division_id)->value('name');
-    //     $data['year'] = Carbon::parse($data->created_at)->format('Y');
-    //     $data['document_content'] = DocumentContent::where('document_id', $id)->first();
+    //     $data = [
+    //         'department_name' => $department ? $department->name : '',
+    //         'originator' => $originator ? $originator->name : '',
+    //         'originator_email' => $originator ? $originator->email : '',
+    //         'document_type_name' => $documentType ? $documentType->name : '',
+    //         'document_type_code' => $documentType ? $documentType->typecode : '',
+    //         'document_division' => $division ? $division->name : '',
+    //         'year' => Carbon::parse($document->created_at)->format('Y'),
+    //         'document_content' => $documentContent,
+    //         'effective_date' => $document->effective_date,
+    //         'next_review_date' => $document->next_review_date,
+    //         'document_name' => $document->document_name,
+    //         'stage' => $document->stage,
+    //     ];
 
-    //     $view = View::make('frontend.documents.pdfpage', compact('data', 'document'));
+    //     // Render view to HTML
+    //     $view = View::make('frontend.documents.word-template', compact('data', 'document'));
     //     $html = $view->render();
 
-    //     //chaeck HTML 
-    //     $dom = new DOMDocument();
-    //     libxml_use_internal_errors(true);
-    //     $dom->loadHTML($html);
-    //     libxml_clear_errors();
-    //     $html = $dom->saveHTML();
-
-    //     // create new word file
+    //     // Create a new PHPWord instance
     //     $phpWord = new PhpWord();
     //     $section = $phpWord->addSection();
 
-    //     // add HTML to Word
-    //     \PhpOffice\PhpWord\Shared\Html::addHtml($section, $html, false, false);
+    //     // Add plain text or simple content to Word
+    //     $section->addText(strip_tags($html)); // Strip tags and add plain text
 
-    //     // create a path for save file
+    //     // Add watermark text if needed
+    //     if ($document->stage) {
+    //         $watermarkText = Helpers::getDocStatusByStage($document->stage);
+
+    //         // Create a header and add a table
+    //         $header = $section->addHeader();
+    //         $headerTable = $header->addTable([
+    //             'alignment' => 'center',
+    //             'borderSize' => 0,
+    //             'cellMargin' => 0,
+    //         ]);
+
+    //         // Add a row to the table
+    //         $headerTable->addRow(400); // Adjust row height as needed
+
+    //         // Add a cell with watermark text
+    //         $cell = $headerTable->addCell(10000, [
+    //             'valign' => 'center',
+    //             'align' => 'center',
+    //             'borderSize' => 0,
+    //         ]);
+
+    //         // Add watermark text to the cell with rotation
+    //         $cell->addText($watermarkText, [
+    //             'name' => 'Arial',
+    //             'size' => 50,
+    //             'color' => 'red',
+    //             'bold' => true,
+    //         ], [
+    //             'align' => 'center',
+    //             'spaceAfter' => 0,
+    //             'rotate' => 45, // Rotate the text
+    //         ]);
+    //     }
+
+    //     // Save the Word file
     //     $directoryPath = public_path("user/word/doc");
     //     $filePath = $directoryPath . '/Document_' . $id . '.docx';
 
-    //     if (!File::isDirectory($directoryPath)) {
-    //         File::makeDirectory($directoryPath, 0755, true, true); // Recursive creation with read/write permissions
+    //     if (!File::exists($directoryPath)) {
+    //         File::makeDirectory($directoryPath, 0755, true);
     //     }
 
-    //     // save Word file
     //     $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
     //     $objWriter->save($filePath);
 
+    //     // Return response to download the file
     //     return response()->download($filePath)->deleteFileAfterSend(true);
     // }
 
 
     public function downloadWord($id)
     {
-        $depaArr = ['ACC' => 'Accounting', 'ACC3' => 'Accounting'];
+        // Find the document
         $document = Document::find($id);
 
         if (!$document) {
             return response()->json(['error' => 'Document not found'], 404);
         }
 
-        $department = Department::find(Auth::user()->departmentid);
+        // Fetch related data
+        $department = $document->department;
+        $originator = $document->originator;
+        $documentType = $document->documentType;
+        $division = $document->division;
+        $documentContent = $document->documentContent;
 
         $data = [
             'department_name' => $department ? $department->name : '',
-            'originator' => User::where('id', $document->originator_id)->value('name'),
-            'originator_email' => User::where('id', $document->originator_id)->value('email'),
-            'document_type_name' => DocumentType::where('id', $document->document_type_id)->value('name'),
-            'document_type_code' => DocumentType::where('id', $document->document_type_id)->value('typecode'),
-            'document_division' => Division::where('id', $document->division_id)->value('name'),
+            'originator' => $originator ? $originator->name : '',
+            'originator_email' => $originator ? $originator->email : '',
+            'document_type_name' => $documentType ? $documentType->name : '',
+            'document_type_code' => $documentType ? $documentType->typecode : '',
+            'document_division' => $division ? $division->name : '',
             'year' => Carbon::parse($document->created_at)->format('Y'),
-            'document_content' => DocumentContent::where('document_id', $id)->first()
+            'document_content' => $documentContent,
+            'effective_date' => $document->effective_date,
+            'next_review_date' => $document->next_review_date,
+            'document_name' => $document->document_name,
+            'stage' => $document->stage,
         ];
 
-        // Create a new PHPWord object
-        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        // Create a new PHPWord instance
+        $phpWord = new PhpWord();
+
+        // Add a section to the Word document
         $section = $phpWord->addSection();
 
-        // Add the content to the Word document
-        $section->addTitle('Document Details', 1);
-        $section->addTextBreak(1);
-        $section->addText('Document Name: ' . $document->document_name, ['bold' => true]);
-        $section->addText('Department: ' . $data['department_name']);
-        $section->addText('Originator: ' . $data['originator'] . ' (' . $data['originator_email'] . ')');
-        $section->addText('Document Type: ' . ($data['document_type_name'] ?? 'N/A') . ' (' . ($data['document_type_code'] ?? 'N/A') . ')');
-        $section->addText('Division: ' . ($data['document_division'] ?? 'N/A'));
-        $section->addText('Year: ' . $data['year']);
-        $section->addText('Content:');
+        // Add Header with tables
+        $header = $section->addHeader();
 
-        // Handle document content
-        if ($data['document_content']) {
-            // Unserialize data if necessary
-            foreach ($data['document_content']->toArray() as $key => $value) {
-                if (is_string($value) && $this->isSerialized($value)) {
-                    $data['document_content']->$key = unserialize($value);
-                }
-            }
+        // First Table in Header
+        $headerTableStyle = [
+            'width' => Converter::cmToPixel(16),
+            'borderSize' => 1,
+            'borderColor' => '000000',
+            'cellMargin' => 50
+        ];
+        $headerTable = $header->addTable($headerTableStyle);
+        $headerTable->addRow();
+        $headerTable->addCell(Converter::cmToPixel(4), ['bgColor' => 'ffffff'])
+            ->addImage('https://navin.mydemosoftware.com/public/user/images/logo.png', ['height' => 40]);
+        $cell = $headerTable->addCell(Converter::cmToPixel(8), ['bgColor' => 'ffffff']);
+        $cell->addText($data['document_name'], ['size' => 18, 'bold' => true]);
+        $cell->addText($data['document_type_name'], ['size' => 16]);
+        $headerTable->addCell(Converter::cmToPixel(4), ['bgColor' => 'ffffff'])
+            ->addImage('user/images/agio.jpg', ['height' => 35]);
 
-            // Add document content to the Word document
-            foreach ($data['document_content']->toArray() as $key => $content) {
-                $section->addText($key . ': ' . $this->formatContent($content));
-            }
-        } else {
-            $section->addText('No content available', ['italic' => true]);
-        }
+        // Second Table in Header
+        $headerTable = $header->addTable($headerTableStyle);
+        $headerTable->addRow();
+        $headerTable->addCell(Converter::cmToPixel(6))
+            ->addText($data['document_type_name']);
+        $headerTable->addCell(Converter::cmToPixel(12))
+            ->addText('Document Number and Type');
+        $headerTable->addCell(Converter::cmToPixel(6))
+            ->addText($data['department_name']);
 
-        // Add watermark text if needed
+        // Add Footer with tables
+        $footer = $section->addFooter();
+
+        // Footer Table
+        $footerTableStyle = [
+            'width' => Converter::cmToPixel(16),
+            'borderSize' => 1,
+            'borderColor' => 'dddddd',
+            'cellMargin' => 50
+        ];
+        $footerTable = $footer->addTable($footerTableStyle);
+        $footerTable->addRow();
+        $footerTable->addCell(Converter::cmToPixel(6))
+            ->addText($data['department_name']); // Adjust to fit your footer content
+        $footerTable->addCell(Converter::cmToPixel(10), ['align' => 'right'])
+            ->addText('Footer Content Here');
+
+        // Add Watermark
         if ($document->stage) {
-            $header = $section->addHeader();
-            $textRun = $header->addTextRun(['align' => 'center', 'valign' => 'center']);
-            $textRun->addText(
-                Helpers::getDocStatusByStage($document->stage),
-                ['bold' => true, 'color' => 'cccccc', 'size' => 120, 'font' => 'Arial']
-            );
+            $watermarkText = Helpers::getDocStatusByStage($document->stage);
+            $phpWord->addFontStyle('watermark', [
+                'color' => 'red',
+                'size' => 16, // Adjust size as needed
+                'bold' => true,
+                'name' => 'Arial'
+            ]);
+            $phpWord->addParagraphStyle('watermarkStyle', [
+                'align' => 'center',
+                'valign' => 'center',
+                'spaceAfter' => 0,
+                'rotate' => 45 // Rotate text 45 degrees
+            ]);
+
+            $watermarkSection = $phpWord->addSection();
+            $watermark = $watermarkSection->addTextRun('watermarkStyle');
+            $watermark->addText($watermarkText, 'watermark');
         }
 
-        // Save the document as a .docx file in the public directory
+        // Save the Word file
         $directoryPath = public_path("user/word/doc");
-        $fileName = 'SOP' . $id . '.docx';
-        $filePath = $directoryPath . '/' . $fileName;
+        $filePath = $directoryPath . '/Document_' . $id . '.docx';
 
-        if (!File::isDirectory($directoryPath)) {
-            File::makeDirectory($directoryPath, 0755, true, true);
+        if (!File::exists($directoryPath)) {
+            File::makeDirectory($directoryPath, 0755, true);
         }
 
-        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
         $objWriter->save($filePath);
 
-        // Return the file as a download response
+        // Return response to download the file
         return response()->download($filePath)->deleteFileAfterSend(true);
     }
 
-    private function isSerialized($data)
-    {
-        // If it isn't a string, it isn't serialized
-        if (!is_string($data)) {
-            return false;
-        }
-        // Check for valid serialization format
-        return (@unserialize($data) !== false || $data === 'b:0;');
-    }
 
-    private function formatContent($content)
-    {
-        if (is_array($content)) {
-            $result = '';
-            foreach ($content as $key => $value) {
-                $result .= $this->formatContent($value) . ', ';
-            }
-            return rtrim($result, ', ');
-        } else {
-            return (string) $content;
-        }
-    }
+
+    // with css 
+    // public function downloadWord($id)
+    // {
+    //     // Find the document
+    //     $document = Document::find($id);
+
+    //     if (!$document) {
+    //         return response()->json(['error' => 'Document not found'], 404);
+    //     }
+
+    //     // Fetch related data
+    //     $department = $document->department;
+    //     $originator = $document->originator;
+    //     $documentType = $document->documentType;
+    //     $division = $document->division;
+    //     $documentContent = $document->documentContent;
+
+    //     $data = [
+    //         'department_name' => $department ? $department->name : '',
+    //         'originator' => $originator ? $originator->name : '',
+    //         'originator_email' => $originator ? $originator->email : '',
+    //         'document_type_name' => $documentType ? $documentType->name : '',
+    //         'document_type_code' => $documentType ? $documentType->typecode : '',
+    //         'document_division' => $division ? $division->name : '',
+    //         'year' => Carbon::parse($document->created_at)->format('Y'),
+    //         'document_content' => $documentContent,
+    //         'effective_date' => $document->effective_date,
+    //         'next_review_date' => $document->next_review_date,
+    //         'document_name' => $document->document_name,
+    //         'stage' => $document->stage,
+    //     ];
+
+    //     //     $view = View::make('frontend.documents.word-template', compact('data', 'document'));
+    //     //     $html = $view->render();
+    //     // Create a new PHPWord instance
+    //     $phpWord = new PhpWord();
+    //     $section = $phpWord->addSection();
+
+    //     // Define text styles
+    //     $phpWord->addFontStyle('headerTitle', [
+    //         'name' => 'Arial',
+    //         'size' => 18,
+    //         'bold' => true,
+    //     ]);
+
+    //     $phpWord->addFontStyle('headerSubTitle', [
+    //         'name' => 'Arial',
+    //         'size' => 16,
+    //     ]);
+
+    //     $phpWord->addParagraphStyle('centered', [
+    //         'align' => 'center',
+    //     ]);
+
+    //     $phpWord->addParagraphStyle('leftAligned', [
+    //         'align' => 'left',
+    //     ]);
+
+    //     // Define table style
+    //     $phpWord->addTableStyle('headerTable', [
+    //         'borderSize' => 1,
+    //         'borderColor' => '000000',
+    //         'cellMargin' => 50,
+    //         'bgColor' => 'FFFFFF'
+    //     ]);
+
+    //     // Add tables with styles
+    //     // First Table: Logo and Title
+    //     $table = $section->addTable('headerTable');
+    //     $table->addRow();
+    //     $table->addCell(2000, ['align' => 'center'])->addText('Logo', 'headerTitle');
+    //     $table->addCell(4000, ['align' => 'center'])->addText($data['document_name'] ?? '', 'headerSubTitle');
+    //     $table->addCell(2000, ['align' => 'center'])->addText('Additional Logo', 'headerTitle');
+
+    //     // Second Table: Document Number and Type
+    //     $table = $section->addTable('headerTable');
+    //     $table->addRow();
+    //     $table->addCell(3000, ['align' => 'center'])->addText($data['sop_type'] ?? 'N/A', 'headerTitle');
+    //     $table->addCell(4000, ['align' => 'center'])->addText($data['document_type_code'] ?? 'N/A', 'headerTitle');
+    //     $table->addCell(3000, ['align' => 'center'])->addText($data['department_name'] ?? 'N/A', 'headerTitle');
+
+    //     // Third Table: Address
+    //     $table = $section->addTable('headerTable');
+    //     $table->addRow();
+    //     $table->addCell(8000, ['align' => 'center'])->addText('Address : 82, M.I.D.C, Bhosari, Maharashtra 411026', 'headerSubTitle');
+
+    //     // Fourth Table: Dates
+    //     $table = $section->addTable('headerTable');
+    //     $table->addRow();
+    //     $table->addCell(3000, ['align' => 'center'])->addText('Effective Date: ' . ($data['effective_date'] ? Carbon::parse($data['effective_date'])->format('d-M-Y') : 'N/A'), 'headerSubTitle');
+    //     $table->addCell(3000, ['align' => 'center'])->addText('Next Review Date: ' . ($data['next_review_date'] ? Carbon::parse($data['next_review_date'])->format('d-M-Y') : 'N/A'), 'headerSubTitle');
+
+    //     // Save the Word file
+    //     $directoryPath = public_path("user/word/doc");
+    //     $filePath = $directoryPath . '/Document_' . $id . '.docx';
+
+    //     if (!File::exists($directoryPath)) {
+    //         File::makeDirectory($directoryPath, 0755, true);
+    //     }
+
+    //     $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
+    //     $objWriter->save($filePath);
+
+    //     // Return response to download the file
+    //     return response()->download($filePath)->deleteFileAfterSend(true);
+    // }
 }
