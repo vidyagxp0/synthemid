@@ -410,204 +410,6 @@ $divisions = DB::table('q_m_s_divisions')->select('id', 'name')->get();
             </div>
 
 
-
-            {{-- ========================================== --}}
-
-            {{-- <div class="inner-block tms-block cctabcontent" id="CCForm2">
-                    @if (Helpers::checkRoles(6))
-                        <div class="block-table">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Document Number</th>
-                                        <th>Document Title</th>
-                                        <th>Document Type</th>
-                                        <th>Division</th>
-                                        <th>Training Status</th>
-                                        <th>&nbsp;</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($due as $temp)
-                                        <tr>
-                                            <td>{{ $temp->division_name }}/{{ $temp->typecode }}/SOP-
-            000{{ $temp->root_document ? $temp->root_document->document_number : '' }}</td>
-            <td>{{ $temp->training ? $temp->training->document_name : '' }}</td>
-            <td>{{ $temp->document_type_name }}</td>
-            <td>{{ $temp->division_name }}</td>
-            <td>{{ $temp->status }} </td>
-            <td><a href="#"><i class="fa-solid fa-eye"></i></a></td>
-            </tr>
-            @endforeach
-
-            </tbody>
-            </table>
-
-        </div>
-        @else
-        <div class="block-table">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Document Number</th>
-                        <th>Name</th>
-                        <th>Revision</th>
-                        <th>Training Status</th>
-                        <th>Content Type</th>
-                        <th>Due Dat </th>
-                        <th>Completed Date</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($documents as $temp)
-                    <tr>
-                        <td>Sop-000{{ $temp->id }}</td>
-                        <td>{{ $temp->document_name }}</td>
-                        <th>1</th>
-                        <td>{{ $temp->traningstatus->status }}</td>
-                        <td>Document</td>
-                        <td>{{ $temp->due_dateDoc  }}</td>
-                        <td>{{ $temp->due_dateDoc  }}</td>
-
-                        <td><a href="{{ url('TMS-details', $temp->traningstatus->training_plan) }}/{{ $temp->id }}"><i class="fa-solid fa-eye"></i></a></td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-        @endif
-
-    </div> --}}
-
-    {{-- <div class="inner-block tms-block" id="tms-pending-block">
-                    @if (Helpers::checkRoles(6))
-                        <div class="block-table">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Document Number</th>
-                                        <th>Document Title</th>
-                                        <th>Document Type</th>
-                                        <th>Division</th>
-                                        <th>Training Status</th>
-                                        <th>&nbsp;</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($pending as $temp)
-                                        <tr>
-                                            <td>{{ $temp->division_name }}/{{ $temp->typecode }}/SOP-
-    000{{ $temp->document_id }}</td>
-    <td>{{ $temp->training ? $temp->training->document_name : '' }}</td>
-    <td>{{ $temp->document_type_name }}</td>
-    <td>{{ $temp->division_name }}</td>
-    <td>{{ $temp->status }} </td>
-    <td><a href="#"><i class="fa-solid fa-eye"></i></a></td>
-    </tr>
-    @endforeach
-
-    </tbody>
-    </table>
-</div>
-@else
-<div class="block-table">
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Document Number</th>
-                <th>Name</th>
-                <th>Revision</th>
-                <th>Training Status</th>
-                <th>Content Type</th>
-                <th>Due Date</th>
-                <th>Completed Date</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($documents as $temp)
-            <tr>
-                <td>Sop-000{{ $temp->id }}</td>
-                <td>{{ $temp->document_name }}</td>
-                <th>1</th>
-                <td>{{ $temp->traningstatus->status }}</td>
-                <td>Document</td>
-                <td>{{ $temp->due_dateDoc }}</td>
-                <td>{{ $temp->due_dateDoc  }}</td>
-                <td><a href="{{ url('TMS-details', $temp->traningstatus->training_plan) }}/{{ $temp->id }}"><i class="fa-solid fa-eye"></i></a></td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>
-@endif
-</div> --}}
-
-{{-- <div class="inner-block tms-block" id="tms-completed-block">
-                    @if (Helpers::checkRoles(6))
-                        <div class="block-table">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Document Number</th>
-                                        <th>Document Title</th>
-                                        <th>Document Type</th>
-                                        <th>Division</th>
-                                        <th>Training Status</th>
-                                        <th>&nbsp;</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($complete as $temp)
-                                        <tr>
-                                            <td>{{ $temp->division_name }}/{{ $temp->typecode }}/SOP-
-000{{ $temp->document_id }}</td>
-<td>{{ $temp->training ? $temp->training->document_name : '' }}</td>
-<td>{{ $temp->document_type_name }}</td>
-<td>{{ $temp->division_name }}</td>
-<td>{{ $temp->status }} </td>
-<td><a href="#"><i class="fa-solid fa-eye"></i></a></td>
-</tr>
-@endforeach
-
-
-</tbody>
-</table>
-</div>
-@else
-<div class="block-table">
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Document Number</th>
-                <th>Name</th>
-                <th>Revision</th>
-                <th>Training Status</th>
-                <th>Content Type</th>
-                <th>Due Date</th>
-                <th>Completed Date</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($documents as $temp)
-            <tr>
-                <td>Sop-000{{ $temp->id }}</td>
-                <td>{{ $temp->document_name }}</td>
-                <th>1</th>
-                <td>{{ $temp->traningstatus->status }}</td>
-                <td>Document</td>
-                <td>{{ $temp->due_dateDoc  }}</td>
-                <td>{{ $temp->due_dateDoc  }}</td>
-                <td><a href="{{ url('TMS-details', $temp->traningstatus->training_plan) }}/{{ $temp->id }}"><i class="fa-solid fa-eye"></i></a></td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>
-@endif
-</div> --}}
 </div>
 {{-- ============================================ k ======================================== --}}
 <div>
@@ -633,42 +435,70 @@ $divisions = DB::table('q_m_s_divisions')->select('id', 'name')->get();
                 <thead>
                     <tr>
                         <th>Complains</th>
-                        <th>Number</th>
-                        <th>Name</th>
-                        <th>Training Status</th>
+                        <th>Doc No.</th>
+                        <th>Trainee</th>
+                        <th>Training Plan</th>
                         <th>Type</th>
+                        <th>Status</th>
                         <th>Due Date</th>
-                        <th>Complains Date</th>
+                        <th>Completion Date</th>
+                        
                     </tr>
                 </thead>
                 <tbody class="tmstablelast">
+                   
+                    @foreach ($train as $index=>$training)
                     <tr>
                         <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        @php
+                            // Deserialize the serialized IDs
+                            $sopIds = explode(',', $training->sops);
+                            $traineeIds = explode(',', $training->trainees);
+                            
+                            // Initialize arrays to hold formatted record numbers and user names
+                            $formattedRecords = [];
+                            $formattedRecordsUsers = [];
+            
+                            // Fetch and format each document detail
+                            foreach ($sopIds as $sopId) {
+                                $documentDetails = DB::table('documents')->find($sopId);
+            
+                                // Check if document details exist
+                                if ($documentDetails) {
+                                    $divisionName = Helpers::getDivisionName($documentDetails->division_id);
+                                    $recordFormat = Helpers::recordFormat($documentDetails->record);
+                                    $formattedRecord = $divisionName . '/Document/' . date('Y') . '/' . $recordFormat;
+                                    $formattedRecords[] = $formattedRecord;
+                                }
+                            }
+            
+                            // Fetch and format each user detail
+                            foreach ($traineeIds as $userId) {
+                                $userDetails = DB::table('users')->find($userId);
+            
+                                // Check if user details exist
+                                if ($userDetails) {
+                                    $userName = $userDetails->name;
+                                    $formattedRecordsUsers[] = $userName;
+                                }
+                            }
+            
+                            // Concatenate all formatted records and user names into single strings
+                            $fetchRecord = implode(', ', $formattedRecords);
+                            $fetchRecordUser = implode(', ', $formattedRecordsUsers);
+
+                            
+                        @endphp
+                        <td>{{ $fetchRecord }}</td>
+                        <td>{{ $fetchRecordUser }}</td>
+                        <td>{{ $training->traning_plan_name }}</td>
+                        <td>{{ $training->training_plan_type }}</td>
+                        <td>{{ $training->status }}</td>
+                        <td>{{ $training->training_end_date }}</td>
+                        <td>{{ $training->created_at }}</td>
                     </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
+                @endforeach 
+                    
                 </tbody>
             </table>
         </div>

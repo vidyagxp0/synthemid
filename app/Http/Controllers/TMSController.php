@@ -38,6 +38,7 @@ class TMSController extends Controller
         $jobTrainings = JobTraining::get();
         if(Helpers::checkRoles(6)){
             $documents = DocumentTraining::where('trainer', Auth::user()->id)->with('root_document')->orderByDesc('id')->get();
+
            if($documents){
                foreach($documents as $temp){
 
@@ -143,7 +144,8 @@ class TMSController extends Controller
             // dd($employees);
 
             $trainers = TrainerQualification::get();
-            return view('frontend.TMS.dashboard', compact('documents2','documents','due','pending','complete', 'employees', 'trainers', 'inductionTraining', 'jobTrainings'));
+            
+            return view('frontend.TMS.dashboard', compact('train','documents2','documents','due','pending','complete', 'employees', 'trainers', 'inductionTraining', 'jobTrainings'));
         }
         else{
             $train = [];
@@ -996,7 +998,7 @@ class TMSController extends Controller
             $processedTrainings = [];
 
         foreach ($trainings as $training) {
-            $trainees = explode(',', $training->trainees); // Adjust delimiter as needed
+            $trainees = explode(',', $training->trainees); 
             foreach ($trainees as $trainee) {
                 $processedTrainings[] = [
                     'id' => $training->id,

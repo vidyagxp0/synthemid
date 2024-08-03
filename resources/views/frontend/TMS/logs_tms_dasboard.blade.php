@@ -55,9 +55,14 @@ $divisions = DB::table('q_m_s_divisions')->select('id', 'name')->get();
                         <label for="status" style="margin-left: 20px;"><b>Trainee :</b></label>
                         <select name="" id="search" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc; width: 200px;">
                             <option value="">Select All</option>
-                            @foreach($processedTrainings as $training)
+                            @php
+                               
+                                $uniqueTrainings = collect($processedTrainings)->unique('traning_plan_name');
+                            @endphp
+                            @foreach($uniqueTrainings as $training)
                                 <option value="{{ $training['traning_plan_name'] }}">{{ $training['traning_plan_name'] }}</option>
                             @endforeach
+            
                         </select>
                     </div>
                     <div style="display: flex; align-items: center;">
