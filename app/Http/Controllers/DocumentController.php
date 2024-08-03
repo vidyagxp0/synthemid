@@ -54,16 +54,15 @@ use PhpOffice\PhpWord\IOFactory;
 use Illuminate\Support\Facades\View;
 use PhpOffice\PhpWord\Shared\Html;
 use DOMDocument;
-
 use PhpOffice\PhpWord\Style\Table as TableStyle;
-
 use PhpOffice\PhpWord\Style\Border;
 use PhpOffice\PhpWord\Shared\Converter;
 use PhpOffice\PhpWord\Style\Font;
 use PhpOffice\PhpWord\Style\Paragraph;
 use PhpOffice\PhpWord\Style\Table;
 use Illuminate\Support\Facades\Response;
-
+use PhpOffice\PhpWord\Style\Cell;
+use PHPUnit\TextUI\XmlConfiguration\CodeCoverage\Report\Php;
 
 class DocumentController extends Controller
 {
@@ -2561,242 +2560,10 @@ class DocumentController extends Controller
     }
 
 
-
-    //--------------- working code --------------------
-    // public function downloadWord($id)
-    // {
-    //     $document = Document::find($id);
-
-    //     if (!$document) {
-    //         return response()->json(['error' => 'Document not found'], 404);
-    //     }
-
-    //     $department = Department::find(Auth::user()->departmentid);
-
-    //     $data = [
-    //         'department_name' => $department ? $department->name : '',
-    //         'originator' => User::where('id', $document->originator_id)->value('name'),
-    //         'originator_email' => User::where('id', $document->originator_id)->value('email'),
-    //         'document_type_name' => DocumentType::where('id', $document->document_type_id)->value('name'),
-    //         'document_type_code' => DocumentType::where('id', $document->document_type_id)->value('typecode'),
-    //         'document_division' => Division::where('id', $document->division_id)->value('name'),
-    //         'year' => Carbon::parse($document->created_at)->format('Y'),
-    //         'document_content' => DocumentContent::where('document_id', $id)->first()
-    //     ];
-
-    //     // Create a new PHPWord object
-    //     $phpWord = new \PhpOffice\PhpWord\PhpWord();
-    //     $section = $phpWord->addSection();
-
-    //     // Add header
-    //     $header = $section->addHeader();
-    //     $header->addText('VidyaGxP', ['size' => 20, 'bold' => true], ['alignment' => 'center']);
-    //     $header->addTextBreak(1);
-
-    //     // Add document title
-    //     $section->addTitle('Document Details', 1);
-    //     $section->addTextBreak(1);
-
-    //     // Add a table for document details
-    //     $tableStyle = ['borderSize' => 6, 'borderColor' => '999999', 'cellMargin' => 50];
-    //     $firstRowStyle = ['bgColor' => 'cccccc'];
-    //     $phpWord->addTableStyle('Document Details Table', $tableStyle, $firstRowStyle);
-    //     $table = $section->addTable('Document Details Table');
-
-    //     $table->addRow();
-    //     $table->addCell(2000)->addText('Document Name', ['bold' => true]);
-    //     $table->addCell(4000)->addText($document->document_name);
-
-    //     $table->addRow();
-    //     $table->addCell(2000)->addText('Department', ['bold' => true]);
-    //     $table->addCell(4000)->addText($data['department_name']);
-
-    //     $table->addRow();
-    //     $table->addCell(2000)->addText('Originator', ['bold' => true]);
-    //     $table->addCell(4000)->addText($data['originator'] . ' (' . $data['originator_email'] . ')');
-
-    //     $table->addRow();
-    //     $table->addCell(2000)->addText('Document Type', ['bold' => true]);
-    //     $table->addCell(4000)->addText(($data['document_type_name'] ?? 'N/A') . ' (' . ($data['document_type_code'] ?? 'N/A') . ')');
-
-    //     $table->addRow();
-    //     $table->addCell(2000)->addText('Division', ['bold' => true]);
-    //     $table->addCell(4000)->addText($data['document_division'] ?? 'N/A');
-
-    //     $table->addRow();
-    //     $table->addCell(2000)->addText('Year', ['bold' => true]);
-    //     $table->addCell(4000)->addText($data['year']);
-
-    //     $section->addTextBreak(1);
-    //     $section->addText('Content:', ['bold' => true]);
-
-    //     // Handle document content
-    //     if ($data['document_content']) {
-    //         // Unserialize data if necessary
-    //         foreach ($data['document_content']->toArray() as $key => $value) {
-    //             if (is_string($value) && $this->isSerialized($value)) {
-    //                 $data['document_content']->$key = unserialize($value);
-    //             }
-    //         }
-
-    //         // Add document content to the Word document
-    //         foreach ($data['document_content']->toArray() as $key => $content) {
-    //             $section->addText($key . ': ' . $this->formatContent($content));
-    //         }
-    //     } else {
-    //         $section->addText('No content available', ['italic' => true]);
-    //     }
-
-    //     // Add watermark text if needed
-    //     if ($document->stage) {
-    //         $header = $section->addHeader();
-    //         $textRun = $header->addTextRun(['align' => 'center', 'valign' => 'center']);
-    //         $textRun->addText(
-    //             Helpers::getDocStatusByStage($document->stage),
-    //             ['bold' => true, 'color' => 'cccccc', 'size' => 120, 'font' => 'Arial']
-    //         );
-    //     }
-
-    //     // Add footer
-    //     $footer = $section->addFooter();
-    //     $footer->addText('Footer text here', null, ['alignment' => 'center']);
-
-    //     // Save the document as a .docx file in the public directory
-    //     $directoryPath = public_path("user/word/doc");
-    //     $fileName = 'SOP' . $id . '.docx';
-    //     $filePath = $directoryPath . '/' . $fileName;
-
-    //     if (!File::isDirectory($directoryPath)) {
-    //         File::makeDirectory($directoryPath, 0755, true, true);
-    //     }
-
-    //     $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
-    //     $objWriter->save($filePath);
-
-    //     // Return the file as a download response
-    //     return response()->download($filePath)->deleteFileAfterSend(true);
-    // }
-
-    // private function isSerialized($data)
-    // {
-    //     // If it isn't a string, it isn't serialized
-    //     if (!is_string($data)) {
-    //         return false;
-    //     }
-    //     // Check for valid serialization format
-    //     return (@unserialize($data) !== false || $data === 'b:0;');
-    // }
-
-    // private function formatContent($content)
-    // {
-    //     if (is_array($content)) {
-    //         $result = '';
-    //         foreach ($content as $key => $value) {
-    //             $result .= $this->formatContent($value) . ', ';
-    //         }
-    //         return rtrim($result, ', ');
-    //     } else {
-    //         return (string) $content;
-    //     }
-    // }
-
-
-    //////////////////////////////////////////////// write code with proper working
-    // public function downloadWord($id)
-    // {
-    //     // Find the document
-    //     $document = Document::find($id);
-
-    //     if (!$document) {
-    //         return response()->json(['error' => 'Document not found'], 404);
-    //     }
-
-    //     // Fetch related data
-    //     $department = $document->department;
-    //     $originator = $document->originator;
-    //     $documentType = $document->documentType;
-    //     $division = $document->division;
-    //     $documentContent = $document->documentContent;
-
-    //     $data = [
-    //         'department_name' => $department ? $department->name : '',
-    //         'originator' => $originator ? $originator->name : '',
-    //         'originator_email' => $originator ? $originator->email : '',
-    //         'document_type_name' => $documentType ? $documentType->name : '',
-    //         'document_type_code' => $documentType ? $documentType->typecode : '',
-    //         'document_division' => $division ? $division->name : '',
-    //         'year' => Carbon::parse($document->created_at)->format('Y'),
-    //         'document_content' => $documentContent,
-    //         'effective_date' => $document->effective_date,
-    //         'next_review_date' => $document->next_review_date,
-    //         'document_name' => $document->document_name,
-    //         'stage' => $document->stage,
-    //     ];
-
-    //     // Render view to HTML
-    //     $view = View::make('frontend.documents.word-template', compact('data', 'document'));
-    //     $html = $view->render();
-
-    //     // Create a new PHPWord instance
-    //     $phpWord = new PhpWord();
-    //     $section = $phpWord->addSection();
-
-    //     // Add plain text or simple content to Word
-    //     $section->addText(strip_tags($html)); // Strip tags and add plain text
-
-    //     // Add watermark text if needed
-    //     if ($document->stage) {
-    //         $watermarkText = Helpers::getDocStatusByStage($document->stage);
-
-    //         // Create a header and add a table
-    //         $header = $section->addHeader();
-    //         $headerTable = $header->addTable([
-    //             'alignment' => 'center',
-    //             'borderSize' => 0,
-    //             'cellMargin' => 0,
-    //         ]);
-
-    //         // Add a row to the table
-    //         $headerTable->addRow(400); // Adjust row height as needed
-
-    //         // Add a cell with watermark text
-    //         $cell = $headerTable->addCell(10000, [
-    //             'valign' => 'center',
-    //             'align' => 'center',
-    //             'borderSize' => 0,
-    //         ]);
-
-    //         // Add watermark text to the cell with rotation
-    //         $cell->addText($watermarkText, [
-    //             'name' => 'Arial',
-    //             'size' => 50,
-    //             'color' => 'red',
-    //             'bold' => true,
-    //         ], [
-    //             'align' => 'center',
-    //             'spaceAfter' => 0,
-    //             'rotate' => 45, // Rotate the text
-    //         ]);
-    //     }
-
-    //     // Save the Word file
-    //     $directoryPath = public_path("user/word/doc");
-    //     $filePath = $directoryPath . '/Document_' . $id . '.docx';
-
-    //     if (!File::exists($directoryPath)) {
-    //         File::makeDirectory($directoryPath, 0755, true);
-    //     }
-
-    //     $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
-    //     $objWriter->save($filePath);
-
-    //     // Return response to download the file
-    //     return response()->download($filePath)->deleteFileAfterSend(true);
-    // }
-
-
+    // SOp pdf convert in word .docx file 
     public function downloadWord($id)
     {
+
         // Find the document
         $document = Document::find($id);
 
@@ -2809,8 +2576,8 @@ class DocumentController extends Controller
         $originator = $document->originator;
         $documentType = $document->documentType;
         $division = $document->division;
-        $documentContent = $document->documentContent;
-
+        // $documentContent = $document->documentContent;
+        // $data_document = Document::where('id', $id)->first();
         $data = [
             'department_name' => $department ? $department->name : '',
             'originator' => $originator ? $originator->name : '',
@@ -2819,11 +2586,35 @@ class DocumentController extends Controller
             'document_type_code' => $documentType ? $documentType->typecode : '',
             'document_division' => $division ? $division->name : '',
             'year' => Carbon::parse($document->created_at)->format('Y'),
-            'document_content' => $documentContent,
+            // 'document_content' => $documentContent,
+            'document_content' => DocumentContent::where('document_id', $id)->first(),
+            'short_description' => Document::where('id', $id)->first(),
+            'description' => Document::where('id', $id)->first(),
+
             'effective_date' => $document->effective_date,
             'next_review_date' => $document->next_review_date,
             'document_name' => $document->document_name,
             'stage' => $document->stage,
+            'sop_type' => $document->sop_type ?? '',
+            'revised' => $document->revised ?? 'No',
+            'document_id' => $document->id ?? '',
+            'document_number' => $document->document_number ?? '',
+            'major' => $document->major ?? '',
+            'minor' => $document->minor ?? '',
+            'sop_type_short' => $document->sop_type_short ?? '',
+            'department_id' => $document->department_id ?? '',
+            'id' => $document->id ?? '',
+            'division_id' => $document->division_id ?? '',
+            'legacy_number' => $document->legacy_number ?? 'NA',
+            // 'document_content' => json_decode($document->document_content),
+            // 'description' => $document->description,
+            'created_at' => $document->created_at,
+            // 'originator' => $document->originator,
+            // 'originator_email' => $document->originator_email,
+            'hods' => $document->hods,
+            'reviewers' => $document->reviewers,
+            'approvers' => $document->approvers,
+            'approver_group' => $document->approver_group,
         ];
 
         // Create a new PHPWord instance
@@ -2836,73 +2627,512 @@ class DocumentController extends Controller
         $header = $section->addHeader();
 
         // First Table in Header
-        $headerTableStyle = [
-            'width' => Converter::cmToPixel(16),
-            'borderSize' => 1,
+        $headerTable = $header->addTable([
+            'width' => 100 * 50, // 100% width in twips
+            'borderSize' => 4,
             'borderColor' => '000000',
             'cellMargin' => 50
-        ];
-        $headerTable = $header->addTable($headerTableStyle);
-        $headerTable->addRow();
-        $headerTable->addCell(Converter::cmToPixel(4), ['bgColor' => 'ffffff'])
-            ->addImage('https://navin.mydemosoftware.com/public/user/images/logo.png', ['height' => 40]);
-        $cell = $headerTable->addCell(Converter::cmToPixel(8), ['bgColor' => 'ffffff']);
-        $cell->addText($data['document_name'], ['size' => 18, 'bold' => true]);
-        $cell->addText($data['document_type_name'], ['size' => 16]);
-        $headerTable->addCell(Converter::cmToPixel(4), ['bgColor' => 'ffffff'])
-            ->addImage('user/images/agio.jpg', ['height' => 35]);
+        ]);
+
+        $headerTable->addRow(500); // Adjust height as needed
+        $headerTable->addCell(2000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addImage('https://navin.mydemosoftware.com/public/user/images/logo.png', [
+            'width' => 90,
+            'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER
+        ]);
+
+        $cell = $headerTable->addCell(6000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000']);
+        $cell->addText(config('site.pdf_title'), ['size' => 14, 'bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+        $cell->addText($data['document_name'], ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+
+        $headerTable->addCell(2000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addText('logo', [
+            'width' => 70,
+            'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER
+        ]);
 
         // Second Table in Header
-        $headerTable = $header->addTable($headerTableStyle);
-        $headerTable->addRow();
-        $headerTable->addCell(Converter::cmToPixel(6))
-            ->addText($data['document_type_name']);
-        $headerTable->addCell(Converter::cmToPixel(12))
-            ->addText('Document Number and Type');
-        $headerTable->addCell(Converter::cmToPixel(6))
-            ->addText($data['department_name']);
+        $headerTable = $header->addTable([
+            'width' => 100 * 50,
+            'borderSize' => 4,
+            'borderColor' => '000000',
+            'cellMargin' => 50
+        ]);
+
+        $headerTable->addRow(500);
+        $headerTable->addCell(3000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addText($data['sop_type'], ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+
+        $cell = $headerTable->addCell(4000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000']);
+        if ($data['revised'] === 'Yes') {
+            $temp = DB::table('document_types')->where('name', $data['document_type_name'])->value('typecode');
+            $cell->addText(
+                Helpers::getDivisionName($data['document_id']) . '/' . ($data['sop_type_short'] ? $temp : '') . '/' . $data['year'] . '000' . $data['document_number'] . '/R' . $data['major'] . '.' . $data['minor'],
+                ['size' => 12],
+                ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]
+            );
+        } else {
+            $cell->addText(
+                $data['sop_type_short'] . '/' . $data['department_id'] . '/000' . $data['id'] . '/R' . $data['major'] . '.' . $data['minor'],
+                ['size' => 12],
+                ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]
+            );
+        }
+
+        $headerTable->addCell(3000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addText(Helpers::getFullDepartmentName($data['department_id']), ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+
+        // Third Table in Header
+        $headerTable = $header->addTable([
+            'width' => 100 * 50,
+            'borderSize' => 4,
+            'borderColor' => '000000',
+            'cellMargin' => 50
+        ]);
+
+        $headerTable->addRow(500);
+        $headerTable->addCell(10000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addText('Address :', ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+
+        // Fourth Table in Header
+        $headerTable = $header->addTable([
+            'width' => 100 * 50,
+            'borderSize' => 4,
+            'borderColor' => '000000',
+            'cellMargin' => 50
+        ]);
+
+        $headerTable->addRow(500);
+        $headerTable->addCell(5000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addText('Effective Date: ' . Carbon::parse($data['effective_date'])->format('d-M-Y'), ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+
+        $headerTable->addCell(5000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addText('Next Review Date: ' . Carbon::parse($data['next_review_date'])->format('d-M-Y'), ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+
+
+        // Main Section start
+        // $section = $phpWord->addSection();
+
+        // Legacy Document Number
+        $section->addTextBreak();
+        $section->addTextRun(['alignment' => 'right'])
+            ->addText("Legacy Document Number: {$data['legacy_number']}", ['bold' => true]);
+
+        // Objective
+        $section->addTextBreak();
+        $section->addText("1. Objective", ['bold' => true]);
+        $section->addText($data['document_content']->purpose ?? '', ['align' => 'justify']);
+
+        // Scope
+        $section->addTextBreak();
+        $section->addText("2. Scope", ['bold' => true]);
+        $section->addText($data['document_content']->scope ?? '', ['align' => 'justify']);
+
+        // Responsibility
+        $section->addTextBreak();
+        $section->addText("3. Responsibility", ['bold' => true]);
+        $responsibility = $data['document_content']->responsibility ?? '[]';
+        $responsibility = is_string($responsibility) ? unserialize($responsibility) : $responsibility;
+        if (is_array($responsibility)) {
+            $i = 1;
+            foreach ($responsibility as $key => $res) {
+                $isSub = str_contains($key, 'sub');
+                $prefix = $isSub ? $i - 1 . '.' . ($sub_index ?? 1) : $i;
+                if (!empty($res)) {
+                    $section->addText("3.{$prefix} " . $res, ['align' => 'justify']);
+                    $isSub ? $sub_index++ : $i++;
+                    $sub_index = $isSub ? ($sub_index ?? 1) : 1;
+                }
+            }
+        }
+
+        // Accountability
+        $section->addTextBreak();
+        $section->addText("4. Accountability", ['bold' => true]);
+        $accountability = $data['document_content']->accountability ?? '[]';
+        $accountability = is_string($accountability) ? unserialize($accountability) : $accountability;
+        if (is_array($accountability)) {
+            $i = 1;
+            foreach ($accountability as $key => $res) {
+                $isSub = str_contains($key, 'sub');
+                $prefix = $isSub ? $i - 1 . '.' . ($sub_index ?? 1) : $i;
+                if (!empty($res)) {
+                    $section->addText("4.{$prefix} " . $res, ['align' => 'justify']);
+                    $isSub ? $sub_index++ : $i++;
+                    $sub_index = $isSub ? ($sub_index ?? 1) : 1;
+                }
+            }
+        }
+
+        // References
+        $section->addTextBreak();
+        $section->addText("5. References", ['bold' => true]);
+        $references = $data['document_content']->references ?? '[]';
+        $references = is_string($references) ? unserialize($references) : $references;
+        if (is_array($references)) {
+            $i = 1;
+            foreach ($references as $key => $res) {
+                $isSub = str_contains($key, 'sub');
+                $prefix = $isSub ? $i - 1 . '.' . ($sub_index ?? 1) : $i;
+                if (!empty($res)) {
+                    $section->addText("5.{$prefix} " . $res, ['align' => 'justify']);
+                    $isSub ? $sub_index++ : $i++;
+                    $sub_index = $isSub ? ($sub_index ?? 1) : 1;
+                }
+            }
+        }
+
+        // Abbreviation
+        $section->addTextBreak();
+        $section->addText("6. Abbreviation", ['bold' => true]);
+        $abbreviation = $data['document_content']->abbreviation ?? '[]';
+        $abbreviation = is_string($abbreviation) ? unserialize($abbreviation) : $abbreviation;
+        if (is_array($abbreviation)) {
+            $i = 1;
+            foreach ($abbreviation as $key => $res) {
+                $isSub = str_contains($key, 'sub');
+                $prefix = $isSub ? $i - 1 . '.' . ($sub_index ?? 1) : $i;
+                if (!empty($res)) {
+                    $section->addText("6.{$prefix} " . $res, ['align' => 'justify']);
+                    $isSub ? $sub_index++ : $i++;
+                    $sub_index = $isSub ? ($sub_index ?? 1) : 1;
+                }
+            }
+        }
+
+        // Definitions
+        $section->addTextBreak();
+        $section->addText("7. Definitions", ['bold' => true]);
+        $definitions = $data['document_content']->defination ?? '[]';
+        $definitions = is_string($definitions) ? unserialize($definitions) : $definitions;
+        if (is_array($definitions)) {
+            $i = 1;
+            foreach ($definitions as $key => $definition) {
+                $isSub = str_contains($key, 'sub');
+                $prefix = $isSub ? $i - 1 . '.' . ($sub_index ?? 1) : $i;
+                if (!empty($definition)) {
+                    $section->addText("7.{$prefix} " . $definition, ['align' => 'justify']);
+                    $isSub ? $sub_index++ : $i++;
+                    $sub_index = $isSub ? ($sub_index ?? 1) : 1;
+                }
+            }
+        }
+
+        // General Instructions
+        $section->addTextBreak();
+        $section->addText("8. General Instructions", ['bold' => true]);
+        $instructions = $data['document_content']->materials_and_equipments ?? '[]';
+        $instructions = is_string($instructions) ? unserialize($instructions) : $instructions;
+        if (is_array($instructions)) {
+            $i = 1;
+            foreach ($instructions as $key => $res) {
+                $isSub = str_contains($key, 'sub');
+                $prefix = $isSub ? $i - 1 . '.' . ($sub_index ?? 1) : $i;
+                if (!empty($res)) {
+                    $section->addText("8.{$prefix} " . $res, ['align' => 'justify']);
+                    $isSub ? $sub_index++ : $i++;
+                    $sub_index = $isSub ? ($sub_index ?? 1) : 1;
+                }
+            }
+        }
+
+        // Procedure
+        $section->addTextBreak();
+        $section->addText("9. Procedure", ['bold' => true]);
+        $procedure = $data['document_content']->procedure ?? '';
+        $section->addText(strip_tags($procedure, '<br><table><th><td><tbody><tr><p><img><a><img><span><h1><h2><h3><h4><h5><h6><div><b><ol><li>'), ['align' => 'justify']);
+
+        // Cross References
+        $section->addTextBreak();
+        $section->addText("10. Cross References", ['bold' => true]);
+        $reporting = $data['document_content']->reporting ?? '[]';
+        $reporting = is_string($reporting) ? unserialize($reporting) : $reporting;
+        if (is_array($reporting)) {
+            $i = 1;
+            foreach ($reporting as $key => $res) {
+                $isSub = str_contains($key, 'sub');
+                $prefix = $isSub ? $i - 1 . '.' . ($sub_index ?? 1) : $i;
+                if (!empty($res)) {
+                    $section->addText("10.{$prefix} " . $res, ['align' => 'justify']);
+                    $isSub ? $sub_index++ : $i++;
+                    $sub_index = $isSub ? ($sub_index ?? 1) : 1;
+                }
+            }
+        }
+
+        // Annexure
+        $section->addTextBreak();
+        $section->addText("11. Annexure", ['bold' => true]);
+        $annexure = $data['document_content']->ann ?? '[]';
+        $annexure = is_string($annexure) ? unserialize($annexure) : $annexure;
+        if (is_array($annexure)) {
+            $i = 1;
+            foreach ($annexure as $key => $res) {
+                $isSub = str_contains($key, 'sub');
+                $prefix = $isSub ? $i - 1 . '.' . ($sub_index ?? 1) : $i;
+                if (!empty($res)) {
+                    $section->addText("11.{$prefix} " . $res, ['align' => 'justify']);
+                    $isSub ? $sub_index++ : $i++;
+                    $sub_index = $isSub ? ($sub_index ?? 1) : 1;
+                }
+            }
+        }
+
+        //Document Control Information
+        $last = DB::table('document_histories')
+            ->where('document_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+        $lastDate = $last ? Carbon::parse($last->created_at)->format('d-M-Y') : Carbon::parse($document->created_at)->format('d-M-Y');
+        $section->addTextBreak();
+        $section->addTextRun(['alignment' => 'center'])
+            ->addText("Document Control Information", ['bold' => true]);
+
+        // short_description
+        // $section->addTextBreak();
+        $section->addText("Document Number", ['bold' => true]);
+        $section->addText(
+            Helpers::getDivisionName($data['document_id']) . '' . ($data['sop_type_short'] ? $temp : '') . '/' . $data['year'] . '/000' . $data['document_number'] . '/R' . $data['major'] . '.' . $data['minor'],
+            ['size' => 12],
+            ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::LEFT]
+
+            // $data['sop_type_short'] . '/' . $data['department_id'] . '/000' . $data['document_number'] . '/R' . $data['major'] . '.' . $data['minor'],
+            // ['size' => 12]
+        );
+        $section->addText("Title", ['bold' => true]);
+        $section->addText($data['document_name'], ['alignment' => 'right']);
+        // dd($data['document_name']);
+        $section->addText("Short Description", ['bold' => true]);
+        $section->addText($data['short_description']->short_description ?? '', ['alignment' => 'right']);
+
+        // Scope
+        // $section->addTextBreak();
+        $section->addText("Description", ['bold' => true]);
+        $section->addText($data['description']->description ?? '');
+
+        $section->addText("Last Changed", ['bold' => true]);
+        $section->addText($lastDate);
+
+
+        $section->addText("Changed By", ['bold' => true]);
+        $section->addText($last->user_name);
+
+
+        //  Signatute table Start
+
+        $signatureOriginatorData = DB::table('stage_manages')
+            ->where('document_id', $id)
+            ->whereIn('stage', ['4', 'In-HOD Review', 'In-Approval'])
+            ->latest()
+            ->first();
+
+        $signatureReviewerData = DB::table('stage_manages')
+            ->where('document_id', $id)
+            ->where('stage', 'Reviewed')
+            ->get();
+
+        $signatureApprovalData = DB::table('stage_manages')
+            ->where('document_id', $id)
+            ->where('stage', 'Approved')
+            ->latest()
+            ->first();
+
+        // Add Originator Table
+        $section->addText("Originator", ['bold' => true]);
+        $table = $section->addTable(['borderSize' => 6, 'borderColor' => '999999']);
+        $table->addRow();
+        $table->addCell(2000)->addText("Originator");
+        $table->addCell(2000)->addText("Department");
+        $table->addCell(2000)->addText("Status");
+        $table->addCell(2000)->addText("E-Signature");
+        $table->addCell(2000)->addText("Comments");
+
+        $table->addRow();
+        $table->addCell(2000)->addText($data['originator']);
+        $table->addCell(2000)->addText($document->originator && $document->originator->department ? $document->originator->department->name : '');
+        $table->addCell(2000)->addText("Initiation Completed");
+        $table->addCell(2000)->addText($data['originator_email']);
+        $table->addCell(2000)->addText($signatureOriginatorData && $signatureOriginatorData->comment ? $signatureOriginatorData->comment : '');
+
+        // Add HOD Table
+        $section->addText("HOD", ['bold' => true]);
+        $table = $section->addTable(['borderSize' => 6, 'borderColor' => '999999']);
+        $table->addRow();
+        $table->addCell(2000)->addText("HOD");
+        $table->addCell(2000)->addText("Department");
+        $table->addCell(2000)->addText("Status");
+        $table->addCell(2000)->addText("E-Signature");
+        $table->addCell(2000)->addText("Comments");
+
+        if ($data['hods']) {
+            $hods = explode(',', $data['hods']);
+            foreach ($hods as $hod) {
+                $user = DB::table('users')->where('id', $hod)->first();
+                $dept = DB::table('departments')->where('id', $user->departmentid)->value('name');
+                $date = DB::table('stage_manages')
+                    ->where('document_id', $id)
+                    ->where('user_id', $hod)
+                    ->where('stage', 'HOD Review Complete')
+                    ->whereNull('deleted_at')
+                    ->latest()
+                    ->first();
+                $comment = DB::table('stage_manages')
+                    ->where('document_id', $id)
+                    ->where('user_id', $hod)
+                    ->where('stage', 'HOD Review Complete')
+                    ->latest()
+                    ->first();
+                $reject = DB::table('stage_manages')
+                    ->where('document_id', $id)
+                    ->where('user_id', $hod)
+                    ->where('stage', 'Cancel-by-HOD')
+                    ->whereNull('deleted_at')
+                    ->latest()
+                    ->first();
+
+                $table->addRow();
+                $table->addCell(2000)->addText($user->name);
+                $table->addCell(2000)->addText($dept);
+                if ($date) {
+                    $table->addCell(2000)->addText("HOD Review Complete");
+                } elseif ($reject) {
+                    $table->addCell(2000)->addText("HOD Rejected");
+                } else {
+                    $table->addCell(2000)->addText("HOD Review Pending");
+                }
+                $table->addCell(2000)->addText($user->email);
+                $table->addCell(2000)->addText($comment ? $comment->comment : '');
+            }
+        }
+
+        // Add Reviewers Table
+        $section->addText("Reviews", ['bold' => true]);
+        $table = $section->addTable(['borderSize' => 6, 'borderColor' => '999999']);
+        $table->addRow();
+        $table->addCell(2000)->addText("Reviewer");
+        $table->addCell(2000)->addText("Department");
+        $table->addCell(2000)->addText("Status");
+        $table->addCell(2000)->addText("E-Signature");
+        $table->addCell(2000)->addText("Comments");
+
+        if ($data['reviewers']) {
+            $reviewers = explode(',', $data['reviewers']);
+            foreach ($reviewers as $reviewer) {
+                $user = DB::table('users')->where('id', $reviewer)->first();
+                $dept = DB::table('departments')->where('id', $user->departmentid)->value('name');
+                $date = DB::table('stage_manages')
+                    ->where('document_id', $id)
+                    ->where('user_id', $reviewer)
+                    ->where('stage', 'Reviewed')
+                    ->whereNull('deleted_at')
+                    ->latest()
+                    ->first();
+                $comment = DB::table('stage_manages')
+                    ->where('document_id', $id)
+                    ->where('user_id', $reviewer)
+                    ->where('stage', 'Reviewed')
+                    ->latest()
+                    ->first();
+                $reject = DB::table('stage_manages')
+                    ->where('document_id', $id)
+                    ->where('user_id', $reviewer)
+                    ->where('stage', 'Cancel-by-Reviewer')
+                    ->whereNull('deleted_at')
+                    ->latest()
+                    ->first();
+
+                $table->addRow();
+                $table->addCell(2000)->addText($user->name);
+                $table->addCell(2000)->addText($dept);
+                if ($date) {
+                    $table->addCell(2000)->addText("Review Completed");
+                } elseif ($reject) {
+                    $table->addCell(2000)->addText("Review Rejected");
+                } else {
+                    $table->addCell(2000)->addText("Review Pending");
+                }
+                $table->addCell(2000)->addText($user->email);
+                $table->addCell(2000)->addText($comment ? $comment->comment : '');
+            }
+        }
+
+        // Add Approvals Table
+        $section->addText("Approvals", ['bold' => true]);
+        $table = $section->addTable(['borderSize' => 6, 'borderColor' => '999999']);
+        $table->addRow();
+        $table->addCell(2000)->addText("Approver");
+        $table->addCell(2000)->addText("Department");
+        $table->addCell(2000)->addText("Status");
+        $table->addCell(2000)->addText("E-Signature");
+        $table->addCell(2000)->addText("Comments");
+
+        if ($data['approvers']) {
+            $approvers = explode(',', $data['approvers']);
+            foreach ($approvers as $approver) {
+                $user = DB::table('users')->where('id', $approver)->first();
+                $dept = DB::table('departments')->where('id', $user->departmentid)->value('name');
+                $date = DB::table('stage_manages')
+                    ->where('document_id', $id)
+                    ->where('user_id', $approver)
+                    ->where('stage', 'Approved')
+                    ->whereNull('deleted_at')
+                    ->latest()
+                    ->first();
+                $comment = DB::table('stage_manages')
+                    ->where('document_id', $id)
+                    ->where('user_id', $approver)
+                    ->where('stage', 'Approved')
+                    ->latest()
+                    ->first();
+                $reject = DB::table('stage_manages')
+                    ->where('document_id', $id)
+                    ->where('user_id', $approver)
+                    ->where('stage', 'Cancel-by-Approver')
+                    ->whereNull('deleted_at')
+                    ->latest()
+                    ->first();
+
+                $table->addRow();
+                $table->addCell(2000)->addText($user->name);
+                $table->addCell(2000)->addText($dept);
+                if ($date) {
+                    $table->addCell(2000)->addText("Approval Completed");
+                } elseif ($reject) {
+                    $table->addCell(2000)->addText("Approval Rejected");
+                } else {
+                    $table->addCell(2000)->addText("Approval Pending");
+                }
+                $table->addCell(2000)->addText($user->email);
+                $table->addCell(2000)->addText($comment ? $comment->comment : '');
+            }
+        }
+
 
         // Add Footer with tables
         $footer = $section->addFooter();
 
         // Footer Table
-        $footerTableStyle = [
-            'width' => Converter::cmToPixel(16),
-            'borderSize' => 1,
+        $footerTable = $footer->addTable([
+            'width' => 100 * 50,
+            'borderSize' => 4,
             'borderColor' => 'dddddd',
             'cellMargin' => 50
-        ];
-        $footerTable = $footer->addTable($footerTableStyle);
+        ]);
         $footerTable->addRow();
-        $footerTable->addCell(Converter::cmToPixel(6))
-            ->addText($data['department_name']); // Adjust to fit your footer content
-        $footerTable->addCell(Converter::cmToPixel(10), ['align' => 'right'])
-            ->addText('Footer Content Here');
-
-        // Add Watermark
-        if ($document->stage) {
-            $watermarkText = Helpers::getDocStatusByStage($document->stage);
-            $phpWord->addFontStyle('watermark', [
-                'color' => 'red',
-                'size' => 16, // Adjust size as needed
-                'bold' => true,
-                'name' => 'Arial'
-            ]);
-            $phpWord->addParagraphStyle('watermarkStyle', [
-                'align' => 'center',
-                'valign' => 'center',
-                'spaceAfter' => 0,
-                'rotate' => 45 // Rotate text 45 degrees
-            ]);
-
-            $watermarkSection = $phpWord->addSection();
-            $watermark = $watermarkSection->addTextRun('watermarkStyle');
-            $watermark->addText($watermarkText, 'watermark');
+        $cell = $footerTable->addCell(5000, ['valign' => 'center']);
+        if ($cell) {
+            $temp = DB::table('document_types')->where('name', $data['document_type_name'])->value('typecode');
+            if ($data['revised'] === 'Yes') {
+                $cell->addText(
+                    Helpers::getDivisionName($data['document_id']) . '' . ($data['sop_type_short'] ? $temp : '') . '/' . $data['year'] . '/000' . $data['document_number'] . '/R' . $data['major'] . '.' . $data['minor'],
+                    ['size' => 12],
+                    ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::LEFT]
+                );
+            } else {
+                $cell->addText(
+                    $data['sop_type_short'] . '/' . $data['department_id'] . '000' . $data['id'] . '/R' . $data['major'] . '.' . $data['minor'],
+                    ['size' => 12]
+                );
+            }
         }
+        $footerTable->addCell(5000, ['valign' => 'center'])->addText('Printed On: ' . Carbon::now()->format('d-M-Y h:i A'), ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::RIGHT]);
 
         // Save the Word file
         $directoryPath = public_path("user/word/doc");
-        $filePath = $directoryPath . '/Document_' . $id . '.docx';
+        $filePath = $directoryPath . '/SOP_' . $id . '.docx';
 
         if (!File::exists($directoryPath)) {
             File::makeDirectory($directoryPath, 0755, true);
@@ -2914,113 +3144,4 @@ class DocumentController extends Controller
         // Return response to download the file
         return response()->download($filePath)->deleteFileAfterSend(true);
     }
-
-
-
-    // with css 
-    // public function downloadWord($id)
-    // {
-    //     // Find the document
-    //     $document = Document::find($id);
-
-    //     if (!$document) {
-    //         return response()->json(['error' => 'Document not found'], 404);
-    //     }
-
-    //     // Fetch related data
-    //     $department = $document->department;
-    //     $originator = $document->originator;
-    //     $documentType = $document->documentType;
-    //     $division = $document->division;
-    //     $documentContent = $document->documentContent;
-
-    //     $data = [
-    //         'department_name' => $department ? $department->name : '',
-    //         'originator' => $originator ? $originator->name : '',
-    //         'originator_email' => $originator ? $originator->email : '',
-    //         'document_type_name' => $documentType ? $documentType->name : '',
-    //         'document_type_code' => $documentType ? $documentType->typecode : '',
-    //         'document_division' => $division ? $division->name : '',
-    //         'year' => Carbon::parse($document->created_at)->format('Y'),
-    //         'document_content' => $documentContent,
-    //         'effective_date' => $document->effective_date,
-    //         'next_review_date' => $document->next_review_date,
-    //         'document_name' => $document->document_name,
-    //         'stage' => $document->stage,
-    //     ];
-
-    //     //     $view = View::make('frontend.documents.word-template', compact('data', 'document'));
-    //     //     $html = $view->render();
-    //     // Create a new PHPWord instance
-    //     $phpWord = new PhpWord();
-    //     $section = $phpWord->addSection();
-
-    //     // Define text styles
-    //     $phpWord->addFontStyle('headerTitle', [
-    //         'name' => 'Arial',
-    //         'size' => 18,
-    //         'bold' => true,
-    //     ]);
-
-    //     $phpWord->addFontStyle('headerSubTitle', [
-    //         'name' => 'Arial',
-    //         'size' => 16,
-    //     ]);
-
-    //     $phpWord->addParagraphStyle('centered', [
-    //         'align' => 'center',
-    //     ]);
-
-    //     $phpWord->addParagraphStyle('leftAligned', [
-    //         'align' => 'left',
-    //     ]);
-
-    //     // Define table style
-    //     $phpWord->addTableStyle('headerTable', [
-    //         'borderSize' => 1,
-    //         'borderColor' => '000000',
-    //         'cellMargin' => 50,
-    //         'bgColor' => 'FFFFFF'
-    //     ]);
-
-    //     // Add tables with styles
-    //     // First Table: Logo and Title
-    //     $table = $section->addTable('headerTable');
-    //     $table->addRow();
-    //     $table->addCell(2000, ['align' => 'center'])->addText('Logo', 'headerTitle');
-    //     $table->addCell(4000, ['align' => 'center'])->addText($data['document_name'] ?? '', 'headerSubTitle');
-    //     $table->addCell(2000, ['align' => 'center'])->addText('Additional Logo', 'headerTitle');
-
-    //     // Second Table: Document Number and Type
-    //     $table = $section->addTable('headerTable');
-    //     $table->addRow();
-    //     $table->addCell(3000, ['align' => 'center'])->addText($data['sop_type'] ?? 'N/A', 'headerTitle');
-    //     $table->addCell(4000, ['align' => 'center'])->addText($data['document_type_code'] ?? 'N/A', 'headerTitle');
-    //     $table->addCell(3000, ['align' => 'center'])->addText($data['department_name'] ?? 'N/A', 'headerTitle');
-
-    //     // Third Table: Address
-    //     $table = $section->addTable('headerTable');
-    //     $table->addRow();
-    //     $table->addCell(8000, ['align' => 'center'])->addText('Address : 82, M.I.D.C, Bhosari, Maharashtra 411026', 'headerSubTitle');
-
-    //     // Fourth Table: Dates
-    //     $table = $section->addTable('headerTable');
-    //     $table->addRow();
-    //     $table->addCell(3000, ['align' => 'center'])->addText('Effective Date: ' . ($data['effective_date'] ? Carbon::parse($data['effective_date'])->format('d-M-Y') : 'N/A'), 'headerSubTitle');
-    //     $table->addCell(3000, ['align' => 'center'])->addText('Next Review Date: ' . ($data['next_review_date'] ? Carbon::parse($data['next_review_date'])->format('d-M-Y') : 'N/A'), 'headerSubTitle');
-
-    //     // Save the Word file
-    //     $directoryPath = public_path("user/word/doc");
-    //     $filePath = $directoryPath . '/Document_' . $id . '.docx';
-
-    //     if (!File::exists($directoryPath)) {
-    //         File::makeDirectory($directoryPath, 0755, true);
-    //     }
-
-    //     $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
-    //     $objWriter->save($filePath);
-
-    //     // Return response to download the file
-    //     return response()->download($filePath)->deleteFileAfterSend(true);
-    // }
 }
