@@ -654,7 +654,9 @@ class DocumentController extends Controller
 
                 $content->hod_attachments = json_encode($files);
             }
-
+            $annexure_data = $request->input('annexuredata');
+            $document->doc_content->annexuredata = serialize($annexure_data);
+            $document->doc_content->save();
 
             if (! empty($request->materials_and_equipments)) {
                 $content->materials_and_equipments = serialize($request->materials_and_equipments);
@@ -1555,6 +1557,8 @@ class DocumentController extends Controller
             $annexure_data = $request->input('annexuredata');
                     $document->doc_content->annexuredata = serialize($annexure_data);
                     $document->doc_content->save();
+
+                    // dd($document->doc_content);
 
             if ($lastContent->purpose != $documentcontet->purpose || ! empty($request->purpose_comment)) {
                 $history = new DocumentHistory;
