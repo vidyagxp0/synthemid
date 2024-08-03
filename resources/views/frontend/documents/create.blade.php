@@ -390,7 +390,6 @@
                                     <div class="group-input">
                                         <label for="Warehousefeedback">Drafted By</label>
                                         <input readonly type="text" name="drafted_by" id="drafted_by">
-        
                                     </div>
                                 </div>
         
@@ -1002,6 +1001,9 @@
                                 </div>
                             @endfor
                         </div>
+
+
+
                         <div class="button-block">
                             <button type="submit" value="save" name="submit" class="saveButton">Save</button>
                             <button type="button" class="backButton" onclick="previousStep()">Back</button>

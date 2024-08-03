@@ -104,7 +104,17 @@ Route::middleware(['auth', 'prevent-back-history', 'user-activity'])->group(func
 
     Route::get('documents/printPDF/{id}', [DocumentController::class, 'printPDF'])->name('document.print.pdf');
     Route::post('documents/pdfHistory/', [DocumentController::class, 'storePrintHistory'])->name('document.print.pdf.history');
-    Route::get('documents/printAnnexure/{document}/{annexure}', [DocumentController::class, 'printAnnexure'])->name('document.print.annexure');
+    //Annexures
+    Route::get('documents/printAnnexure/{document}/{annexure}', [DocumentController::class, 'printAnnexure'])->name('document.print.annexure');//annexure
+    Route::get('documents/setReadonly/{document}/{annexure}', [DocumentController::class, 'setReadonly'])->name('document.set.readonly');
+    Route::get('documents/reviseAnnexure/{document}/{annexure}', [DocumentController::class, 'reviseAnnexure'])->name('document.revise.annexure');
+    Route::post('documents/saveAnnexures/{document}', [DocumentController::class, 'saveAnnexures'])->name('document.save.annexures');
+    // Route::post('documents/{id}/save', [DocumentController::class, 'saveDocument'])->name('saveDocument');
+
+    // Route::post('documents/saveAnnexures/{document}', [DocumentController::class, 'saveAnnexures'])->name('document.save.annexures');
+
+    // Route::get('documents/setReadonly/{document}/{annexure}', [DocumentController::class, 'setReadonly'])->name('document.set.readonly');
+
     Route::get('documents/viewpdf/{id}', [DocumentController::class, 'viewPdf']);
     Route::get('documents/revision-history/{id}', [DocumentController::class, 'revision_history'])->name('document.revision.history');
     Route::resource('documentsContent', DocumentContentController::class);

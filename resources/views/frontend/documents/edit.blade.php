@@ -2083,23 +2083,53 @@
 
                 </div>
                 {{-- HOD REMARKS TAB END --}}
-
+                
                 <div id="annexures" class="tabcontent">
-
+                    <form action="{{ route('documents.update', $document->id) }}" method="POST">
                     <div class="d-flex justify-content-end">
                         <div>
-                            <button 
-                            data-bs-toggle="modal" data-bs-target="#annexure-modal"
-                            type="button" class="btn btn-primary">Annexure Print</button>
+                            <button data-bs-toggle="modal" data-bs-target="#annexure-modal" type="button" class="btn btn-primary">Annexure Print</button>
                         </div>
                     </div>
-
+                
+                    <div class="d-flex justify-content-end">
+                        <div>
+                            <button data-bs-toggle="modal" data-bs-target="#annexure-modal-revise" type="button" class="btn btn-primary">Annexure Revise</button>
+                        </div>
+                    </div>
+                
+                    <div class="justify-content-end">
+                        <div>
+                            <button data-bs-toggle="modal" data-bs-target="#annexure-modal-obsolete" type="button" class="btn btn-primary">Obsolete</button>
+                        </div>
+                    </div>
+                
                     <div class="input-fields">
                         @if ($document->document_content && !empty($document->document_content->annexuredata))
-                            @foreach (unserialize($document->document_content->annexuredata) as $data)
+                            @foreach (unserialize($document->document_content->annexuredata) as $index => $data)
                                 <div class="group-input mb-3">
-                                    <label>Annexure A-{{ $loop->index + 1 }}</label>
-                                    <textarea class="summernote" name="annexuredata[]">{{ $data }}</textarea>
+                                    <label>Annexure A-{{ $index + 1 }}</label>
+                                    @php
+                                        $readonly = '';
+                                        $content = '';
+                                        $sub_annexures = [];
+                                        if (is_array($data)) {
+                                            $readonly = isset($data['readonly']) && $data['readonly'] == true ? 'readonly' : '';
+                                            $content = isset($data['content']) ? $data['content'] : '';
+                                            $sub_annexures = isset($data['sub_annexures']) ? $data['sub_annexures'] : [];
+                                        } else {
+                                            $content = $data;
+                                        }
+                                    @endphp
+                                    <textarea class="summernote" name="annexuredata[]" {{ $readonly }}>{{ $content }}</textarea>
+                
+                                    <!-- Display sub-annexures -->
+                                    @foreach ($sub_annexures as $sub_index => $sub_annexure)
+                                        <div class="group-input mb-3">
+                                            <label>{{ $sub_annexure['name'] }}</label>
+                                            <textarea class="summernote" name="sub_annexuredata[]" {{ $sub_annexure['readonly'] ? 'readonly' : '' }}>{{ $sub_annexure['content'] }}</textarea>
+                                        </div>
+                                    @endforeach
                                 </div>
                             @endforeach
                         @else
@@ -2111,13 +2141,15 @@
                             @endfor
                         @endif
                     </div>
+                
                     <div class="button-block">
                         <button type="submit" name="submit" value="save" class="saveButton">Save</button>
                         <button type="button" class="backButton" onclick="previousStep()">Back</button>
                         <button type="button" class="nextButton" onclick="nextStep()">Next</button>
                     </div>
                 </div>
-
+            </form>
+                
                 <div id="distribution-retrieval" class="tabcontent">
                     <div class="orig-head">
                         Distribution & Retrieval
@@ -2804,6 +2836,70 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="annexure-modal-obsolete">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Obsolete</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('document.print.pdf', $document->id) }}" method="GET" target="_blank">
+                    @csrf
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        @php
+                            $annexure_data = unserialize($document->document_content->annexuredata);
+                        @endphp
+    
+                        @for ($i = 1; $i <= 20; $i++)
+                            @if (!isset($annexure_data[$i - 1]['readonly']) || $annexure_data[$i - 1]['readonly'] === false)
+                                <a href='{{ route('document.set.readonly', ['document' => $document->id, 'annexure' => $i]) }}' target="_blank">Obsolete Annexure A-{{ $i }}</a> <br>
+                            @endif
+                        @endfor
+                    </div>
+    
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary rounded">Submit</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="modal fade" id="annexure-modal-revise">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Revise</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('document.print.pdf', $document->id) }}" method="GET" target="_blank">
+                    @csrf
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        @for ($i = 1; $i <= 20; $i++)
+                            <a href='{{ route('document.revise.annexure', ['document' => $document->id, 'annexure' => $i]) }}' target="_blank">Revise Annexure A-{{ $i }}</a> <br>
+                        @endfor
+                    </div>
+    
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary rounded">Submit</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    
+    
 
 
     <style>

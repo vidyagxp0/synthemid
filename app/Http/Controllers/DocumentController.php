@@ -633,6 +633,7 @@ class DocumentController extends Controller
             }
             $annexure->save();
 
+
             $content = new DocumentContent();
             $content->document_id = $document->id;
             $content->purpose = $request->purpose;
@@ -702,6 +703,9 @@ class DocumentController extends Controller
             }
 
             $content->save();
+            $annexure_data = $request->input('annexuredata');
+                    $document->doc_content->annexuredata = serialize($annexure_data);
+                    $document->doc_content->save();
 
             toastr()->success('Document created');
 
@@ -1548,6 +1552,9 @@ class DocumentController extends Controller
 
 
             $documentcontet->save();
+            $annexure_data = $request->input('annexuredata');
+                    $document->doc_content->annexuredata = serialize($annexure_data);
+                    $document->doc_content->save();
 
             if ($lastContent->purpose != $documentcontet->purpose || ! empty($request->purpose_comment)) {
                 $history = new DocumentHistory;
@@ -2188,67 +2195,180 @@ class DocumentController extends Controller
         }
     }
 
-    public function printAnnexure($documentId, $annexure_number)
-    {
-        try {
-            $document = Document::findOrFail($documentId);
+
+//    
+public function printAnnexure($documentId, $annexure_number)
+{
+    try {
+        $document = Document::findOrFail($documentId);
+        
+        if ( $document->doc_content && !empty($document->doc_content->annexuredata) )
+        {
+            $annexure_data = unserialize($document->doc_content->annexuredata);
+
+            $annexure_data = $annexure_data[$annexure_number-1];
+
+            $document = Document::find($documentId);
+            $data = Document::find($documentId);
+            $data->department = Department::find($data->department_id);
+            $data['originator'] = User::where('id', $data->originator_id)->value('name');
+            $data['originator_email'] = User::where('id', $data->originator_id)->value('email');
+            $data['document_content'] = DocumentContent::where('document_id', $documentId)->first();
+            $data['document_type_name'] = DocumentType::where('id', $data->document_type_id)->value('name');
+            $data['document_type_code'] = DocumentType::where('id', $data->document_type_id)->value('typecode');
+            $data['document_division'] = Division::where('id', $data->division_id)->value('name');
+            $data['year'] = Carbon::parse($data->created_at)->format('Y');
+            $pdf = App::make('dompdf.wrapper');
+            $time = Carbon::now();
+            $pdf = PDF::loadview('frontend.documents.reports.annexure_report', compact('data', 'time', 'document', 'annexure_number', 'annexure_data'))
+                ->setOptions([
+                    'defaultFont' => 'sans-serif',
+                    'isHtml5ParserEnabled' => true,
+                    'isRemoteEnabled' => true,
+                    'isPhpEnabled' => true,
+                ]);
+            $pdf->setPaper('A4');
+            $pdf->render();
+            $canvas = $pdf->getDomPDF()->getCanvas();
+            $height = $canvas->get_height();
+            $width = $canvas->get_width();
+
+            $canvas->page_script('$pdf->set_opacity(0.1,"Multiply");');
+
+            $canvas->page_text(
+                $width / 4,
+                $height / 2,
+                $data->status,
+                null,
+                25,
+                [0, 0, 0],
+                2,
+                6,
+                -20
+            );
+
+            return $pdf->stream('SOP'.$documentId.'.pdf');
             
-            if ( $document->doc_content && !empty($document->doc_content->annexuredata) )
-            {
-                $annexure_data = unserialize($document->doc_content->annexuredata);
-
-                $annexure_data = $annexure_data[$annexure_number-1];
-
-                $document = Document::find($documentId);
-                $data = Document::find($documentId);
-                $data->department = Department::find($data->department_id);
-                $data['originator'] = User::where('id', $data->originator_id)->value('name');
-                $data['originator_email'] = User::where('id', $data->originator_id)->value('email');
-                $data['document_content'] = DocumentContent::where('document_id', $documentId)->first();
-                $data['document_type_name'] = DocumentType::where('id', $data->document_type_id)->value('name');
-                $data['document_type_code'] = DocumentType::where('id', $data->document_type_id)->value('typecode');
-                $data['document_division'] = Division::where('id', $data->division_id)->value('name');
-                $data['year'] = Carbon::parse($data->created_at)->format('Y');
-                $pdf = App::make('dompdf.wrapper');
-                $time = Carbon::now();
-                $pdf = PDF::loadview('frontend.documents.reports.annexure_report', compact('data', 'time', 'document', 'annexure_number', 'annexure_data'))
-                    ->setOptions([
-                        'defaultFont' => 'sans-serif',
-                        'isHtml5ParserEnabled' => true,
-                        'isRemoteEnabled' => true,
-                        'isPhpEnabled' => true,
-                    ]);
-                $pdf->setPaper('A4');
-                $pdf->render();
-                $canvas = $pdf->getDomPDF()->getCanvas();
-                $height = $canvas->get_height();
-                $width = $canvas->get_width();
-
-                $canvas->page_script('$pdf->set_opacity(0.1,"Multiply");');
-
-                $canvas->page_text(
-                    $width / 4,
-                    $height / 2,
-                    $data->status,
-                    null,
-                    25,
-                    [0, 0, 0],
-                    2,
-                    6,
-                    -20
-                );
-
-                return $pdf->stream('SOP'.$documentId.'.pdf');
-                
-            } else {
-                throw new \Exception('Annexure Data Not Found');
-            }
-
-        } catch(\Exception $e) {
-            return $e->getMessage();
+        } else {
+            throw new \Exception('Annexure Data Not Found');
         }
 
+    } catch(\Exception $e) {
+        return $e->getMessage();
     }
+
+}
+
+public function setReadonly($documentId, $annexure_number)
+{
+    try {
+        $document = Document::findOrFail($documentId);
+
+        if ($document->doc_content && !empty($document->doc_content->annexuredata)) {
+            $annexure_data = unserialize($document->doc_content->annexuredata);
+
+            // Ensure the annexure exists and is properly formatted
+            if (isset($annexure_data[$annexure_number - 1])) {
+                // If it's not an array, convert it into an array with content and readonly fields
+                if (!is_array($annexure_data[$annexure_number - 1])) {
+                    $annexure_data[$annexure_number - 1] = [
+                        'content' => $annexure_data[$annexure_number - 1],
+                        'readonly' => true,
+                    ];
+                } else {
+                    // If it's already an array, set the readonly attribute and retain existing content
+                    $annexure_data[$annexure_number - 1]['readonly'] = true;
+                }
+
+                // Save the updated annexure data back to the document
+                $document->doc_content->annexuredata = serialize($annexure_data);
+                $document->doc_content->save();
+
+                return redirect()->back()->with('success', 'Annexure A-' . $annexure_number . ' set to readonly.');
+            } else {
+                throw new \Exception('Annexure not found.');
+            }
+        } else {
+            throw new \Exception('Annexure Data Not Found');
+        }
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', $e->getMessage());
+    }
+}
+
+
+public function reviseAnnexure($documentId, $annexure_number)
+{
+try {
+    $document = Document::findOrFail($documentId);
+
+    if ($document->doc_content && !empty($document->doc_content->annexuredata)) {
+        $annexure_data = unserialize($document->doc_content->annexuredata);
+
+        // Ensure the annexure exists and is properly formatted
+        if (isset($annexure_data[$annexure_number - 1])) {
+            // If it's not an array, convert it into an array with content and readonly fields
+            if (!is_array($annexure_data[$annexure_number - 1])) {
+                $annexure_data[$annexure_number - 1] = [
+                    'content' => $annexure_data[$annexure_number - 1],
+                    'readonly' => true,
+                    'sub_annexures' => []
+                ];
+            } else {
+                // If it's already an array, set the readonly attribute and retain existing content
+                $annexure_data[$annexure_number - 1]['readonly'] = true;
+            }
+
+            // Generate a new sub-annexure
+            $sub_annexure_count = count($annexure_data[$annexure_number - 1]['sub_annexures']);
+            $annexure_data[$annexure_number - 1]['sub_annexures'][] = [
+                'content' => '',
+                'readonly' => false,
+                'name' => 'Sub-Annexure A' . $annexure_number . '.' . ($sub_annexure_count + 1)
+            ];
+
+            // Save the updated annexure data back to the document
+            $document->doc_content->annexuredata = serialize($annexure_data);
+            $document->doc_content->save();
+
+            return redirect()->back()->with('success', 'Annexure A-' . $annexure_number . ' set to readonly and new sub-annexure created.');
+        } else {
+            throw new \Exception('Annexure not found.');
+        }
+    } else {
+        throw new \Exception('Annexure Data Not Found');
+    }
+} catch (\Exception $e) {
+    return redirect()->back()->with('error', $e->getMessage());
+}
+}
+
+
+
+
+// 
+
+
+
+// public function saveDocument(Request $request, $documentId)
+// {
+//     try {
+//         $document = Document::findOrFail($documentId);
+
+//         // Retrieve and serialize the annexure data
+//         $annexure_data = $request->input('annexuredata');
+//         $document->doc_content->annexuredata = serialize($annexure_data);
+//         $document->doc_content->save();
+
+//         return redirect()->back()->with('success', 'Document saved successfully.');
+//     } catch (\Exception $e) {
+//         return redirect()->back()->with('error', $e->getMessage());
+//     }
+// }
+
+
+
+
 
     public function import(Request $request)
     {
