@@ -76,26 +76,6 @@ $divisions = DB::table('q_m_s_divisions')->select('id', 'name')->get();
 <div id="tms-dashboard">
     <div class="container-fluid">
         <div class="dashboard-container">
-
-            <div class="inner-block main-block">
-                <div class="top">
-                    <div class="d-flex align-items-center">
-                        <div class="icon">
-                            <i class="fa-solid fa-gauge-high"></i>
-                        </div>
-                        <div class="name">
-                            <div>Dashboard</div>
-                            <div>TMS Dashboard</div>
-                        </div>
-                    </div>
-                    <div class="doc-links d-flex">
-                        {{-- <button>Print</button> --}}
-                        <a href="javascript:window.location.reload(true)">Refresh</a>
-                        {{-- <a data-bs-toggle="modal" data-bs-target="#subscribe-modal">Subscribe</a> --}}
-                        {{-- <a href="#"><i class="fa-solid fa-caret-down"></i></a> --}}
-                    </div>
-                </div>
-            </div>
             <div class="cctab">
 
                 @if (Helpers::checkRoles(6))

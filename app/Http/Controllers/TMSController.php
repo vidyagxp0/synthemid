@@ -981,9 +981,37 @@ class TMSController extends Controller
     }
 
 
-    public function logsTms_dashboard(){
+    public function logsTms_dashboard(Request $request){
 
-        return view('frontend.TMS.logs_tms_dasboard');
+
+        if ($request->revision == "traininglog") {
+           
+            return view('frontend.TMS.logs_tms_dasboard');
+    
+        }
+        if ($request->revision == "traineesLogs") {
+
+            $trainings = Training::all(); 
+            
+            $processedTrainings = [];
+
+        foreach ($trainings as $training) {
+            $trainees = explode(',', $training->trainees); // Adjust delimiter as needed
+            foreach ($trainees as $trainee) {
+                $processedTrainings[] = [
+                    'id' => $training->id,
+                    'traning_plan_name' => $training->traning_plan_name,
+                    'trainee' => trim($trainee),
+                    'due_date' => $training->training_end_date
+                ];
+            }
+        }
+        return view('frontend.TMS.logs_tms_dasboard', compact('processedTrainings'));
+    }
+    
+        
+
+       
         
     }
 }

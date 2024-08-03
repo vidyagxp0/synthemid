@@ -1,153 +1,105 @@
 @extends('frontend.layout.main')
 @section('container')
+@if (Helpers::checkRoles(6))
+@include('frontend.TMS.head')
+@endif
+
+@php
+$divisions = DB::table('q_m_s_divisions')->select('id', 'name')->get();
+@endphp
+<style>
    
-    <style>
-        textarea.note-codable {
-            display: none !important;
+    .cctabcontent {
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-top: none;
+    }
+    .tmstablelast td {
+            min-height: 60px; 
+            padding: 14px 5px; 
         }
+</style>
 
-        header {
-            display: none;
-        }
-    .exit {
-    margin-right: 20px;
-        }
-    </style>
-
+    
     <script>
         $(document).ready(function() {
-            $('#ObservationAdd').click(function(e) {
-                function generateTableRow(serialNumber) {
-
-                    var html =
-                        '<tr>' +
-                        '<td><input disabled type="text" name="jobResponsibilities[' + serialNumber +
-                        '][serial]" value="' + serialNumber +
-                        '"></td>' +
-                        '<td><input type="text" name="jobResponsibilities[' + serialNumber +
-                        '][job]"></td>' +
-                        '<td><input type="text" class="Document_Remarks" name="jobResponsibilities[' +
-                        serialNumber + '][remarks]"></td>' +
-
-
-                        '</tr>';
-
-                    return html;
+            $('#search').on('change', function() {
+                var selectedTrainee = $(this).val();
+                if (selectedTrainee) {
+                    $('.training-row').hide();
+                    $('.training-row[data-trainee="' + selectedTrainee + '"]').show();
+                } else {
+                    $('.training-row').show();
                 }
-
-                var tableBody = $('#job-responsibilty-table tbody');
-                var rowCount = tableBody.children('tr').length;
-                var newRow = generateTableRow(rowCount + 1);
-                tableBody.append(newRow);
             });
         });
     </script>
-    <div>
-    <div class="form-field-head">
-        <div class="pr-id">
-            Trainees Logs
-
-            
-        </div>
-
-        <div>
-                                            
-                
-                
-        
-        </div>
-    </div>
-    <div class="inner-block tms-block cctabcontent" style="margin-top:50px; display:block;"> 
- <div style="display: flex; align-items: center; justify-content: space-between;">
-    <div style="display: flex; align-items: center;">
-        <label for="status" style="margin-left: 20px;"><b>Trainee :</b></label>
-        <input type="text" id="search" name="search" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc; width: 200px;">
     
-    </div>
-    <div style="display: flex; align-items: center;">
-    <button type="button" class="exit" style="padding: 5px; border-radius: 4px;"> <a class="text-white" href="{{ url('TMS') }}">
-        Exit </a> </button>
-    </div>
-    </div>
-    </div>
-    <div class="mt-5">
+    <div id="tms-dashboard">
+        <div class="form-field-head">
+            <div class="pr-id">
+                Trainees Logs
+
+
+            </div>
+
+           
+        </div>
         
-        <table class="table table-bordered" style="width: 100%; border-collapse: collapse; border: 1px solid black">
-            <thead>
-                <tr style="background-color: #4274da;">
-                    <th>Row</th>
-                    <th>Trainee Name</th>
-                    <th>Trainee Plan Id</th>
-                    <th>Due Date</th>
-                    <th>Attendance </th>
-                    <th>Pass/Fail</th>
-                    <th>Remark</th>
-                </tr>
-            </thead>
-            <tbody class="tmstablelast">
-                <tr>
-                    <td>1</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
+    
+    <div>
+        <div class="inner-block tms-block cctabcontent" style="margin-top:50px; display:block;">
+            <div>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center;">
+                        <label for="status" style="margin-left: 20px;"><b>Trainee :</b></label>
+                        <select name="" id="search" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc; width: 200px;">
+                            <option value="">Select All</option>
+                            @foreach($processedTrainings as $training)
+                                <option value="{{ $training['traning_plan_name'] }}">{{ $training['traning_plan_name'] }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <a class="text-white"
+                                href="{{ url('TMS') }}"><button type="button" class="exit" style="padding: 5px; border-radius: 4px;"> 
+                                Back  </button></a>
+                    </div>
+                </div><br>
+                <table class="table table-bordered" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="width:5%">Row</th>
+                            <th>Trainee Name</th>
+                            <th>Trainee Plan Id</th>
+                            <th>Due Date</th>
+                            <th>Attendance </th>
+                            <th>Pass/Fail</th>
+                            <th>Remark</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($processedTrainings as $index => $training)
+                        <tr class="training-row" data-trainee="{{ $training['traning_plan_name'] }}">
+                            <td>{{ $index + 1 }}</td>
+                                <td>{{ $training['traning_plan_name']}}</td>
+                                <td>TP-{{ $training['trainee'] }}</td>
+                                <td>{{ $training['due_date'] }}</td>
+                            @php
+                                $trainingstatus = DB::table('training_statuses')->where(['user_id'=>$training['trainee'],'training_id'=>$training['id']])->latest()->first();
+                                // dd($trainingstatus);
+                            @endphp
+    
+                                <td>{{ $trainingstatus ? 'Yes' : ($training['due_date'] < now() ? 'No' : 'Pending') }}</td>
+                                <td>{{ $trainingstatus ? 'Pass' : '-'}}</td>
+                                <td></td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
-
-
-
-    {{-- ======================================
-                    DATA FIELDS
-    ======================================= --}}
-  
-
-    <script>
-        function openCity(evt, cityName) {
-            var i, cctabcontent, cctablinks;
-            cctabcontent = document.getElementsByClassName("cctabcontent");
-            for (i = 0; i < cctabcontent.length; i++) {
-                cctabcontent[i].style.display = "none";
-            }
-            cctablinks = document.getElementsByClassName("cctablinks");
-            for (i = 0; i < cctablinks.length; i++) {
-                cctablinks[i].className = cctablinks[i].className.replace(" active", "");
-            }
-            document.getElementById(cityName).style.display = "block";
-            evt.currentTarget.className += " active";
-        }
-
-        const saveButtons = document.querySelectorAll('.saveButton1');
-        const form = document.getElementById('step-form');
-    </script>
-    <script>
-        VirtualSelect.init({
-            ele: '#Facility, #Group, #Audit, #Auditee ,#reference_record, #designee, #hod'
-        });
-    </script>
+   
 @endsection

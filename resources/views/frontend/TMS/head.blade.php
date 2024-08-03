@@ -53,13 +53,13 @@
                     <div class="modal-body">
                         <div class="group-input">
                             <label style="  display: flex;     gap: 18px;" for="capa-child">
-                                <input type="radio" name="revision" >
+                                <input type="radio" name="revision" value="traininglog">
                                Training Logs
                             </label>
                         </div><br>
                         <div class="group-input">
                             <label style=" display: flex;     gap: 16px;" for="root-item">
-                                <input type="radio" name="revision" id="root-item" >
+                                <input type="radio" name="revision" id="root-item"value="traineesLogs">
                               <span style="width: 100px;">Trainees Logs</span>
                             </label>
                         </div>
