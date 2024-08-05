@@ -81,7 +81,7 @@ class DocumentController extends Controller
     }
     public function division_old(Request $request)
     {
-        
+
         // return $request;
 
         $new = new Document;
@@ -167,7 +167,7 @@ class DocumentController extends Controller
 
         $documentStatus = Document::withoutTrashed()->select('id', 'status')->get();
         $documentStatusIds = $documentValues->pluck('document_type_id')->unique()->toArray();
-        
+
 
         $OriValues = Document::withoutTrashed()->select('id', 'originator_id')->get();
         $OriTypeIds = $OriValues->pluck('originator_id')->unique()->toArray();
@@ -375,7 +375,7 @@ class DocumentController extends Controller
             ->get();
 
 
-        
+
         $approvers = DB::table('user_roles')
             ->join('users', 'user_roles.user_id', '=', 'users.id')
             ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name')
@@ -461,7 +461,7 @@ class DocumentController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         // effective_date, review_period
 
         if ($request->submit == 'save') {
@@ -487,6 +487,7 @@ class DocumentController extends Controller
             $document->stage = 1;
             $document->status = Stage::where('id', 1)->value('name');
             $document->due_dateDoc = $request->due_dateDoc;
+            $document->priodic_review = $request->priodic_review;
             $document->department_id = $request->department_id;
             $document->document_type_id = $request->document_type_id;
             $document->document_subtype_id = $request->document_subtype_id;
@@ -589,7 +590,7 @@ class DocumentController extends Controller
                 $document->approver_group = implode(',', $request->approver_group);
             }
             $document->save();
-            
+
 
             DocumentService::update_document_numbers();
 
@@ -739,9 +740,9 @@ class DocumentController extends Controller
      */
     public function edit($id)
     {
-        
+
         $ccrecord = CC::get();
-        
+
         $users = User::all();
         if (!empty($users)) {
             foreach ($users as $data) {
@@ -769,8 +770,8 @@ class DocumentController extends Controller
         $document = Document::find($id);
         $document->date = Carbon::parse($document->created_at)->format('d-M-Y');
         $document['document_content'] = DocumentContent::where('document_id', $id)->first();
-        $document_distribution_grid = PrintHistory::where('document_id', $id)->leftjoin('documents','documents.id','print_histories.document_id')->get(['print_histories.*', 'documents.document_name']);
-        
+        $document_distribution_grid = PrintHistory::where('document_id', $id)->leftjoin('documents', 'documents.id', 'print_histories.document_id')->get(['print_histories.*', 'documents.document_name']);
+
         $document['division'] = Division::where('id', $document->division_id)->value('name');
         $year = Carbon::parse($document->created_at)->format('Y');
         $trainer = User::get();
@@ -829,8 +830,8 @@ class DocumentController extends Controller
             ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the group by clause
             ->get();
 
-            
-    
+
+
 
         return view('frontend.documents.edit', compact(
             'document',
@@ -885,6 +886,7 @@ class DocumentController extends Controller
 
                 $document->legacy_number = $request->legacy_number;
                 $document->due_dateDoc = $request->due_dateDoc;
+                $document->priodic_review = $request->priodic_review;
                 $document->sop_type = $request->sop_type;
                 $document->department_id = $request->department_id;
                 $document->document_type_id = $request->document_type_id;
@@ -1078,7 +1080,7 @@ class DocumentController extends Controller
 
             $document->update();
 
-            
+
 
             DocumentService::handleDistributionGrid($document, $request->distribution);
 
@@ -1133,18 +1135,18 @@ class DocumentController extends Controller
 
                 $stage = $request->stage; // Assuming stage is being passed in the request
 
-if (is_array($request->document_name_comment)) {
-    if ($stage >= 5 && $stage <= 11) {
-        // Custom handling for stages 5 to 11
-        $history->comment = implode(',', $request->document_name_comment);
-    } else {
-        // Normal handling for other stages
-        $history->comment = implode(',', $request->document_name_comment);
-    }
-} else {
-    // Handle the case where document_name_comment is not an array
-    $history->comment = $request->document_name_comment;
-}
+                if (is_array($request->document_name_comment)) {
+                    if ($stage >= 5 && $stage <= 11) {
+                        // Custom handling for stages 5 to 11
+                        $history->comment = implode(',', $request->document_name_comment);
+                    } else {
+                        // Normal handling for other stages
+                        $history->comment = implode(',', $request->document_name_comment);
+                    }
+                } else {
+                    // Handle the case where document_name_comment is not an array
+                    $history->comment = $request->document_name_comment;
+                }
 
                 // $history->comment = implode($request->document_name_comment);
                 $history->user_id = Auth::user()->id;
@@ -1460,18 +1462,18 @@ if (is_array($request->document_name_comment)) {
                 $history->current = $document->attach_effective_docuement;
                 $stage = $request->stage; // Assuming stage is being passed in the request
 
-if (is_array($request->attach_effective_docuement_comment)) {
-    if ($stage > 4 && $stage <= 10) {
-        // Custom handling for stages 5 to 11
-        $history->comment = implode(',', $request->attach_effective_docuement_comment);
-    } else {
-        // Normal handling for other stages
-        $history->comment = implode(',', $request->attach_effective_docuement_comment);
-    }
-} else {
-    // Handle the case where attach_effective_docuement_comment is not an array
-    $history->comment = $request->attach_effective_docuement_comment;
-}
+                if (is_array($request->attach_effective_docuement_comment)) {
+                    if ($stage > 4 && $stage <= 10) {
+                        // Custom handling for stages 5 to 11
+                        $history->comment = implode(',', $request->attach_effective_docuement_comment);
+                    } else {
+                        // Normal handling for other stages
+                        $history->comment = implode(',', $request->attach_effective_docuement_comment);
+                    }
+                } else {
+                    // Handle the case where attach_effective_docuement_comment is not an array
+                    $history->comment = $request->attach_effective_docuement_comment;
+                }
 
                 // $history->comment = implode($request->attach_effective_docuement_comment);
                 $history->user_id = Auth::user()->id;
@@ -2153,9 +2155,9 @@ if (is_array($request->attach_effective_docuement_comment)) {
     public function printPDF($id)
     {
 
-        
+
         $issue_copies = request('issue_copies');
-        
+
         $print_reason = request('print_reason');
 
         $document_print_by = request('user_id');
@@ -2175,7 +2177,7 @@ if (is_array($request->attach_effective_docuement_comment)) {
         $depart = request('department');
 
         $date = request('date');
-      
+
 
         $document_print_by = request('user_id');
 
@@ -2194,7 +2196,7 @@ if (is_array($request->attach_effective_docuement_comment)) {
         $depart = request('department');
 
         $date = request('date');
-      
+
 
         if (intval($issue_copies) < 1) {
             return "Cannot issue less than 1 copies! Requested $issue_copies no. of copies.";
@@ -2202,7 +2204,7 @@ if (is_array($request->attach_effective_docuement_comment)) {
         $new = Document::find($id);
         $addNew = $new->id;
 
-        $ModalData = New PrintHistory;
+        $ModalData = new PrintHistory;
         $ModalData->issue_copies = $issue_copies;
         $ModalData->print_reason = $print_reason;
         $ModalData->user_id = $document_print_by;
@@ -2211,14 +2213,14 @@ if (is_array($request->attach_effective_docuement_comment)) {
         $ModalData->document_printed_copies = $NoofCopies;
         $ModalData->date = $IssueDate;
         $ModalData->issuance_to = $IssuanceTo;
-        $ModalData->issued_copies =$IssuedCopies;
+        $ModalData->issued_copies = $IssuedCopies;
         $ModalData->issued_reason = $reasonIssue;
         $ModalData->department = $depart;
         $ModalData->save();
 
         $roles = Auth::user()->userRoles()->select('role_id')->distinct()->pluck('role_id')->toArray();
         $controls = PrintControl::whereIn('role_id', $roles)->first();
-    
+
 
         if ($controls) {
             set_time_limit(250);
@@ -2240,8 +2242,8 @@ if (is_array($request->attach_effective_docuement_comment)) {
 
             $pdf = App::make('dompdf.wrapper');
             $time = Carbon::now();
-            
-            
+
+
             $pdf = PDF::loadview('frontend.documents.pdfpage', compact('data', 'time', 'document', 'issue_copies', 'print_reason'))
                 ->setOptions([
                     'defaultFont' => 'sans-serif',
@@ -2297,7 +2299,7 @@ if (is_array($request->attach_effective_docuement_comment)) {
                     $download->print_reason = $print_reason;
                     $download->issue_copies = $issue_copies;
                     $download->save();
-                
+
 
                     // download PDF file with download method
 
@@ -2625,59 +2627,60 @@ if (is_array($request->attach_effective_docuement_comment)) {
         }
     }
 
-    public function storePrintHistory(Request $request){
-            // Store print history data
-            $print_history = new PrintPdfHistory();
-            $print_history->document_name = $request->document_name;
-            $print_history->issue_copies = $request->issue_copies;
-            $print_history->print_reason = $request->print_reason;
-            $print_history->document_title = $request->document_title;
-            $print_history->printed_by = Auth::user()->id;
-            $print_history->printed_on = date('Y-m-d');
-           
-            $print_history->save();
-            
+    public function storePrintHistory(Request $request)
+    {
+        // Store print history data
+        $print_history = new PrintPdfHistory();
+        $print_history->document_name = $request->document_name;
+        $print_history->issue_copies = $request->issue_copies;
+        $print_history->print_reason = $request->print_reason;
+        $print_history->document_title = $request->document_title;
+        $print_history->printed_by = Auth::user()->id;
+        $print_history->printed_on = date('Y-m-d');
+
+        $print_history->save();
 
 
-            $documentToPdfMap = [
-                'Analysis Protocol Template' => 'pdf/Analysis_Protocol_Template.pdf',
-                'BPR Template' => 'pdf/BPR_Template.pdf',
-                'CC Observations' => 'pdf/CC_Observations.pdf',
-                'ECR Template' => 'pdf/ECR_Template.pdf',
-                'Format Template 4' => 'pdf/Format_Template 4.pdf',
-                'Format Template 3' => 'pdf/Format_Template-3.pdf',
-                'Grid Backup CC' => 'pdf/grid_backu_CC.pdf',
-                'Process Flow Chart Template' => 'pdf/Process_Flow_Chart_Template.pdf',
-                'SDS Template' => 'pdf/SDS_Template.pdf',
-                'SOP Template' => 'pdf/SOP_Template.pdf',
-                'Specification TP Template' => 'pdf/Specification_TP_Template.pdf',
-                'Specification Template' => 'pdf/Specification_Template.pdf',
-            ];           
 
-            $pdfFilePath = public_path($documentToPdfMap[$request->document_name]);
-            \Log::info('Checking file path: ' . $pdfFilePath);
+        $documentToPdfMap = [
+            'Analysis Protocol Template' => 'pdf/Analysis_Protocol_Template.pdf',
+            'BPR Template' => 'pdf/BPR_Template.pdf',
+            'CC Observations' => 'pdf/CC_Observations.pdf',
+            'ECR Template' => 'pdf/ECR_Template.pdf',
+            'Format Template 4' => 'pdf/Format_Template 4.pdf',
+            'Format Template 3' => 'pdf/Format_Template-3.pdf',
+            'Grid Backup CC' => 'pdf/grid_backu_CC.pdf',
+            'Process Flow Chart Template' => 'pdf/Process_Flow_Chart_Template.pdf',
+            'SDS Template' => 'pdf/SDS_Template.pdf',
+            'SOP Template' => 'pdf/SOP_Template.pdf',
+            'Specification TP Template' => 'pdf/Specification_TP_Template.pdf',
+            'Specification Template' => 'pdf/Specification_Template.pdf',
+        ];
 
-            if (file_exists($pdfFilePath)) {
-                return response()->file($pdfFilePath);
-            } else {
-                return response()->json(['status' => 'error', 'message' => 'File does not exist.']);
-            }
+        $pdfFilePath = public_path($documentToPdfMap[$request->document_name]);
+        \Log::info('Checking file path: ' . $pdfFilePath);
 
-            
+        if (file_exists($pdfFilePath)) {
+            return response()->file($pdfFilePath);
+        } else {
+            return response()->json(['status' => 'error', 'message' => 'File does not exist.']);
+        }
 
-            // $documentName = $request->document_name;
-            // $pdfPath = $documentToPdfMap[$documentName] ?? null;
 
-            // if ($pdfPath && Storage::disk('public')->exists($pdfPath)) {
-            //     return response()->file(public_path($pdfPath));
-            // }
 
-            
+        // $documentName = $request->document_name;
+        // $pdfPath = $documentToPdfMap[$documentName] ?? null;
+
+        // if ($pdfPath && Storage::disk('public')->exists($pdfPath)) {
+        //     return response()->file(public_path($pdfPath));
+        // }
+
+
     }
 
 
 
-        // SOp pdf convert in word .docx file 
+    // SOp pdf convert in word .docx file 
     public function downloadWord($id)
     {
 
@@ -2996,10 +2999,11 @@ if (is_array($request->attach_effective_docuement_comment)) {
         $section->addText(
             Helpers::getDivisionName($data['document_id']) . '' . ($data['sop_type_short'] ? $temp : '') . '/' . $data['year'] . '/000' . $data['document_number'] . '/R' . $data['major'] . '.' . $data['minor'],
             ['size' => 12],
-            ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::LEFT]
+            ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::LEFT],
 
-            // $data['sop_type_short'] . '/' . $data['department_id'] . '/000' . $data['document_number'] . '/R' . $data['major'] . '.' . $data['minor'],
-            // ['size' => 12]
+            $data['sop_type_short'] . '/' . $data['department_id'] . '/000' . $data['document_number'] . '/R' . $data['major'] . '.' . $data['minor'],
+            ['size' => 12],
+
         );
         $section->addText("Title", ['bold' => true]);
         $section->addText($data['document_name'], ['alignment' => 'right']);
@@ -3017,7 +3021,7 @@ if (is_array($request->attach_effective_docuement_comment)) {
 
 
         $section->addText("Changed By", ['bold' => true]);
-        $section->addText($last->user_name);
+        $section->addText($data['originator']->originator ?? '');
 
 
         //  Signatute table Start
