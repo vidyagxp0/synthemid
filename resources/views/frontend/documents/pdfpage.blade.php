@@ -435,7 +435,7 @@
             <tbody>
                 <tr>
                     <td class="logo w-20">
-                        <img src="{{ asset('user/images/vidyagxplogo.png') }}" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem;"> 
+                        <img src="https://navin.mydemosoftware.com/public/user/images/logo.png" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem;"> 
                     </td>
                     <td class="title w-60" 
                     style="height: 150px; padding: 0px;  margin: 0px; border-left: 1px solid rgb(104, 104, 104); border-right: 1px solid rgb(104, 104, 104);">
@@ -447,7 +447,7 @@
                         </p>
                     </td>
                     <td class="logo w-20">
-                        <img src="{{ asset('user/images/vidyagxplogo.png') }}" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem;"> 
+                        <img src="https://navin.mydemosoftware.com/public/user/images/logo.png" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem;"> 
                     </td>
                 </tr>
             </tbody>
@@ -529,7 +529,7 @@
                         <thead>
                             <tr>
                                 <th class="text-right">
-                                    <div> <span class="bold">Legacy Document Number:</span> {{ !empty($document->legacy_number) ? $document->legacy_number : 'NA' }}</div>
+                                    {{-- <div> <span class="bold">Legacy Document Number:</span> {{ !empty($document->legacy_number) ? $document->legacy_number : 'NA' }}</div> --}}
                                 </th>
                             </tr>
                         </thead>

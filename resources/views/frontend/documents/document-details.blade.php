@@ -16,6 +16,10 @@
                                 </div>
                                 <div class="buttons">
 
+                                    <button onclick="location.href='{{ route('download.word', $document->id) }}';">
+                                    Download as Word
+                                </button>
+
                                     @if ($document->revised == 'Yes')
                                         <button  onclick="location.href='{{ route('document.revision.history', $document->id) }}';">
                                             Revision History

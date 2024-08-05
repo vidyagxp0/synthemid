@@ -127,6 +127,11 @@ Route::middleware(['auth', 'prevent-back-history', 'user-activity'])->group(func
     Route::get('audit-detail/{id}', [DocumentDetailsController::class, 'auditDetails'])->name('audit-detail');
     Route::post('update-doc/{id}', [DocumentDetailsController::class, 'updatereviewers'])->name('update-doc');
     Route::get('audit-details/{id}', [DocumentDetailsController::class, 'getAuditDetail'])->name('audit-details');
+
+
+// pdf to word
+    Route::get('/document/download-word/{id}', [DocumentController::class, 'downloadWord'])->name('download.word');
+
     Route::get('dashboard', [DashboardController::class, 'index']);
     Route::get('analytics', [DashboardController::class, 'analytics']);
     Route::post('subscribe', [DashboardController::class, 'subscribe']);
