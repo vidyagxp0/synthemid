@@ -2086,23 +2086,17 @@
                 
                 <div id="annexures" class="tabcontent">
                     <form action="{{ route('documents.update', $document->id) }}" method="POST">
-                    <div class="d-flex justify-content-end">
-                        <div>
-                            <button data-bs-toggle="modal" data-bs-target="#annexure-modal" type="button" class="btn btn-primary">Annexure Print</button>
+                        <div class="d-flex justify-content-end mb-3">
+                            <div class="me-2">
+                                <button data-bs-toggle="modal" data-bs-target="#annexure-modal" type="button" class="btn btn-primary">Annexure Print</button>
+                            </div>
+                            <div class="me-2">
+                                <button data-bs-toggle="modal" data-bs-target="#annexure-modal-revise" type="button" class="btn btn-primary">Annexure Revise</button>
+                            </div>
+                            <div>
+                                <button data-bs-toggle="modal" data-bs-target="#annexure-modal-obsolete" type="button" class="btn btn-primary">Obsolete</button>
+                            </div>
                         </div>
-                    </div>
-                
-                    <div class="d-flex justify-content-end">
-                        <div>
-                            <button data-bs-toggle="modal" data-bs-target="#annexure-modal-revise" type="button" class="btn btn-primary">Annexure Revise</button>
-                        </div>
-                    </div>
-                
-                    <div class="justify-content-end">
-                        <div>
-                            <button data-bs-toggle="modal" data-bs-target="#annexure-modal-obsolete" type="button" class="btn btn-primary">Obsolete</button>
-                        </div>
-                    </div>
                 
                     <div class="input-fields">
                         @if ($document->document_content && !empty($document->document_content->annexuredata))
@@ -2122,7 +2116,7 @@
                                         }
                                     @endphp
                                     <textarea class="summernote" name="annexuredata[]" {{ $readonly }}>{{ $content }}</textarea>
-                
+                                        
                                     <!-- Display sub-annexures -->
                                     @foreach ($sub_annexures as $sub_index => $sub_annexure)
                                         <div class="group-input mb-3">
@@ -2837,7 +2831,10 @@
         </div>
     </div>
 
-    <div class="modal fade" id="annexure-modal-obsolete">
+
+   
+
+ <div class="modal fade" id="annexure-modal-obsolete">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <!-- Modal Header -->
@@ -2849,14 +2846,8 @@
                     @csrf
                     <!-- Modal body -->
                     <div class="modal-body">
-                        @php
-                            $annexure_data = unserialize($document->document_content->annexuredata);
-                        @endphp
-    
                         @for ($i = 1; $i <= 20; $i++)
-                            @if (!isset($annexure_data[$i - 1]['readonly']) || $annexure_data[$i - 1]['readonly'] === false)
-                                <a href='{{ route('document.set.readonly', ['document' => $document->id, 'annexure' => $i]) }}' target="_blank">Obsolete Annexure A-{{ $i }}</a> <br>
-                            @endif
+                            <a href='{{ route('document.set.readonly', ['document' => $document->id, 'annexure' => $i]) }}' target="_blank">Obsolete Annexure A-{{ $i }}</a> <br>
                         @endfor
                     </div>
     
@@ -2869,8 +2860,8 @@
             </div>
         </div>
     </div>
-    
 
+    
     <div class="modal fade" id="annexure-modal-revise">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
