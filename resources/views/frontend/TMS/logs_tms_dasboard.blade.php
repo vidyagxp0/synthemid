@@ -96,7 +96,7 @@ $divisions = DB::table('q_m_s_divisions')->select('id', 'name')->get();
                             @endphp
     
                                 <td>{{ $trainingstatus ? 'Yes' : ($training['due_date'] < now() ? 'No' : 'Pending') }}</td>
-                                <td>{{ $trainingstatus ? 'Pass' : '-'}}</td>
+                                <td>{{ $trainingstatus ? 'Pass' : 'Fail'}}</td>
                                 <td></td>
                             </tr>
                         @endforeach
