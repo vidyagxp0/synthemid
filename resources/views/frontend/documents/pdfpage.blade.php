@@ -465,7 +465,7 @@ $total_copies_static = $total_copies;
 <body>
 
     <header class="">
-        <table class="border" style="height: 147px;">
+        <table class="border" style="height: 135px;">
             <tbody>
                 <tr>
                     <td class="logo w-20">
@@ -484,7 +484,7 @@ $total_copies_static = $total_copies;
                 </tr>
             </tbody>
         </table>
-        <table class="border border-top-none p-10">
+        <table class="border border-top-none p-8">
             <tbody>
                 <tr>
                     <td class="doc-num w-100">
@@ -499,11 +499,29 @@ $total_copies_static = $total_copies;
                         /@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}
                         /000{{ $data->document_id }}/R{{$data->major}}.{{$data->minor}}
 
-                        @else
+                        {{-- @else
                         {{ Helpers::getDivisionName($data->division_id) }}
                         /@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}
-                        /000{{ $data->document_id }}/R{{$data->major}}.{{$data->minor}}
+                        /000{{ $data->department_id }}/R{{$data->major}}.{{$data->minor}}
+                        @endif --}}
+
+                        @else
+                        {{Helpers::getDivisionName($data->division_id)}}/@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}{{$data->department_id}}/000{{ $data->id }}/R{{$data->major}}.{{$data->minor}}
                         @endif
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="border border-top-none p-8">
+            <tbody>
+                <tr>
+                    <td class="doc-num w-50">
+                        Effective Date: {{ \Carbon\Carbon::parse($data->effective_date)->format('d-M-Y') }}
+                    </td>
+                    <td class="doc-num w-50">
+                        Next Review Date: {{ \Carbon\Carbon::parse($data->next_review_date)->format('d-M-Y') }}
+                    </td>
+
                 </tr>
             </tbody>
         </table>
@@ -514,7 +532,7 @@ $total_copies_static = $total_copies;
             <tbody>
 
                 <tr>
-                    <td class="text-left w-36">
+                    <td class="text-left w-30">
                         @php
                         $temp = DB::table('document_types')
                         ->where('name', $data->document_type_name)
@@ -525,13 +543,17 @@ $total_copies_static = $total_copies;
                         /@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}
                         /000{{ $data->document_number }}/R{{$data->major}}.{{$data->minor}}
 
-                        @else
+                        {{-- @else
                         {{ Helpers::getDivisionName($data->division_id) }}
                         /@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}
                         /000{{ $data->document_number }}/R{{$data->major}}.{{$data->minor}}
+                        @endif --}}
+
+                        @else
+                        {{Helpers::getDivisionName($data->division_id)}}/@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}{{$data->department_id}}/000{{ $data->id }}/R{{$data->major}}.{{$data->minor}}
                         @endif
 
-                    <td class="w-36">Printed On : {{ $time }}</td>
+                    <td class="w-30">Printed On : {{ $time }}</td>
                     <td class="text-right w-20"></td>
                 </tr>
             </tbody>
@@ -1078,11 +1100,13 @@ $total_copies_static = $total_copies;
                                         /@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}
                                         /000{{ $data->document_number }}/R{{$data->major}}.{{$data->minor}}
 
-                                        @else
+                                        {{-- @else
                                         {{ Helpers::getDivisionName($data->division_id) }}
                                         /@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}
                                         /000{{ $data->document_number }}/R{{$data->major}}.{{$data->minor}}
-
+                                        @endif --}}
+                                        @else
+                                        {{Helpers::getDivisionName($data->division_id)}}/@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}{{$data->department_id}}/000{{ $data->id }}/R{{$data->major}}.{{$data->minor}}
                                         @endif
                                     </td>
                                 </tr>
@@ -1444,7 +1468,7 @@ $total_copies_static = $total_copies;
                                             <td class="text-left w-25">12-12-2023 11:12PM</td>
                                             <td class="text-left w-25">vivek@gmail.com</td>
                                         </tr>
-                                    </tbody> --}}
+                                </tbody> --}}
                         </table>
                     </div>
                 </div>

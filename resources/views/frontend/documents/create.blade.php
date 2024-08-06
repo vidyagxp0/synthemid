@@ -1074,7 +1074,7 @@
                             <th>Document Printed By</th>
                             <th>Document Printed on</th>
                             <th>Number of Print Copies</th>
-                            <th>Issuance Date</th>
+                            <th>Future Date</th>
                             <th>Issued To </th>
                             <th>Department/Location</th>
                             <th>Number of Issued Copies</th>
@@ -1085,6 +1085,8 @@
                             <th>Number of Retrieved Copies</th>
                             <th>Reason for Retrieval</th>
                             <th>Remarks</th>
+                            <th>Document Distributed By</th>
+                            <th>Document Distributed On</th>
                             <th>Action</th>
                         </tr>
                     </thead>

@@ -1671,17 +1671,33 @@ class DocumentController extends Controller
 
             $documentcontet->hod_comments = $request->hod_comments;
 
-            $files = $request->has('existing_hod_attachments') && is_array($request->existing_hod_attachments) ? array_keys($request->existing_hod_attachments) : [];
+            // $files = $request->has('existing_hod_attachments') && is_array($request->existing_hod_attachments) ? array_keys($request->existing_hod_attachments) : [];
 
-            if ($request->has('hod_attachments') && $request->hasFile('hod_attachments')) {
-                foreach ($request->file('hod_attachments') as $file) {
-                    $name = 'hod_attachments-' . rand(1, 100) . '-' . time() . '.' . $file->getClientOriginalExtension();
-                    $file->move('upload/', $name);
-                    $files[] = $name;
+            // if ($request->has('hod_attachments') && $request->hasFile('hod_attachments')) {
+            //     foreach ($request->file('hod_attachments') as $file) {
+            //         $name = 'hod_attachments-' . rand(1, 100) . '-' . time() . '.' . $file->getClientOriginalExtension();
+            //         $file->move('upload/', $name);
+            //         $files[] = $name;
+            //     }
+            // }
+
+            // $documentcontet->hod_attachments = json_encode($files);
+
+            if (!empty($request->existing_hod_attachments)) {
+                $files = [];
+                if ($request->hasfile('existing_hod_attachments')) {
+                    foreach ($request->file('existing_hod_attachments') as $file) {
+                        $name = $request->name . 'existing_hod_attachments' . rand(1, 100) . '.' . $file->getClientOriginalExtension();
+                        $file->move('upload/', $name);
+                        $files[] = $name;
+                    }
                 }
+                $document->existing_hod_attachments = json_encode($files);
             }
 
-            $documentcontet->hod_attachments = json_encode($files);
+
+
+
 
             // if ($request->hasfile('references')) {
 
@@ -2079,8 +2095,10 @@ class DocumentController extends Controller
         // pdf related work
         $pdf = App::make('dompdf.wrapper');
         $time = Carbon::now();
+
         // return view('frontend.documents.pdfpage', compact('data', 'time', 'document'))->render();
         // $pdf = PDF::loadview('frontend.documents.new-pdf', compact('data', 'time', 'document'))
+
         $pdf = PDF::loadview('frontend.documents.pdfpage', compact('data', 'time', 'document'))
             ->setOptions([
                 'defaultFont' => 'sans-serif',
@@ -2155,47 +2173,28 @@ class DocumentController extends Controller
     public function printPDF($id)
     {
 
-
         $issue_copies = request('issue_copies');
-
         $print_reason = request('print_reason');
-
         $document_print_by = request('user_id');
-
         $documentNo = request('document_number');
-
         $NoofCopies = request('document_printed_copies');
-
         $IssueDate = request('date');
-
         $IssuanceTo = request('issuance_to');
-
         $IssuedCopies = request('issued_copies');
-
         $reasonIssue = request('issued_reason');
-
         $depart = request('department');
-
         $date = request('date');
 
 
-        $document_print_by = request('user_id');
-
-        $documentNo = request('document_number');
-
-        $NoofCopies = request('document_printed_copies');
-
-        $IssueDate = request('date');
-
-        $IssuanceTo = request('issuance_to');
-
-        $IssuedCopies = request('issued_copies');
-
-        $reasonIssue = request('issued_reason');
-
-        $depart = request('department');
-
-        $date = request('date');
+        // $document_print_by = request('user_id');
+        // $documentNo = request('document_number');
+        // $NoofCopies = request('document_printed_copies');
+        // $IssueDate = request('date');
+        // $IssuanceTo = request('issuance_to');
+        // $IssuedCopies = request('issued_copies');
+        // $reasonIssue = request('issued_reason');
+        // $depart = request('department');
+        // $date = request('date');
 
 
         if (intval($issue_copies) < 1) {
@@ -2220,7 +2219,7 @@ class DocumentController extends Controller
 
         $roles = Auth::user()->userRoles()->select('role_id')->distinct()->pluck('role_id')->toArray();
         $controls = PrintControl::whereIn('role_id', $roles)->first();
-
+        dd($roles);
 
         if ($controls) {
             set_time_limit(250);
@@ -2370,7 +2369,7 @@ class DocumentController extends Controller
 
                     return $pdf->stream('SOP' . $id . '.pdf');
                 } else {
-                    toastr()->error('You breach your quaterly print limit.');
+                    toastr()->error('You breach your   print limit.');
 
                     return back();
                 }
@@ -2773,20 +2772,25 @@ class DocumentController extends Controller
         $headerTable->addCell(3000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addText($data['sop_type'], ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
 
         $cell = $headerTable->addCell(4000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000']);
+
+        // Retrieve the type code from the database
+        $temp = DB::table('document_types')->where('name', $data['document_type_name'])->value('typecode');
+
         if ($data['revised'] === 'Yes') {
-            $temp = DB::table('document_types')->where('name', $data['document_type_name'])->value('typecode');
-            $cell->addText(
-                Helpers::getDivisionName($data['document_id']) . '/' . ($data['sop_type_short'] ? $temp : '') . '/' . $data['year'] . '000' . $data['document_number'] . '/R' . $data['major'] . '.' . $data['minor'],
-                ['size' => 12],
-                ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]
-            );
+            $sopNumber = Helpers::getDivisionName($data['division_id']) . '/'
+                . ($data['document_type_name'] ? $temp . ' /' : '')
+                . $data['year'] . '/000'
+                . $data['document_'] . '/R'
+                . $data['major'] . '.' . $data['minor'];
         } else {
-            $cell->addText(
-                $data['sop_type_short'] . '/' . $data['department_id'] . '/000' . $data['id'] . '/R' . $data['major'] . '.' . $data['minor'],
-                ['size' => 12],
-                ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]
-            );
+            $sopNumber = Helpers::getDivisionName($data['division_id']) . '/'
+                . ($data['document_type_name'] ? $temp . ' /' : '')
+                . $data['year'] . '/000'
+                . $data['document_id'] . '/R'
+                . $data['major'] . '.' . $data['minor'];
         }
+
+        $cell->addText($sopNumber, ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
 
         $headerTable->addCell(3000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addText(Helpers::getFullDepartmentName($data['department_id']), ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
 
@@ -2817,7 +2821,6 @@ class DocumentController extends Controller
 
 
         // Main Section start
-
         // Legacy Document Number
         $section->addTextBreak();
         // $section->addTextRun(['alignment' => 'right'])
@@ -2996,14 +2999,27 @@ class DocumentController extends Controller
         // short_description
         // $section->addTextBreak();
         $section->addText("Document Number", ['bold' => true]);
+        $temp = DB::table('document_types')->where('name', $data['document_type_name'])->value('typecode');
+
+        // Format the SOP number based on whether the document is revised or not
+        if ($data['revised'] === 'Yes') {
+            $sopNumber = Helpers::getDivisionName($data['division_id']) . '/'
+                . ($data['document_type_name'] ? $temp . ' /' : '')
+                . $data['year'] . '/000'
+                . $data['document_id'] . '/R'
+                . $data['major'] . '.' . $data['minor'];
+        } else {
+            $sopNumber = $data['sop_type_short'] . '/'
+                . $data['department_id'] . '/000'
+                . $data['document_id'] . '/R'
+                . $data['major'] . '.' . $data['minor'];
+        }
+
+        // Add the formatted SOP number to the section text
         $section->addText(
-            Helpers::getDivisionName($data['document_id']) . '' . ($data['sop_type_short'] ? $temp : '') . '/' . $data['year'] . '/000' . $data['document_number'] . '/R' . $data['major'] . '.' . $data['minor'],
+            $sopNumber,
             ['size' => 12],
-            ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::LEFT],
-
-            $data['sop_type_short'] . '/' . $data['department_id'] . '/000' . $data['document_number'] . '/R' . $data['major'] . '.' . $data['minor'],
-            ['size' => 12],
-
+            ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::LEFT]
         );
         $section->addText("Title", ['bold' => true]);
         $section->addText($data['document_name'], ['alignment' => 'right']);
@@ -3115,8 +3131,6 @@ class DocumentController extends Controller
         // Add Reviewers Table
         $section->addTextBreak();
         $section->addText("Reviews", ['bold' => true]);
-
-
 
 
         $table = $section->addTable(['borderSize' => 6, 'borderColor' => '999999']);

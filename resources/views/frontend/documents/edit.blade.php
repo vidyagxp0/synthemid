@@ -1326,8 +1326,8 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="group-input">
-                    <label for="comments">Reviewer Remarks <span @if (in_array(Auth::user()->id, explode(",", $document->reviewers)) && $document->stage == 6) @else style="display: none" @endif class="text-danger">*</span></label>
-                    <textarea {{Helpers::isRevised($document->stage)}} @if (in_array(Auth::user()->id, explode(",", $document->reviewers)) && $document->stage == 6) required @else readonly @endif  name="reviewer_remarks">{{$document->reviewer_remarks}}</textarea>
+                    <label for="comments">Reviewer Remarks <span @if (in_array(Auth::user()->id, explode(",", $document->reviewers)) && $document->stage == 5) @else style="display: none" @endif class="text-danger">*</span></label>
+                    <textarea {{Helpers::isRevised($document->stage)}} @if (in_array(Auth::user()->id, explode(",", $document->reviewers)) && $document->stage == 5) required @else readonly @endif  name="reviewer_remarks">{{$document->reviewer_remarks}}</textarea>
                 </div>
             </div>
 
@@ -2601,7 +2601,7 @@
                                                     <th class="copy-name">Document Printed By</th>
                                                     <th class="copy-name">Document Printed on</th>
                                                     <th class="copy-num">Number of Print Copies</th>
-                                                    <th class="copy-name">Issuance Date</th>
+                                                    <th class="copy-name">Future Date</th>
                                                     <th class="copy-name">Issued To </th>
                                                     <th class="copy-long">Department/Location</th>
                                                     <th class="copy-num">Number of Issued Copies</th>
@@ -2612,6 +2612,8 @@
                                                     <th class="copy-num">Number of Retrieved Copies</th>
                                                     <th class="copy-long">Reason for Retrieval</th>
                                                     <th class="copy-long">Remarks</th>
+                                                    <th class="copy-name">Document Distributed By</th>
+                                                    <th class="copy-name">Document Distributed On</th>
                                                     <th class="copy-long">Action</th>
 
                                                 </tr>
@@ -2842,6 +2844,10 @@
                                                     </td>
                                                     <td><input type="text" name="distribution[{{ $loop->index }}][remark]" value="{{ $grid->remark }}">
                                                     </td>
+                                                    <td>
+                                                        <input type="text" name="distribution[{{ $loop->index }}][remark]" value="{{ $grid->remark }}">
+                                                    </td>
+
                                                     <td>
                                                         <button class='removeTrainRow'>Remove</button>
                                                     </td>
