@@ -28,6 +28,7 @@ use App\Models\TrainerQualification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Helpers;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class TMSController extends Controller
 {
@@ -104,49 +105,104 @@ class TMSController extends Controller
             }
             }
 
-            $documents2 =[];
-            if (Helpers::checkRoles(1) || Helpers::checkRoles(2) || Helpers::checkRoles(3) || Helpers::checkRoles(4)|| Helpers::checkRoles(5) || Helpers::checkRoles(7) || Helpers::checkRoles(8))
-            {
-                $train = [];
+        //     $documents2 =[];
+        //     if (Helpers::checkRoles(1) || Helpers::checkRoles(2) || Helpers::checkRoles(3) || Helpers::checkRoles(4)|| Helpers::checkRoles(5) || Helpers::checkRoles(7) || Helpers::checkRoles(8))
+        //     {
+        //         $train = [];
 
-           $training = Training::all();
-           foreach($training as $temp){
-           $data = explode(',',$temp->trainees);
-           if(count($data) > 0){
-            foreach($data as $datas){
-                if($datas == Auth::user()->id){
-                    array_push($train,$temp);
-                }
-            }
-           }
-           }
+        //    $training = Training::paginate(2);
+        //    foreach($training as $temp){
+        //    $data = explode(',',$temp->trainees);
+        //    if(count($data) > 0){
+        //     foreach($data as $datas){
+        //         if($datas == Auth::user()->id){
+        //             array_push($train,$temp);
+        //         }
+        //     }
+        //    }
+        //    }
 
-           if(count($train)>0){
-            foreach($train as $temp){
-                $explode = explode(',',$temp->sops);
-                foreach($explode as $data_temp){
-                    $doc = Document::find($data_temp);
-                    array_push($documents2,$doc);
-                }
-            }
-           }
-           if(!empty($documents2)){
-            foreach($documents2 as $temp){
-                if($temp){
-                    $temp->traningstatus = DocumentTraining::where('document_id',$temp->id)->first();
+        //    if(count($train)>0){
+        //     foreach($train as $temp){
+        //         $explode = explode(',',$temp->sops);
+        //         foreach($explode as $data_temp){
+        //             $doc = Document::find($data_temp);
+        //             array_push($documents2,$doc);
+        //         }
+        //     }
+        //    }
+        //    if(!empty($documents2)){
+        //     foreach($documents2 as $temp){
+        //         if($temp){
+        //             $temp->traningstatus = DocumentTraining::where('document_id',$temp->id)->first();
 
-                }
-            }
-           }
-            }
+        //         }
+        //     }
+        //    }
+        //     }
 
-            $employees = Employee::get();
-            // dd($employees);
+        //     $employees = Employee::get();
+        //     // dd($employees);
 
-            $trainers = TrainerQualification::get();
+        //     $trainers = TrainerQualification::get();
             
-            return view('frontend.TMS.dashboard', compact('train','documents2','documents','due','pending','complete', 'employees', 'trainers', 'inductionTraining', 'jobTrainings'));
+        //     return view('frontend.TMS.dashboard', compact('train','documents2','documents','due','pending','complete', 'employees', 'trainers', 'inductionTraining', 'jobTrainings'));
+        $train = collect();
+        $documents2 = [];
+    
+        if (Helpers::checkRoles(1) || Helpers::checkRoles(2) || Helpers::checkRoles(3) || Helpers::checkRoles(4) || Helpers::checkRoles(5) || Helpers::checkRoles(7) || Helpers::checkRoles(8))
+        {
+            $training = Training::all(); 
+            
+            foreach ($training as $temp) {
+                $data = explode(',', $temp->trainees);
+                if (count($data) > 0) {
+                    foreach ($data as $datas) {
+                        if ($datas == Auth::user()->id) {
+                            $train->push($temp);
+                            break; 
+                        }
+                    }
+                }
+            }
+    
+            if ($train->count() > 0) {
+                foreach ($train as $temp) {
+                    $explode = explode(',', $temp->sops);
+                    foreach ($explode as $data_temp) {
+                        $doc = Document::find($data_temp);
+                        if ($doc) {
+                            $documents2[] = $doc;
+                        }
+                    }
+                }
+            }
+    
+            if (!empty($documents2)) {
+                foreach ($documents2 as $temp) {
+                    if ($temp) {
+                        $temp->traningstatus = DocumentTraining::where('document_id', $temp->id)->first();
+                    }
+                }
+            }
         }
+    
+        $employees = Employee::get();
+        $trainers = TrainerQualification::get();
+    
+    
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+    
+        
+        $perPage = 1;
+        $currentResults = $train->slice(($currentPage - 1) * $perPage, $perPage)->all();
+        $train = new LengthAwarePaginator($currentResults, $train->count(), $perPage, $currentPage, [
+            'path' => LengthAwarePaginator::resolveCurrentPath()
+        ]);
+    
+        return view('frontend.TMS.dashboard', compact('train', 'documents2','documents','due','pending','complete', 'employees', 'trainers', 'inductionTraining', 'jobTrainings'));
+    
+    }
         else{
             $train = [];
 
@@ -988,8 +1044,8 @@ class TMSController extends Controller
 
         if ($request->revision == "traininglog") {
            
-            return view('frontend.TMS.logs_tms_dasboard');
-    
+            // return view('frontend.TMS.logs_tms_dasboard');
+            return redirect(url('TMS'));
         }
         if ($request->revision == "traineesLogs") {
 
