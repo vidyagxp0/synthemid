@@ -2601,7 +2601,7 @@
                                                     <th class="copy-name">Document Printed By</th>
                                                     <th class="copy-name">Document Printed on</th>
                                                     <th class="copy-num">Number of Print Copies</th>
-                                                    <th class="copy-name">Future Date</th>
+                                                    <th class="copy-name">Issuance Date</th>
                                                     <th class="copy-name">Issued To </th>
                                                     <th class="copy-long">Department/Location</th>
                                                     <th class="copy-num">Number of Issued Copies</th>
@@ -2752,14 +2752,16 @@
                                                     </td>
                                                     <td>
                                                         <div class="group-input new-date-document_distribution_grid-field mb-0">
-                                                            <div class="input-date ">
+                                                            <div class="input-date">
                                                                 <div class="calenderauditee">
-                                                                    <input type="text" id="date' + serialNumber +'" readonly placeholder="DD-MM-YYYY" value="{{ Helpers::getdateFormat($grid->date) }}" />
-                                                                    <input type="date" name="date" class="hide-input" style="position: absolute; top: 0; left: 0; opacity: 0;" oninput="handleDateInput(this, `date' + serialNumber +'`)" value="{{ Helpers::getdateFormat($grid->date) }}" />
+                                                                    <input type="text" id="date' + serialNumber + '" readonly placeholder="DD-MM-YYYY" />
+                                                                    <input type="date" name="date" class="hide-input" style="position: absolute; top: 0; left: 0; opacity: 0;" min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" oninput="handleDateInput(this, 'date' + serialNumber + ')" />
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </td>
+
+
 
                                                     <td>
                                                         <select id="select-state" placeholder="Select..." name="issuance_to">
@@ -2808,7 +2810,7 @@
                                                         </select>
 
                                                     </td>
-                                                    <td><input type="text" name="document_printed_copies" value="{{ $grid->document_printed_copies }}">
+                                                    <td><input type="text" name="issued_copies" value="{{ $grid->issued_copies }}">
                                                     </td>
                                                     <td><input type="text" name="print_reason" value="{{ $grid->print_reason }}">
                                                     </td>
@@ -2845,11 +2847,15 @@
                                                     <td><input type="text" name="distribution[{{ $loop->index }}][remark]" value="{{ $grid->remark }}">
                                                     </td>
                                                     <td>
-                                                        <input type="text" name="distribution[{{ $loop->index }}][remark]" value="{{ $grid->remark }}">
+                                                        <input type="text" value="{{ Helpers::getInitiatorName($grid->user_id) }}" name="user_id">
+                                                        {{-- <input type="text" name="distribution[{{ $loop->index }}][document_distributed_by]" value="{{ $grid->document_distributed_by }}"> --}}
                                                     </td>
-
                                                     <td>
-                                                        <button class='removeTrainRow'>Remove</button>
+                                                        <input type="text" value="{{ Helpers::getdateFormat($grid->created_at) }}" name="created_at">
+                                                        {{-- <input type="text" name="distribution[{{ $loop->index }}][document_distributed_on]" value="{{ $grid->document_distributed_on }}"> --}}
+                                                    </td>
+                                                    <td>
+                                                        <button type="button" onclick="removeRow(this)">Remove</button>
                                                     </td>
                                                 </tr>
                                                 @endforeach
@@ -2858,6 +2864,31 @@
                                     </div>
                                 </div>
                             </div>
+                            <script>
+                                function handleDateInput(input, targetId) {
+                                    var targetInput = document.getElementById(targetId);
+                                    var selectedDate = new Date(input.value);
+                                    var currentDate = new Date();
+                                    currentDate.setHours(0, 0, 0, 0); // Clear the time part for accurate comparison
+
+                                    if (selectedDate >= currentDate) {
+                                        var formattedDate = selectedDate.getDate().toString().padStart(2, '0') + '-' +
+                                            (selectedDate.getMonth() + 1).toString().padStart(2, '0') + '-' +
+                                            selectedDate.getFullYear();
+                                        targetInput.value = formattedDate;
+                                    } else {
+                                        alert('Please choose a future date.');
+                                        input.value = ''; // Clear the input if the date is not valid
+                                    }
+                                }
+                            </script>
+                            <script>
+                                function removeRow(button) {
+                                    var row = button.closest('tr');
+                                    row.parentNode.removeChild(row);
+                                }
+                            </script>
+
                             <div class="button-block">
                                 <button type="submit" name="submit" value="save" class="saveButton">Save</button>
                                 <button type="button" class="backButton" onclick="previousStep()">Back</button>

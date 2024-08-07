@@ -1074,7 +1074,7 @@
                             <th>Document Printed By</th>
                             <th>Document Printed on</th>
                             <th>Number of Print Copies</th>
-                            <th>Future Date</th>
+                            <th>Issuance Date</th>
                             <th>Issued To </th>
                             <th>Department/Location</th>
                             <th>Number of Issued Copies</th>
