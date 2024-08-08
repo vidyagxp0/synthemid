@@ -2672,7 +2672,6 @@ public function reviseAnnexure($documentId, $annexure_number)
                 $annexure->is_obselete = 1;
                 $annexure->save();
 
-
                 $obsolete_annexure = new DocumentAnnexure;
                 $obsolete_annexure->document_id = $annexure->document_id;
                 $obsolete_annexure->is_child = 0;

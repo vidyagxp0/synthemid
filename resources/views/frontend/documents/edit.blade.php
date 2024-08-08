@@ -2114,10 +2114,10 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="ann-{{ $document_annexure->id }}">Annexure A-{{ $document_annexure->version }}</label>
-                                        <textarea class="form-control {{ $document_annexure->is_obselete ? 'summernote-disabled' : 'summernote' }}" name="annexures[{{ $document_annexure->id }}]" id="ann-{{ $document_annexure->id }}" cols="30" rows="10" >{{ $document_annexure->content }}</textarea>
+                                        <textarea class="form-control {{ $document_annexure->is_obselete || $document_annexure->is_revised ? 'summernote-disabled' : 'summernote' }}" name="annexures[{{ $document_annexure->id }}]" id="ann-{{ $document_annexure->id }}" cols="30" rows="10" >{{ $document_annexure->content }}</textarea>
                                     </div>
-                                    
-                                    @foreach ($document_annexure->childs as $child_annexure)
+
+                                     @foreach ($document_annexure->childs as $child_annexure)
                                         <div class="btn-group" style="margin: 1rem 0;">
                                             @if (!$child_annexure->is_obselete)
                                                 <a href="{{ route('annexure.obsolete', $child_annexure->id) }}" class="btn btn-secondary">Obsolete</a>
