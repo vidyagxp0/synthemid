@@ -560,19 +560,19 @@ $total_copies_static = $total_copies;
         </table>
     </footer>
 
-    @if ($printing)
+    {{-- @if ($printing)
     <div class="footer-info">
         <table class="border p-10">
             <tbody>
                 <tr class="border">
                     <td class="w-100">
                         <span style="font-weight: bold;">Print Reason</span>: {{ $print_reason }}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
     </div>
-    @endif
+    @endif --}}
 
     @while ($total_copies != 0)
 

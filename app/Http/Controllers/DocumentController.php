@@ -1696,22 +1696,6 @@ class DocumentController extends Controller
             }
 
 
-
-
-
-            // if ($request->hasfile('references')) {
-
-            //     $image = $request->file('references');
-
-            //     $ext = $image->getClientOriginalExtension();
-
-            //     $image_name = date('y-m-d').'-'.rand().'.'.$ext;
-
-            //     $image->move('upload/document/', $image_name);
-
-            //     $documentcontet->references = $image_name;
-            // }
-
             if (!empty($request->ann)) {
                 $documentcontet->ann = serialize($request->ann);
             }
@@ -2106,6 +2090,7 @@ class DocumentController extends Controller
                 'isRemoteEnabled' => true,
                 'isPhpEnabled' => true,
             ]);
+
         $pdf->setPaper('A4');
         $pdf->render();
         $canvas = $pdf->getDomPDF()->getCanvas();
@@ -3284,625 +3269,449 @@ class DocumentController extends Controller
         return response()->download($filePath)->deleteFileAfterSend(true);
     }
 
-    // public function printWord($id)
+    // public function printWordDocument($id)
     // {
-    //     $issue_copies = request('issue_copies');
+    //     $issue_copies = intval(request('number_of_copies'));
+    //     $IssuedCopies = intval(request('number_of_issued_copies'));
     //     $document_print_by = request('user_id');
-    //     $IssuedCopies = request('issued_copies');
-    //     // $IssueDate = request('date');
 
-    //     if (intval($issue_copies) < 1) {
+    //     if ($issue_copies < 1) {
     //         return "Cannot issue less than 1 copies! Requested $issue_copies no. of copies.";
     //     }
 
     //     $document = Document::find($id);
     //     if (!$document) {
-    //         return "Document not found!";
+    //         return response()->json(['error' => 'Document not found'], 404);
     //     }
 
-    //     $new = Document::find($id);
-    //     $addNew = $new->id;
-
-    //     $ModalData = new PrintHistory;
-    //     $ModalData->issue_copies = $issue_copies;
+    //     $ModalData = new DownloadHistory();
+    //     $ModalData->number_of_copies = $issue_copies;
+    //     $ModalData->document_id = $document->id;
     //     $ModalData->user_id = $document_print_by;
-    //     $ModalData->document_id = $addNew;
-    //     $ModalData->document_printed_copies = $issue_copies;
-    //     // $ModalData->date = $IssueDate;
-    //     $ModalData->issued_copies = $IssuedCopies;
+    //     $ModalData->number_of_issued_copies = $IssuedCopies;
     //     $ModalData->save();
 
-    //     // Fetch related data
-    //     $department = $document->department;
-    //     $originator = $document->originator;
-    //     $documentType = $document->documentType;
-    //     $division = $document->division;
+    //     $roles = Auth::user()->userRoles()->select('role_id')->distinct()->pluck('role_id')->toArray();
+    //     $controls = PrintControl::whereIn('role_id', $roles)->first();
 
-    //     $data = [
-    //         'department_name' => $department ? $department->name : '',
-    //         'originator' => $originator ? $originator->name : '',
-    //         'originator_email' => $originator ? $originator->email : '',
-    //         'document_type_name' => $documentType ? $documentType->name : '',
-    //         'document_type_code' => $documentType ? $documentType->typecode : '',
-    //         'document_division' => $division ? $division->name : '',
-    //         'year' => Carbon::parse($document->created_at)->format('Y'),
-    //         'document_content' => DocumentContent::where('document_id', $id)->first(),
-    //         'short_description' => Document::where('id', $id)->first(),
-    //         'description' => Document::where('id', $id)->first(),
-    //         'effective_date' => $document->effective_date,
-    //         'next_review_date' => $document->next_review_date,
-    //         'document_name' => $document->document_name,
-    //         'stage' => $document->stage,
-    //         'sop_type' => $document->sop_type ?? '',
-    //         'revised' => $document->revised ?? 'No',
-    //         'document_id' => $document->id ?? '',
-    //         'document_number' => $document->document_number ?? '',
-    //         'major' => $document->major ?? '',
-    //         'minor' => $document->minor ?? '',
-    //         'sop_type_short' => $document->sop_type_short ?? '',
-    //         'department_id' => $document->department_id ?? '',
-    //         'id' => $document->id ?? '',
-    //         'division_id' => $document->division_id ?? '',
-    //         'legacy_number' => $document->legacy_number ?? 'NA',
-    //         'created_at' => $document->created_at,
-    //         'hods' => $document->hods,
-    //         'reviewers' => $document->reviewers,
-    //         'approvers' => $document->approvers,
-    //         'approver_group' => $document->approver_group,
-    //     ];
+    //     if ($controls) {
+    //         set_time_limit(250);
 
-    //     // Create a new PHPWord instance
-    //     $phpWord = new PhpWord();
+    //         // Fetch related data
+    //         $department = $document->department;
+    //         $originator = $document->originator;
+    //         $documentType = $document->documentType;
+    //         $division = $document->division;
 
-    //     // Add a section to the Word document
-    //     $section = $phpWord->addSection();
+    //         $data = [
+    //             'department_name' => $department ? $department->name : '',
+    //             'originator' => $originator ? $originator->name : '',
+    //             'originator_email' => $originator ? $originator->email : '',
+    //             'document_type_name' => $documentType ? $documentType->name : '',
+    //             'document_type_code' => $documentType ? $documentType->typecode : '',
+    //             'document_division' => $division ? $division->name : '',
+    //             'year' => Carbon::parse($document->created_at)->format('Y'),
+    //             'document_content' => DocumentContent::where('document_id', $id)->first(),
+    //             'short_description' => Document::where('id', $id)->first(),
+    //             'description' => Document::where('id', $id)->first(),
+    //             'effective_date' => $document->effective_date,
+    //             'next_review_date' => $document->next_review_date,
+    //             'document_name' => $document->document_name,
+    //             'stage' => $document->stage,
+    //             'sop_type' => $document->sop_type ?? '',
+    //             'revised' => $document->revised ?? 'No',
+    //             'document_id' => $document->id ?? '',
+    //             'document_number' => $document->document_number ?? '',
+    //             'major' => $document->major ?? '',
+    //             'minor' => $document->minor ?? '',
+    //             'sop_type_short' => $document->sop_type_short ?? '',
+    //             'department_id' => $document->department_id ?? '',
+    //             'id' => $document->id ?? '',
+    //             'division_id' => $document->division_id ?? '',
+    //             'legacy_number' => $document->legacy_number ?? 'NA',
+    //             'created_at' => $document->created_at,
+    //             'hods' => $document->hods,
+    //             'reviewers' => $document->reviewers,
+    //             'approvers' => $document->approvers,
+    //             'approver_group' => $document->approver_group,
+    //         ];
 
-    //     // Add Header with tables
-    //     $header = $section->addHeader();
+    //         // Create a new PHPWord instance
+    //         $phpWord = new \PhpOffice\PhpWord\PhpWord();
 
-    //     // First Table in Header
-    //     $headerTable = $header->addTable([
-    //         'width' => 100 * 50,
-    //         'borderSize' => 4,
-    //         'borderColor' => '000000',
-    //         'cellMargin' => 40
-    //     ]);
+    //         // Add a section to the Word document
+    //         $section = $phpWord->addSection();
 
-    //     $headerTable->addRow(500);
-    //     $headerTable->addCell(2000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addImage('https://navin.mydemosoftware.com/public/user/images/logo.png', [
-    //         'width' => 90,
-    //         'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER
-    //     ]);
+    //         // Add Header with tables
+    //         $header = $section->addHeader();
 
-    //     $cell = $headerTable->addCell(6000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000']);
-    //     $cell->addText(config('site.pdf_title'), ['size' => 14, 'bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
-    //     $cell->addText($data['document_name'], ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+    //         // First Table in Header
+    //         $headerTable = $header->addTable([
+    //             'width' => 100 * 50,
+    //             'borderSize' => 4,
+    //             'borderColor' => '000000',
+    //             'cellMargin' => 40
+    //         ]);
 
-    //     $headerTable->addCell(2000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addImage('https://navin.mydemosoftware.com/public/user/images/logo.png', [
-    //         'width' => 70,
-    //         'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER
-    //     ]);
+    //         $headerTable->addRow(500);
+    //         $headerTable->addCell(2000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addImage('https://navin.mydemosoftware.com/public/user/images/logo.png', [
+    //             'width' => 90,
+    //             'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER
+    //         ]);
 
-    //     // Second Table in Header
-    //     $headerTable = $header->addTable([
-    //         'width' => 100 * 50,
-    //         'borderSize' => 4,
-    //         'borderColor' => '000000',
-    //         'cellMargin' => 40
-    //     ]);
+    //         $cell = $headerTable->addCell(6000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000']);
+    //         $cell->addText(config('site.pdf_title'), ['size' => 14, 'bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+    //         $cell->addText($data['document_name'], ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
 
-    //     $headerTable->addRow(500);
-    //     $headerTable->addCell(3000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addText($data['sop_type'], ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+    //         $headerTable->addCell(2000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addImage('https://navin.mydemosoftware.com/public/user/images/logo.png', [
+    //             'width' => 70,
+    //             'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER
+    //         ]);
 
-    //     $cell = $headerTable->addCell(4000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000']);
+    //         // Second Table in Header
+    //         $headerTable = $header->addTable([
+    //             'width' => 100 * 50,
+    //             'borderSize' => 4,
+    //             'borderColor' => '000000',
+    //             'cellMargin' => 40
+    //         ]);
 
-    //     // Retrieve the type code from the database
-    //     $temp = DB::table('document_types')->where('name', $data['document_type_name'])->value('typecode');
+    //         $headerTable->addRow(500);
+    //         $headerTable->addCell(3000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addText($data['sop_type'], ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
 
-    //     if ($data['revised'] === 'Yes') {
-    //         $sopNumber = Helpers::getDivisionName($data['division_id']) . '/'
-    //             . ($data['document_type_name'] ? $temp . ' /' : '')
-    //             . $data['year'] . '/000'
-    //             . $data['document_'] . '/R'
-    //             . $data['major'] . '.' . $data['minor'];
-    //     } else {
-    //         $sopNumber = Helpers::getDivisionName($data['division_id']) . '/'
-    //             . ($data['document_type_name'] ? $temp . ' /' : '')
-    //             . $data['year'] . '/000'
-    //             . $data['document_id'] . '/R'
-    //             . $data['major'] . '.' . $data['minor'];
-    //     }
+    //         $cell = $headerTable->addCell(4000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000']);
 
-    //     $cell->addText($sopNumber, ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
-
-    //     $headerTable->addCell(3000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addText(Helpers::getFullDepartmentName($data['department_id']), ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
-
-    //     // Third Table in Header
-    //     $headerTable = $header->addTable([
-    //         'width' => 100 * 50,
-    //         'borderSize' => 4,
-    //         'borderColor' => '000000',
-    //         'cellMargin' => 40
-    //     ]);
-
-    //     // Address here 
-    //     // $headerTable->addRow(500);
-    //     // $headerTable->addCell(10000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addText('Address : ', ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
-
-    //     // Fourth Table in Header
-    //     $headerTable = $header->addTable([
-    //         'width' => 100 * 50,
-    //         'borderSize' => 4,
-    //         'borderColor' => '000000',
-    //         'cellMargin' => 40
-    //     ]);
-
-    //     $headerTable->addRow(500);
-    //     $headerTable->addCell(5000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addText('Effective Date: ' . Carbon::parse($data['effective_date'])->format('d-M-Y'), ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
-
-    //     $headerTable->addCell(5000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addText('Next Review Date: ' . Carbon::parse($data['next_review_date'])->format('d-M-Y'), ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
-
-
-    //     // Main Section start
-    //     // Legacy Document Number
-    //     $section->addTextBreak();
-    //     // $section->addTextRun(['alignment' => 'right'])
-    //     //     ->addText("Legacy Document Number: {$data['legacy_number']}", ['bold' => true]);
-
-    //     // Objective
-    //     $section->addTextBreak();
-    //     $section->addText("1. Objective", ['bold' => true]);
-    //     $section->addText($data['document_content']->purpose ?? '', ['align' => 'justify']);
-
-    //     // Scope
-    //     $section->addTextBreak();
-    //     $section->addText("2. Scope", ['bold' => true]);
-    //     $section->addText($data['document_content']->scope ?? '', ['align' => 'justify']);
-
-    //     // Responsibility
-    //     $section->addTextBreak();
-    //     $section->addText("3. Responsibility", ['bold' => true]);
-    //     $responsibility = $data['document_content']->responsibility ?? '[]';
-    //     $responsibility = is_string($responsibility) ? unserialize($responsibility) : $responsibility;
-    //     if (is_array($responsibility)) {
-    //         $i = 1;
-    //         foreach ($responsibility as $key => $res) {
-    //             $isSub = str_contains($key, 'sub');
-    //             $prefix = $isSub ? $i - 1 . '.' . ($sub_index ?? 1) : $i;
-    //             if (!empty($res)) {
-    //                 $section->addText("3.{$prefix} " . $res, ['align' => 'justify']);
-    //                 $isSub ? $sub_index++ : $i++;
-    //                 $sub_index = $isSub ? ($sub_index ?? 1) : 1;
-    //             }
-    //         }
-    //     }
-
-    //     // Accountability
-    //     $section->addTextBreak();
-    //     $section->addText("4. Accountability", ['bold' => true]);
-    //     $accountability = $data['document_content']->accountability ?? '[]';
-    //     $accountability = is_string($accountability) ? unserialize($accountability) : $accountability;
-    //     if (is_array($accountability)) {
-    //         $i = 1;
-    //         foreach ($accountability as $key => $res) {
-    //             $isSub = str_contains($key, 'sub');
-    //             $prefix = $isSub ? $i - 1 . '.' . ($sub_index ?? 1) : $i;
-    //             if (!empty($res)) {
-    //                 $section->addText("4.{$prefix} " . $res, ['align' => 'justify']);
-    //                 $isSub ? $sub_index++ : $i++;
-    //                 $sub_index = $isSub ? ($sub_index ?? 1) : 1;
-    //             }
-    //         }
-    //     }
-
-    //     // References
-    //     $section->addTextBreak();
-    //     $section->addTextBreak();
-    //     $section->addText("5. References", ['bold' => true]);
-    //     $references = $data['document_content']->references ?? '[]';
-    //     $references = is_string($references) ? unserialize($references) : $references;
-    //     if (is_array($references)) {
-    //         $i = 1;
-    //         foreach ($references as $key => $res) {
-    //             $isSub = str_contains($key, 'sub');
-    //             $prefix = $isSub ? $i - 1 . '.' . ($sub_index ?? 1) : $i;
-    //             if (!empty($res)) {
-    //                 $section->addText("5.{$prefix} " . $res, ['align' => 'justify']);
-    //                 $isSub ? $sub_index++ : $i++;
-    //                 $sub_index = $isSub ? ($sub_index ?? 1) : 1;
-    //             }
-    //         }
-    //     }
-
-    //     // Abbreviation
-    //     $section->addTextBreak();
-    //     $section->addTextBreak();
-    //     $section->addText("6. Abbreviation", ['bold' => true]);
-    //     $abbreviation = $data['document_content']->abbreviation ?? '[]';
-    //     $abbreviation = is_string($abbreviation) ? unserialize($abbreviation) : $abbreviation;
-    //     if (is_array($abbreviation)) {
-    //         $i = 1;
-    //         foreach ($abbreviation as $key => $res) {
-    //             $isSub = str_contains($key, 'sub');
-    //             $prefix = $isSub ? $i - 1 . '.' . ($sub_index ?? 1) : $i;
-    //             if (!empty($res)) {
-    //                 $section->addText("6.{$prefix} " . $res, ['align' => 'justify']);
-    //                 $isSub ? $sub_index++ : $i++;
-    //                 $sub_index = $isSub ? ($sub_index ?? 1) : 1;
-    //             }
-    //         }
-    //     }
-
-    //     // Definitions
-    //     $section->addTextBreak();
-    //     $section->addText("7. Definitions", ['bold' => true]);
-    //     $definitions = $data['document_content']->defination ?? '[]';
-    //     $definitions = is_string($definitions) ? unserialize($definitions) : $definitions;
-    //     if (is_array($definitions)) {
-    //         $i = 1;
-    //         foreach ($definitions as $key => $definition) {
-    //             $isSub = str_contains($key, 'sub');
-    //             $prefix = $isSub ? $i - 1 . '.' . ($sub_index ?? 1) : $i;
-    //             if (!empty($definition)) {
-    //                 $section->addText("7.{$prefix} " . $definition, ['align' => 'justify']);
-    //                 $isSub ? $sub_index++ : $i++;
-    //                 $sub_index = $isSub ? ($sub_index ?? 1) : 1;
-    //             }
-    //         }
-    //     }
-
-    //     // General Instructions
-    //     $section->addTextBreak();
-    //     $section->addText("8. General Instructions", ['bold' => true]);
-    //     $instructions = $data['document_content']->materials_and_equipments ?? '[]';
-    //     $instructions = is_string($instructions) ? unserialize($instructions) : $instructions;
-    //     if (is_array($instructions)) {
-    //         $i = 1;
-    //         foreach ($instructions as $key => $res) {
-    //             $isSub = str_contains($key, 'sub');
-    //             $prefix = $isSub ? $i - 1 . '.' . ($sub_index ?? 1) : $i;
-    //             if (!empty($res)) {
-    //                 $section->addText("8.{$prefix} " . $res, ['align' => 'justify']);
-    //                 $isSub ? $sub_index++ : $i++;
-    //                 $sub_index = $isSub ? ($sub_index ?? 1) : 1;
-    //             }
-    //         }
-    //     }
-
-    //     // Procedure
-    //     $section->addTextBreak();
-    //     $section->addText("9. Procedure", ['bold' => true]);
-    //     $procedure = $data['document_content']->procedure ?? '';
-    //     $section->addText(strip_tags($procedure, '<br><table><th><td><tbody><tr><p><img><a><img><span><h1><h2><h3><h4><h5><h6><div><b><ol><li>'), ['align' => 'justify']);
-
-    //     // Cross References
-    //     $section->addTextBreak();
-    //     $section->addText("10. Cross References", ['bold' => true]);
-    //     $reporting = $data['document_content']->reporting ?? '[]';
-    //     $reporting = is_string($reporting) ? unserialize($reporting) : $reporting;
-    //     if (is_array($reporting)) {
-    //         $i = 1;
-    //         foreach ($reporting as $key => $res) {
-    //             $isSub = str_contains($key, 'sub');
-    //             $prefix = $isSub ? $i - 1 . '.' . ($sub_index ?? 1) : $i;
-    //             if (!empty($res)) {
-    //                 $section->addText("10.{$prefix} " . $res, ['align' => 'justify']);
-    //                 $isSub ? $sub_index++ : $i++;
-    //                 $sub_index = $isSub ? ($sub_index ?? 1) : 1;
-    //             }
-    //         }
-    //     }
-
-    //     // Annexure
-    //     $section->addTextBreak();
-    //     $section->addText("11. Annexure", ['bold' => true]);
-    //     $annexure = $data['document_content']->ann ?? '[]';
-    //     $annexure = is_string($annexure) ? unserialize($annexure) : $annexure;
-    //     if (is_array($annexure)) {
-    //         $i = 1;
-    //         foreach ($annexure as $key => $res) {
-    //             $isSub = str_contains($key, 'sub');
-    //             $prefix = $isSub ? $i - 1 . '.' . ($sub_index ?? 1) : $i;
-    //             if (!empty($res)) {
-    //                 $section->addText("11.{$prefix} " . $res, ['align' => 'justify']);
-    //                 $isSub ? $sub_index++ : $i++;
-    //                 $sub_index = $isSub ? ($sub_index ?? 1) : 1;
-    //             }
-    //         }
-    //     }
-
-    //     //Document Control Information
-    //     $last = DB::table('document_histories')
-    //         ->where('document_id', $id)
-    //         ->orderBy('created_at', 'desc')
-    //         ->first();
-    //     $lastDate = $last ? Carbon::parse($last->created_at)->format('d-M-Y') : Carbon::parse($document->created_at)->format('d-M-Y');
-    //     $section->addTextBreak();
-    //     $section->addTextRun(['alignment' => 'center'])
-    //         ->addText("Document Control Information", ['bold' => true]);
-
-    //     // short_description
-    //     $section->addTextBreak();
-    //     $section->addText("Document Number", ['bold' => true]);
-    //     $temp = DB::table('document_types')->where('name', $data['document_type_name'])->value('typecode');
-
-    //     // Format the SOP number based on whether the document is revised or not
-    //     if ($data['revised'] === 'Yes') {
-    //         $sopNumber = Helpers::getDivisionName($data['division_id']) . '/'
-    //             . ($data['document_type_name'] ? $temp . ' /' : '')
-    //             . $data['year'] . '/000'
-    //             . $data['document_id'] . '/R'
-    //             . $data['major'] . '.' . $data['minor'];
-    //     } else {
-    //         $sopNumber = $data['sop_type_short'] . '/'
-    //             . $data['department_id'] . '/000'
-    //             . $data['document_id'] . '/R'
-    //             . $data['major'] . '.' . $data['minor'];
-    //     }
-
-    //     // Add the formatted SOP number to the section text
-    //     $section->addText(
-    //         $sopNumber,
-    //         ['size' => 12],
-    //         ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::LEFT]
-    //     );
-    //     $section->addText("Title", ['bold' => true]);
-    //     $section->addText($data['document_name'], ['alignment' => 'right']);
-    //     // dd($data['document_name']);
-    //     $section->addText("Short Description", ['bold' => true]);
-    //     $section->addText($data['short_description']->short_description ?? '', ['alignment' => 'right']);
-
-    //     // Scope
-    //     // $section->addTextBreak();
-    //     $section->addText("Description", ['bold' => true]);
-    //     $section->addText($data['description']->description ?? '');
-
-    //     $section->addText("Last Changed", ['bold' => true]);
-    //     $section->addText($lastDate);
-
-
-    //     $section->addText("Changed By", ['bold' => true]);
-    //     $section->addText($data['originator']->originator ?? '');
-
-
-    //     //  Signatute table Start
-
-    //     $signatureOriginatorData = DB::table('stage_manages')
-    //         ->where('document_id', $id)
-    //         ->whereIn('stage', ['4', 'In-HOD Review', 'In-Approval'])
-    //         ->latest()
-    //         ->first();
-
-    //     $signatureReviewerData = DB::table('stage_manages')
-    //         ->where('document_id', $id)
-    //         ->where('stage', 'Reviewed')
-    //         ->get();
-
-    //     $signatureApprovalData = DB::table('stage_manages')
-    //         ->where('document_id', $id)
-    //         ->where('stage', 'Approved')
-    //         ->latest()
-    //         ->first();
-
-    //     // Add Originator Table
-    //     $section->addText("Originator", ['bold' => true]);
-    //     $table = $section->addTable(['borderSize' => 6, 'borderColor' => '999999']);
-    //     $table->addRow();
-    //     $table->addCell(2000)->addText("Originator");
-    //     $table->addCell(2000)->addText("Department");
-    //     $table->addCell(2000)->addText("Status");
-    //     $table->addCell(2000)->addText("E-Signature");
-    //     $table->addCell(2000)->addText("Comments");
-
-    //     $table->addRow();
-    //     $table->addCell(2000)->addText($data['originator']);
-    //     $table->addCell(2000)->addText($document->originator && $document->originator->department ? $document->originator->department->name : '');
-    //     $table->addCell(2000)->addText("Initiation Completed");
-    //     $table->addCell(2000)->addText($data['originator_email']);
-    //     $table->addCell(2000)->addText($signatureOriginatorData && $signatureOriginatorData->comment ? $signatureOriginatorData->comment : '');
-
-    //     // Add HOD Table
-    //     $section->addTextBreak();
-    //     $section->addText("HOD", ['bold' => true]);
-    //     $table = $section->addTable(['borderSize' => 6, 'borderColor' => '999999']);
-    //     $table->addRow();
-    //     $table->addCell(2000)->addText("HOD");
-    //     $table->addCell(2000)->addText("Department");
-    //     $table->addCell(2000)->addText("Status");
-    //     $table->addCell(2000)->addText("E-Signature");
-    //     $table->addCell(2000)->addText("Comments");
-
-    //     if ($data['hods']) {
-    //         $hods = explode(',', $data['hods']);
-    //         foreach ($hods as $hod) {
-    //             $user = DB::table('users')->where('id', $hod)->first();
-    //             $dept = DB::table('departments')->where('id', $user->departmentid)->value('name');
-    //             $date = DB::table('stage_manages')
-    //                 ->where('document_id', $id)
-    //                 ->where('user_id', $hod)
-    //                 ->where('stage', 'HOD Review Complete')
-    //                 ->whereNull('deleted_at')
-    //                 ->latest()
-    //                 ->first();
-    //             $comment = DB::table('stage_manages')
-    //                 ->where('document_id', $id)
-    //                 ->where('user_id', $hod)
-    //                 ->where('stage', 'HOD Review Complete')
-    //                 ->latest()
-    //                 ->first();
-    //             $reject = DB::table('stage_manages')
-    //                 ->where('document_id', $id)
-    //                 ->where('user_id', $hod)
-    //                 ->where('stage', 'Cancel-by-HOD')
-    //                 ->whereNull('deleted_at')
-    //                 ->latest()
-    //                 ->first();
-
-    //             $table->addRow();
-    //             $table->addCell(2000)->addText($user->name);
-    //             $table->addCell(2000)->addText($dept);
-    //             if ($date) {
-    //                 $table->addCell(2000)->addText("HOD Review Complete");
-    //             } elseif ($reject) {
-    //                 $table->addCell(2000)->addText("HOD Rejected");
-    //             } else {
-    //                 $table->addCell(2000)->addText("HOD Review Pending");
-    //             }
-    //             $table->addCell(2000)->addText($user->email);
-    //             $table->addCell(2000)->addText($comment ? $comment->comment : '');
-    //         }
-    //     }
-
-    //     // Add Reviewers Table
-    //     $section->addTextBreak();
-    //     $section->addText("Reviews", ['bold' => true]);
-
-
-    //     $table = $section->addTable(['borderSize' => 6, 'borderColor' => '999999']);
-    //     $table->addRow();
-    //     $table->addCell(2000)->addText("Reviewer");
-    //     $table->addCell(2000)->addText("Department");
-    //     $table->addCell(2000)->addText("Status");
-    //     $table->addCell(2000)->addText("E-Signature");
-    //     $table->addCell(2000)->addText("Comments");
-
-    //     if ($data['reviewers']) {
-    //         $reviewers = explode(',', $data['reviewers']);
-    //         foreach ($reviewers as $reviewer) {
-    //             $user = DB::table('users')->where('id', $reviewer)->first();
-    //             $dept = DB::table('departments')->where('id', $user->departmentid)->value('name');
-    //             $date = DB::table('stage_manages')
-    //                 ->where('document_id', $id)
-    //                 ->where('user_id', $reviewer)
-    //                 ->where('stage', 'Reviewed')
-    //                 ->whereNull('deleted_at')
-    //                 ->latest()
-    //                 ->first();
-    //             $comment = DB::table('stage_manages')
-    //                 ->where('document_id', $id)
-    //                 ->where('user_id', $reviewer)
-    //                 ->where('stage', 'Reviewed')
-    //                 ->latest()
-    //                 ->first();
-    //             $reject = DB::table('stage_manages')
-    //                 ->where('document_id', $id)
-    //                 ->where('user_id', $reviewer)
-    //                 ->where('stage', 'Cancel-by-Reviewer')
-    //                 ->whereNull('deleted_at')
-    //                 ->latest()
-    //                 ->first();
-
-    //             $table->addRow();
-    //             $table->addCell(2000)->addText($user->name);
-    //             $table->addCell(2000)->addText($dept);
-    //             if ($date) {
-    //                 $table->addCell(2000)->addText("Review Completed");
-    //             } elseif ($reject) {
-    //                 $table->addCell(2000)->addText("Review Rejected");
-    //             } else {
-    //                 $table->addCell(2000)->addText("Review Pending");
-    //             }
-    //             $table->addCell(2000)->addText($user->email);
-    //             $table->addCell(2000)->addText($comment ? $comment->comment : '');
-    //         }
-    //     }
-
-    //     // Add Approvals Table
-    //     $section->addTextBreak();
-    //     $section->addText("Approvals", ['bold' => true]);
-    //     $table = $section->addTable(['borderSize' => 6, 'borderColor' => '999999']);
-    //     $table->addRow();
-    //     $table->addCell(2000)->addText("Approver");
-    //     $table->addCell(2000)->addText("Department");
-    //     $table->addCell(2000)->addText("Status");
-    //     $table->addCell(2000)->addText("E-Signature");
-    //     $table->addCell(2000)->addText("Comments");
-
-    //     if ($data['approvers']) {
-    //         $approvers = explode(',', $data['approvers']);
-    //         foreach ($approvers as $approver) {
-    //             $user = DB::table('users')->where('id', $approver)->first();
-    //             $dept = DB::table('departments')->where('id', $user->departmentid)->value('name');
-    //             $date = DB::table('stage_manages')
-    //                 ->where('document_id', $id)
-    //                 ->where('user_id', $approver)
-    //                 ->where('stage', 'Approved')
-    //                 ->whereNull('deleted_at')
-    //                 ->latest()
-    //                 ->first();
-    //             $comment = DB::table('stage_manages')
-    //                 ->where('document_id', $id)
-    //                 ->where('user_id', $approver)
-    //                 ->where('stage', 'Approved')
-    //                 ->latest()
-    //                 ->first();
-    //             $reject = DB::table('stage_manages')
-    //                 ->where('document_id', $id)
-    //                 ->where('user_id', $approver)
-    //                 ->where('stage', 'Cancel-by-Approver')
-    //                 ->whereNull('deleted_at')
-    //                 ->latest()
-    //                 ->first();
-
-    //             $table->addRow();
-    //             $table->addCell(2000)->addText($user->name);
-    //             $table->addCell(2000)->addText($dept);
-    //             if ($date) {
-    //                 $table->addCell(2000)->addText("Approval Completed");
-    //             } elseif ($reject) {
-    //                 $table->addCell(2000)->addText("Approval Rejected");
-    //             } else {
-    //                 $table->addCell(2000)->addText("Approval Pending");
-    //             }
-    //             $table->addCell(2000)->addText($user->email);
-    //             $table->addCell(2000)->addText($comment ? $comment->comment : '');
-    //         }
-    //     }
-
-    //     // Add Footer with tables
-    //     $footer = $section->addFooter();
-
-    //     // Footer Table
-    //     $footerTable = $footer->addTable([
-    //         'width' => 100 * 50,
-    //         'borderSize' => 4,
-    //         'borderColor' => '000000',
-    //         'cellMargin' => 50
-    //     ]);
-
-    //     $footerTable->addRow();
-    //     $cell = $footerTable->addCell(5000, ['valign' => 'center']);
-    //     if ($cell) {
+    //         // Retrieve the type code from the database
     //         $temp = DB::table('document_types')->where('name', $data['document_type_name'])->value('typecode');
+
     //         if ($data['revised'] === 'Yes') {
-    //             $cell->addText(
-    //                 Helpers::getDivisionName($data['document_id']) . '' . ($data['sop_type_short'] ? $temp : '') . '/' . $data['year'] . '/000' . $data['document_number'] . '/R' . $data['major'] . '.' . $data['minor'],
-    //                 ['size' => 12],
-    //                 ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::LEFT]
-    //             );
+    //             $sopNumber = Helpers::getDivisionName($data['division_id']) . '/'
+    //                 . ($data['document_type_name'] ? $temp . ' /' : '')
+    //                 . $data['year'] . '/000'
+    //                 . $data['document_'] . '/R'
+    //                 . $data['major'] . '.' . $data['minor'];
     //         } else {
-    //             $cell->addText(
-    //                 $data['sop_type_short'] . '/' . $data['department_id'] . '000' . $data['id'] . '/R' . $data['major'] . '.' . $data['minor'],
-    //                 ['size' => 12]
-    //             );
+    //             $sopNumber = Helpers::getDivisionName($data['division_id']) . '/'
+    //                 . ($data['document_type_name'] ? $temp . ' /' : '')
+    //                 . $data['year'] . '/000'
+    //                 . $data['document_id'] . '/V'
+    //                 . $data['major'] . '.' . $data['minor'];
     //         }
+
+    //         $cell->addText($sopNumber, ['size' => 12, 'bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+
+    //         $headerTable->addCell(3000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addText($data['legacy_number'], ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+
+    //         // Add footer to the section
+    //         $footer = $section->addFooter();
+
+    //         $footerTable = $footer->addTable([
+    //             'width' => 100 * 50,
+    //             'borderSize' => 6,
+    //             'borderColor' => '000000',
+    //             'cellMargin' => 40
+    //         ]);
+
+    //         $footerTable->addRow(500);
+    //         $footerTable->addCell(4500, ['valign' => 'center', 'borderSize' => 6, 'borderColor' => '000000'])->addText('Rev. No: ' . $data['minor'], ['size' => 10], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::START]);
+
+    //         $footerTable->addCell(3500, ['valign' => 'center', 'borderSize' => 6, 'borderColor' => '000000'])->addText('Effective Date: ' . Carbon::parse($data['effective_date'])->format('d-m-Y'), ['size' => 10], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+
+    //         $footerTable->addCell(3500, ['valign' => 'center', 'borderSize' => 6, 'borderColor' => '000000'])->addText('Next Review Date: ' . Carbon::parse($data['next_review_date'])->format('d-m-Y'), ['size' => 10], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::END]);
+
+    //         // Add content and save the Word file
+    //         $section->addText(htmlspecialchars($data['document_content']->content));
+    //         $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+
+    //         // Save each copy
+    //         $directoryPath = storage_path('app/public/temp/');
+    //         $filename = 'document_copy.docx';
+    //         $filePath = $directoryPath . $filename;
+
+    //         if (!File::exists($directoryPath)) {
+    //             File::makeDirectory($directoryPath, 0755, true);
+    //         }
+
+    //         for ($i = 1; $i <= $IssuedCopies; $i++) {
+    //             $filePathCopy = $directoryPath . "document_copy_$i.docx";
+    //             $objWriter->save($filePathCopy);
+    //         }
+
+    //         // Check if files are created
+    //         for ($i = 1; $i <= $IssuedCopies; $i++) {
+    //             if (!File::exists($directoryPath . "document_copy_$i.docx")) {
+    //                 return response()->json(['error' => "File document_copy_$i.docx not created"], 500);
+    //             }
+    //         }
+
+    //         // Download zip file
+    //         $zip = new \ZipArchive();
+    //         $zipFileName = 'document_copies.zip';
+
+    //         if ($zip->open($directoryPath . $zipFileName, \ZipArchive::CREATE) === TRUE) {
+    //             for ($i = 1; $i <= $IssuedCopies; $i++) {
+    //                 $zip->addFile($directoryPath . "document_copy_$i.docx", "document_copy_$i.docx");
+    //             }
+    //             $zip->close();
+    //         } else {
+    //             return response()->json(['error' => 'Could not create zip file'], 500);
+    //         }
+
+    //         // Check if zip file is created
+    //         if (!File::exists($directoryPath . $zipFileName)) {
+    //             return response()->json(['error' => 'Zip file not created'], 500);
+    //         }
+
+    //         // Remove individual files after adding them to zip
+    //         for ($i = 1; $i <= $IssuedCopies; $i++) {
+    //             File::delete($directoryPath . "document_copy_$i.docx");
+    //         }
+
+    //         // Redirect to download the zip file
+    //         return response()->download($directoryPath . $zipFileName)->deleteFileAfterSend(true);
+    //     } else {
+    //         return response()->json(['error' => 'Unauthorized'], 401);
     //     }
-
-    //     $footerTable->addCell(5000, ['valign' => 'center'])->addText('Printed On: ' . Carbon::now()->format('d-M-Y h:i A'), ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::RIGHT]);
-
-    //     // Save the Word file
-    //     $directoryPath = public_path("user/word/doc");
-    //     $filePath = $directoryPath . '/SOP_' . $id . '.docx';
-
-    //     if (!File::exists($directoryPath)) {
-    //         File::makeDirectory($directoryPath, 0755, true);
-    //     }
-
-    //     $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
-    //     $objWriter->save($filePath);
-
-
-    //     return response()->download($filePath)->deleteFileAfterSend(true);
     // }
 
+    public function printWordDocument(Request $request, $id)
+    {
+
+        $numberOfCopies = $request->input('number_of_copies');
+        $document = Document::find($id);
+
+        // Generate the Word document
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $section = $phpWord->addSection();
+        $section->addText("Document Title: " . $document->document_name);
+        // Add other document content here
+
+        // Save the Word document to a temporary location
+        $fileName = 'Document_' . $id . '.docx';
+        // $tempFilePath = storage_path('app/temp/' . $fileName);
+        $tempFilePath = public_path('\upload\Print' . $fileName);
+        $phpWord->save($tempFilePath, 'Word2007');
+
+        // Return the file path to the view
+        return response()->json([
+            'file_path' => asset('upload/print/' . $fileName),
+            // $existingPdfPath = public_path('upload/PDF/' . $pdfFile);
+            'number_of_copies' => $numberOfCopies
+        ]);
+    }
+
+    public function printDownloadPDF($id)
+    {
+
+        $issue_copies = request('issue_copies');
+        $print_reason = request('print_reason');
+        $document_print_by = request('user_id');
+        $IssueDate = request('date');
+        $IssuedCopies = request('issued_copies');
+        $date = request('date');
+
+
+        if (intval($issue_copies) < 1) {
+            return "Cannot issue less than 1 copies! Requested $issue_copies no. of copies.";
+        }
+        $new = Document::find($id);
+        $addNew = $new->id;
+
+        $ModalData = new DownloadHistory();
+        $ModalData->issue_copies = $issue_copies;
+        $ModalData->user_id = $document_print_by;
+        $ModalData->document_id = $addNew;
+        $ModalData->issued_copies = $IssuedCopies;
+        $ModalData->save();
+        // dd($ModalData = new DownloadHistory());
+        $roles = Auth::user()->userRoles()->select('role_id')->distinct()->pluck('role_id')->toArray();
+        $controls = PrintControl::whereIn('role_id', $roles)->first();
+
+
+        if ($controls) {
+            set_time_limit(250);
+
+            $document = Document::find($id);
+            $data = Document::find($id);
+            $data->department = Department::find($data->department_id);
+            $data['originator'] = User::where('id', $data->originator_id)->value('name');
+            $data['originator_email'] = User::where('id', $data->originator_id)->value('email');
+            $data['document_content'] = DocumentContent::where('document_id', $id)->first();
+            $data['document_type_name'] = DocumentType::where('id', $data->document_type_id)->value('name');
+            $data['document_type_code'] = DocumentType::where('id', $data->document_type_id)->value('typecode');
+            $data['document_division'] = Division::where('id', $data->division_id)->value('name');
+            $data['issue_copies'] = $issue_copies;
+
+            $data['year'] = Carbon::parse($data->created_at)->format('Y');
+            // $document = Document::where('id', $id)->get();
+            // $pdf = PDF::loadView('frontend.documents.pdfpage', compact('data'))->setOption(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+
+            $pdf = App::make('dompdf.wrapper');
+            $time = Carbon::now();
+
+
+            $pdf = PDF::loadview('frontend.documents.download_document', compact('data', 'time', 'document', 'issue_copies', 'print_reason'))
+                ->setOptions([
+                    'defaultFont' => 'sans-serif',
+                    'isHtml5ParserEnabled' => true,
+                    'isRemoteEnabled' => true,
+                    'isPhpEnabled' => true,
+                ]);
+
+            $pdf->setPaper('A4');
+            $pdf->render();
+            $canvas = $pdf->getDomPDF()->getCanvas();
+            $canvas2 = $pdf->getDomPDF()->getCanvas();
+            $height = $canvas->get_height();
+            $width = $canvas->get_width();
+
+
+            $canvas2->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) use ($issue_copies, $canvas2) {
+                // $page_switch_at = floor($pageCount/$issue_copies);
+
+                $current_copy = round($pageNumber / $issue_copies) < 1 ? 1 : ceil($pageNumber / $issue_copies);
+                $current_copy = $current_copy > $issue_copies ? $issue_copies : $current_copy;
+                $text = "Issued Copy $current_copy of $issue_copies";
+                $pageWidth = $canvas->get_width();
+                $pageHeight = $canvas->get_height();
+                $size = 10;
+                $width = $fontMetrics->getTextWidth($text, null, $size);
+                $canvas2->text($pageWidth - $width - 50, $pageHeight - 30, $text, null, $size);
+            });
+
+            $canvas->page_script('$pdf->set_opacity(0.1,"Multiply");');
+            $canvas->page_text(
+                $width / 4,
+                $height / 2,
+                $data->status,
+                null,
+                25,
+                [0, 0, 0],
+                2,
+                6,
+                -20
+            );
+
+
+            if ($controls->daily != 0) {
+                $user = DownloadHistory::where('user_id', Auth::user()->id)->where('document_id', $id)->where('date', Carbon::now()->format('d-m-Y'))->count();
+                if ($user + 1 <= $controls->daily) {
+                    //Downlad History
+                    $download = new PrintHistory;
+                    $download->document_id = $id;
+                    $download->user_id = Auth::user()->id;
+                    $download->role_id = Auth::user()->role;
+                    $download->date = Carbon::now()->format('d-m-Y');
+                    $download->print_reason = $print_reason;
+                    $download->issue_copies = $issue_copies;
+                    $download->save();
+
+
+                    // download PDF file with download method
+
+                    return $pdf->stream('SOP' . $id . '.pdf');
+                } else {
+                    toastr()->error('You breach your daily print limit.');
+
+                    return back();
+                }
+            } elseif ($controls->weekly != 0) {
+                $weekDate = Carbon::now()->subDays(7)->format('d-m-Y');
+                $user = DownloadHistory::where('user_id', Auth::user()->id)->where('document_id', $id)->whereBetween('date', [$weekDate, Carbon::now()->format('d-m-Y')])->count();
+                if ($user + 1 <= $controls->weekly) {
+                    //Downlad History
+                    $download = new PrintHistory;
+                    $download->document_id = $id;
+                    $download->user_id = Auth::user()->id;
+                    $download->role_id = Auth::user()->role;
+                    $download->date = Carbon::now()->format('d-m-Y');
+                    $download->print_reason = $print_reason;
+                    $download->issue_copies = $issue_copies;
+                    $download->save();
+
+                    // download PDF file with download method
+                    return $pdf->stream('SOP' . $id . '.pdf');
+                } else {
+                    toastr()->error('You breach your weekly print limit.');
+
+                    return back();
+                }
+            } elseif ($controls->monthly != 0) {
+                $weekDate = Carbon::now()->subDays(30)->format('d-m-Y');
+                $user = DownloadHistory::where('user_id', Auth::user()->id)->where('document_id', $id)->whereBetween('date', [$weekDate, Carbon::now()->format('d-m-Y')])->count();
+                if ($user + 1 <= $controls->monthly) {
+                    //Downlad History
+                    $download = new PrintHistory;
+                    $download->document_id = $id;
+                    $download->user_id = Auth::user()->id;
+                    $download->role_id = Auth::user()->role;
+                    $download->date = Carbon::now()->format('d-m-Y');
+                    $download->print_reason = $print_reason;
+                    $download->issue_copies = $issue_copies;
+                    $download->save();
+
+                    // download PDF file with download method
+
+                    return $pdf->stream('SOP' . $id . '.pdf');
+                } else {
+                    toastr()->error('You breach your monthly print limit.');
+
+                    return back();
+                }
+            } elseif ($controls->quatarly != 0) {
+                $weekDate = Carbon::now()->subDays(90)->format('d-m-Y');
+                $user = DownloadHistory::where('user_id', Auth::user()->id)->where('document_id', $id)->whereBetween('date', [$weekDate, Carbon::now()->format('d-m-Y')])->count();
+                if ($user + 1 <= $controls->quatarly) {
+                    //Downlad History
+                    $download = new PrintHistory;
+                    $download->document_id = $id;
+                    $download->user_id = Auth::user()->id;
+                    $download->role_id = Auth::user()->role;
+                    $download->date = Carbon::now()->format('d-m-Y');
+                    $download->print_reason = $print_reason;
+                    $download->issue_copies = $issue_copies;
+                    $download->save();
+
+                    // download PDF file with download method
+
+                    return $pdf->stream('SOP' . $id . '.pdf');
+                } else {
+                    toastr()->error('You breach your quaterly print limit.');
+
+                    return back();
+                }
+            } elseif ($controls->yearly != 0) {
+                $weekDate = Carbon::now()->subDays(365)->format('d-m-Y');
+                $user = DownloadHistory::where('user_id', Auth::user()->id)->where('document_id', $id)->whereBetween('date', [$weekDate, Carbon::now()->format('d-m-Y')])->count();
+                if ($user + 1 <= $controls->yearly) {
+                    //Downlad History
+                    $download = new PrintHistory;
+                    $download->document_id = $id;
+                    $download->user_id = Auth::user()->id;
+                    $download->role_id = Auth::user()->role;
+                    $download->date = Carbon::now()->format('d-m-Y');
+                    $download->print_reason = $print_reason;
+                    $download->issue_copies = $issue_copies;
+
+                    $download->save();
+
+                    // download PDF file with download method
+
+                    return $pdf->stream('SOP' . $id . '.pdf');
+                } else {
+                    toastr()->error('You breach your yearly print limit.');
+
+                    return back();
+                }
+            } else {
+                toastr()->error('There is no controls provide for your role.');
+
+                return back();
+            }
+        } else {
+            toastr()->error('There is no controls provide for your role.');
+
+            return back();
+        }
+    }
 }

@@ -20,7 +20,7 @@
                                     Download as Word
                                 </button>
                                 {{-- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#print-modal1">
-                                    Print Document as Word
+                                    Print Document Word
                                 </button> --}}
 
                                 @if ($document->revised == 'Yes')
@@ -40,8 +40,13 @@
                                 <button onclick="location.href='{{ route('documents.edit', $document->id) }}';">Edit </button>
                                 {{-- <button>Cancel</button> --}}
                                 @endif
-                                <button onclick="location.href='{{ url('documents/generatePdf', $document->id) }}';">Download
+                                {{-- <button onclick="location.href='{{ url('documents/generatePdf', $document->id) }}';">Download
+                                </button> --}}
+
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#print-modal1">
+                                    Download
                                 </button>
+
                                 {{-- <button onclick="location.href='{{ url('documents/printPDF', $document->id) }}';" target="__blank"> --}}
                                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#print-modal">
                                     Print
@@ -1307,35 +1312,20 @@
 </script>
 
 
-<!-- updated print-model print as word-->
-<div class="modal fade" id="print-modal">
-    <div class="modal-dialog modal-dialog-centered">
+<!--updated print-model print as word-->
+<div class="modal fade" id="print-modal1">
+    <div class=" modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <!-- Modal Header -->
             <div class="modal-header">
-                <h4 class="modal-title">Print Document</h4>
+                <h4 class="modal-title">Download Document</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form action="{{ route('document.print.pdf', $document->id) }}" method="GET" target="_blank">
+            <form action="{{ route('document.print.downloadpdf', $document->id) }}" method="GET" target="_blank">
                 @csrf
                 <!-- Modal body -->
                 <div class="modal-body">
-                    <div class="group-input mb-3">
-                        <label for="print_document_title">Document Title</label>
-                        <input type="text" name="document_name" class="form-control w-100" maxlength="255" value="{{$document->document_name}}" readonly>
-                    </div>
-                    @php
-                    $doc_number = '';
-                    $doc_number = Helpers::getDivisionName($document->division_id)
-                    . '/' . ($document->document_type_name ? $temp . ' /' : '')
-                    . $document->created_at->format('Y')
-                    . '/000' . $document->id . 'R1.0';
-                    @endphp
 
-                    <div class="group-input mb-3">
-                        <label for="print_document_number">Document Number</label>
-                        <input type="text" name="document_number" value="{{ $doc_number }}" class="form-control w-100" maxlength="255" readonly>
-                    </div>
                     @php
                     $currentUser = Auth::user();
                     @endphp
@@ -1347,54 +1337,29 @@
                         <p class="text-danger">{{ $message }}</p>
                         @enderror
                     </div>
+
                     <div class="group-input mb-3">
                         <label for="issue_copies">No. Of Copies <span class="text-danger">*</span></label>
                         <input type="number" id="issue_copies" name="issue_copies" value="1" min="1" class="form-control w-100" required>
-                    </div>
-                    <div class="group-input mb-3">
-                        <label for="print_reason">Print Reason<span class="text-danger">*</span></label>
-                        <textarea name="print_reason" class="form-control w-100" maxlength="255" required></textarea>
                     </div>
 
                     @php
                     $users = DB::table('users')->get();
                     @endphp
-
                     <div class="group-input mb-3">
                         <textarea name="date" class="form-control w-100" maxlength="255" hidden>{{$document->create_at}}</textarea>
-                    </div>
-
-                    <div class="group-input new-date-data-field mb-3">
-                        <label for="Number_of_Print_Copies" style="font-weight: normal;">Issuance Date</label>
-                        <div class="input-date">
-                            <div class="calenderauditee">
-                                <input type="text" id="date' + serialNumber +'" readonly placeholder="DD-MMM-YYYY" class="form-control w-100" />
-                                <input type="date" name="date" class="hide-input" min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" oninput="handleDateInput(this, `date' + serialNumber +'`)" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="group-input mb-3">
-                        <label for="Issued  To" style="position: relative; left: 16px;">Issued To</label>
-                        <select id="select-state" placeholder="Select..." name="issuance_to" class="form-control" style="width: 95%; position: relative; left: 16px;">
-                            <option value="">Select a value</option>
-                            @foreach ($users as $data)
-                            <option value="{{ $data->id }}">{{ $data->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('issuance_to')
-                        <p class="text-danger">{{ $message }}</p>
-                        @enderror
                     </div>
 
                     <div class="group-input mb-3"><label for="issued_copies" style="position: relative; left: 16px;">Number of Issued Copies</label>
                         <input type="text" id="issued_copies" name="issued_copies" class="form-control" maxlength="255" style="width: 95%; position: relative; left: 16px;">
                     </div>
+
                     <div class="group-input mb-3">
-                        <label for="Reason_for_Issuance" style="position: relative; left: 16px;">Reason for Issuance</label>
-                        <textarea name="issued_reason" class="form-control" maxlength="255" style="width: 95%; position: relative; left: 16px;"></textarea>
+                        <label for="print_reason">Download Reason<span class="text-danger">*</span></label>
+                        <textarea name="print_reason" class="form-control w-100" maxlength="255"></textarea>
                     </div>
                 </div>
+
 
                 <!-- Modal footer -->
                 <div class="modal-footer">
@@ -1406,14 +1371,6 @@
     </div>
 </div>
 
-
-
-<script>
-    document.getElementById('issue_copies').addEventListener('input', function() {
-        const issueCopies = document.getElementById('issue_copies').value;
-        document.getElementById('issued_copies').value = issueCopies;
-    });
-</script>
 
 
 <div class="modal fade" id="child-modal">

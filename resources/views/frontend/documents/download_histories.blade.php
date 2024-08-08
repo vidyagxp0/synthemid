@@ -20,7 +20,7 @@
                                 <th>Document ID</th>
                                 <th>User ID</th>
                                 <th>Copy Issued</th>
-                                <th>Print Reason</th>
+                                <!-- <th>Print Reason</th> -->
                                 <th>Date</th>
                             </tr>
                         </thead>
@@ -31,8 +31,8 @@
                                 <td>{{ $item->document_id }}</td>
                                 <td>{{ Helpers::getInitiatorName($item->user_id) }}</td>
                                 <td>{{ $item->issue_copies }}</td>
-                                <td>{{ $item->print_reason }}</td>
                                 <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d-M-Y H:i A') }}</td>
+
                             </tr>
                             @endforeach
                             @else
