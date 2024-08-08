@@ -145,14 +145,20 @@
                                 
                                 <div class="col-md-12">
                                     <div class="group-input">
-                                        <label for="document_name-desc">Document Name<span
-                                                class="text-danger">*</span></label><span id="rchars">255</span>
+                                        <label for="document_name-desc">Document Name<span class="text-danger">*</span></label><span id="rchars">255</span>
                                         characters remaining
-                                        <input id="docname" type="text" name="document_name" maxlength="255" required>
+                                    <div class="relative-container">
+                                    <input id="docname" type="text" name="document_name" maxlength="255" class="mic-input" required>
+                                    <button class="mic-btn" type="button">
+                                            @component('frontend.documents.Language-Model', ['name' => 'document_name', 'id' => 'document_name'])
+                                            @endcomponent
+                                    </div>
                                     </div>
                                     <p id="docnameError" style="color:red">**Document Name is required</p>
 
                                 </div>
+
+                                
 
                                 
                                 <div class="col-md-12">
@@ -160,10 +166,15 @@
                                         <label for="short-desc">Short Description<span class="text-danger">*</span></label>
                                         <span id="new-rchars">255</span>
                                         characters remaining
-                                        <input type="text" id="short_desc" name="short_desc" maxlength="255">
+                                    <div class="relative-container">
+                                    <input type="text" id="short_desc" name="short_desc" maxlength="255" class="mic-input">
+                                    <button class="mic-btn" type="button">
+                                            @component('frontend.documents.Language-Model', ['name' => 'short_desc', 'id' => 'short_desc'])
+                                            @endcomponent
                                     </div>
                                     <p id="short_descError" style="color:red">**Short description is required</p>
                                     
+                                </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="group-input">
@@ -419,7 +430,12 @@
                                 <div class="col-lg-12">
                                     <div class="group-input">
                                         <label for="comments">Drafter Remarks</label>
-                                        <textarea disabled name="drafter_remarks"></textarea>
+                                    <div class="relative-container">
+                                    <textarea disabled name="drafter_remarks"  class="mic-input"></textarea>
+                                    @component('frontend.documents.language-model', ['name' => 'drafter_remarks', 'id' => 'drafter_remarks'])
+                                        @endcomponent
+                                    </div>
+
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
@@ -476,7 +492,14 @@
                                 <div class="col-lg-12">
                                     <div class="group-input">
                                         <label for="comments">HODs Remarks</label>
-                                        <textarea disabled name="hod_remarks"></textarea>
+                                        <div class="relative-container">
+
+                                        <textarea disabled name="hod_remarks"  class="mic-input"></textarea>
+                                        @component('frontend.documents.language-model', ['name' => 'hod_remarks', 'id' => 'hod_remarks'])
+                                        @endcomponent
+                </div>
+                                    </div>
+
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
@@ -533,7 +556,14 @@
                                 <div class="col-lg-12">
                                     <div class="group-input">
                                         <label for="comments">QA Remarks</label>
-                                        <textarea disabled name="qa_remarks"></textarea>
+
+                                        <div class="relative-container">
+
+                                        <textarea disabled name="qa_remarks"  class="mic-input"></textarea>
+                                        @component('frontend.documents.language-model', ['name' => 'qa_remarks', 'id' => 'qa_remarks'])
+                                        @endcomponent
+                                    </div>
+
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
@@ -590,7 +620,12 @@
                                 <div class="col-lg-12">
                                     <div class="group-input">
                                         <label for="comments">Reviewer Remarks</label>
-                                        <textarea disabled name="reviewer_remarks"></textarea>
+                                        <div class="relative-container">
+                                            <textarea disabled name="reviewer_remarks" class="mic-input"></textarea>
+                                            @component('frontend.documents.language-model', ['name' => 'reviewer_remarks', 'id' => 'reviewer_remarks'])
+                                        @endcomponent
+                                    </div>
+
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
@@ -647,7 +682,13 @@
                                 <div class="col-lg-12">
                                     <div class="group-input">
                                         <label for="comments">Approver Remarks</label>
-                                        <textarea disabled name="approver_remarks"></textarea>
+                                        <div class="relative-container">
+
+                                        <textarea disabled name="approver_remarks" class="mic-input"></textarea>
+                                        @component('frontend.documents.language-model', ['name' => 'approver_remarks', 'id' => 'approver_remarks'])
+                                        @endcomponent
+                                    </div>
+
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
@@ -706,13 +747,23 @@
                                 <div class="col-md-12">
                                     <div class="group-input">
                                         <label for="purpose">Objective</label>
-                                        <textarea name="purpose"></textarea>
+                                        <div class="relative-container">
+                                        <textarea name="purpose" class="mic-input"></textarea>
+                                        @component('frontend.documents.language-model', ['name' => 'purpose', 'id' => 'purpose'])
+                                        @endcomponent
+                                    </div>
+
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="group-input">
                                         <label for="scope">Scope</label>
-                                        <textarea name="scope"></textarea>
+                                        <div class="relative-container">
+                                        <textarea name="scope" class="mic-input"></textarea>
+                                        @component('frontend.documents.language-model', ['name' => 'scope', 'id' => 'scope'])
+                                        @endcomponent
+                                    </div>
+
                                     </div>
                                 </div>
                                 
@@ -729,7 +780,12 @@
                                             <div class="singleResponsibilityBlock">
                                                 <div class="row">
                                                     <div class="col-sm-10">
-                                                        <textarea name="responsibility[]" class="myclassname"></textarea>
+                                                    <div class="relative-container">
+
+                                                        <textarea name="responsibility[]" class="myclassname" class="mic-input"></textarea>
+                                                        @component('frontend.documents.language-model', ['name' => 'responsibility', 'id' => 'responsibility']) @endcomponent
+                                    </div>
+
                                                     </div>
                                                     <div class="col-sm-1">
                                                         <button class="btn btn-dark subResponsibilityAdd">+</button>
@@ -757,7 +813,11 @@
                                             <div class="singleAccountabilityBlock">
                                                 <div class="row">
                                                     <div class="col-sm-10">
-                                                        <textarea name="accountability[]" class="myclassname"></textarea>
+                                                    <div class="relative-container">
+                                                        <textarea name="accountability[]" class="myclassname" class="mic-input"></textarea>
+                                                        @component('frontend.documents.language-model', ['name' => 'accountability', 'id' => 'accountability'])
+                                        @endcomponent
+                                    </div>
                                                     </div>
                                                     <div class="col-sm-1">
                                                         <button class="btn btn-dark subAccountabilityAdd">+</button>
@@ -782,7 +842,11 @@
                                             <div class="singleReferencesBlock">
                                                 <div class="row">
                                                     <div class="col-sm-10">
-                                                        <textarea name="references[]" class="myclassname"></textarea>
+                                                    <div class="relative-container">
+                                                        <textarea name="references[]" class="myclassname" class="mic-input"></textarea>
+                                                        @component('frontend.documents.language-model', ['name' => 'references', 'id' => 'references'])
+                                        @endcomponent
+                                    </div>
                                                     </div>
                                                     <div class="col-sm-1">
                                                         <button class="btn btn-dark subReferencesAdd">+</button>
@@ -809,7 +873,11 @@
                                             <div class="singleAbbreviationBlock">
                                                 <div class="row">
                                                     <div class="col-sm-10">
-                                                        <textarea name="abbreviation[]" class="myclassname"></textarea>
+                                                    <div class="relative-container">
+                                                        <textarea name="abbreviation[]" class="myclassname" class="mic-input"></textarea>
+                                                        @component('frontend.documents.language-model', ['name' => 'abbreviation', 'id' => 'abbreviation'])
+                                        @endcomponent
+                                    </div>
                                                     </div>
                                                     <div class="col-sm-1">
                                                         <button class="btn btn-dark subAbbreviationAdd">+</button>
@@ -840,7 +908,11 @@
                                             <div class="singleDefinitionBlock">
                                                 <div class="row">
                                                     <div class="col-sm-10">
-                                                        <textarea name="defination[]" class="myclassname"></textarea>
+                                                    <div class="relative-container">
+                                                        <textarea name="defination[]" class="myclassname"  class="mic-input"></textarea>
+                                                        @component('frontend.documents.language-model', ['name' => 'defination', 'id' => 'defination'])
+                                        @endcomponent
+                                    </div>
                                                     </div>
                                                     <div class="col-sm-1">
                                                         <button class="btn btn-dark subDefinitionAdd">+</button>
@@ -868,7 +940,11 @@
                                             <div class="singleMaterialBlock">
                                                 <div class="row">
                                                     <div class="col-sm-10">
-                                                        <textarea name="materials_and_equipments[]" class="myclassname"></textarea>
+                                                    <div class="relative-container">
+                                                        <textarea name="materials_and_equipments[]" class="myclassname" class="mic-input"></textarea>
+                                                        @component('frontend.documents.language-model', ['name' => 'materials_and_equipments', 'id' => 'materials_and_equipments'])
+                                        @endcomponent
+                                    </div>
                                                     </div>
                                                     <div class="col-sm-1">
                                                         <button type="button" class="subMaterialsAdd" name="button">+</button>
@@ -887,8 +963,13 @@
                                     <div class="group-input">
                                         <label for="procedure">Procedure</label>
                                         <div><small class="text-primary">Please insert "NA" in the data field if it does not require completion</small></div>
-                                        <textarea name="procedure" class="tiny">
+                                        <div class="relative-container">
+                                        <textarea name="procedure" class="tiny" class="mic-input">
                                     </textarea>
+                                    @component('frontend.documents.language-model', ['name' => 'procedure', 'id' => 'procedure'])
+                                        @endcomponent
+                                    </div>
+
                                     </div>
                                 </div>
 
@@ -905,7 +986,11 @@
                                             <div class="singleReportingBlock">
                                                 <div class="row">
                                                     <div class="col-sm-10">
-                                                        <textarea name="reporting[]" class=""></textarea>
+                                                    <div class="relative-container">
+                                                        <textarea name="reporting[]" class="" class="mic-input"></textarea>
+                                                        @component('frontend.documents.language-model', ['name' => 'reporting', 'id' => 'reporting'])
+                                        @endcomponent
+                                    </div>
                                                     </div>
                                                     <div class="col-sm-1">
                                                         <button class="btn btn-dark subReportingAdd">+</button>
@@ -933,7 +1018,11 @@
                                             <div class="singleAnnexureBlock">
                                                 <div class="row">
                                                     <div class="col-sm-10">
+                                                    <div class="relative-container">
                                                         <textarea name="ann[]" class="myclassname"></textarea>
+                                                        @component('frontend.documents.language-model', ['name' => 'ann', 'id' => 'ann'])
+                                        @endcomponent
+                                    </div>
                                                     </div>
                                                     <div class="col-sm-1">
                                                         <button class="btn btn-dark subAnnexureAdd">+</button>
@@ -1022,14 +1111,22 @@
                         <div class="input-fields">
                             <div class="group-input">
                                 <label for="hod-remark">HOD Comments</label>
-                                <textarea class="summernote" name="hod_comments"></textarea>
+                                <div class="relative-container">
+                                <textarea class="summernote" name="hod_comments" class="mic-input"></textarea>
+                                @component('frontend.documents.language-model', ['name' => 'hod_comments', 'id' => 'hod_comments'])
+                                        @endcomponent
+                                    </div>
                             </div>
                         </div>
 
                         <div class="input-fields">
                             <div class="group-input">
                                 <label for="hod-attachments">HOD Attachments</label>
-                                <input type="file" name="hod_attachments[]" multiple>
+                                <div class="relative-container">
+                                <input type="file" name="hod_attachments[]" class="mic-input" multiple>
+                                @component('frontend.documents.language-model', ['name' => 'hod_attachments', 'id' => 'hod_attachments'])
+                                        @endcomponent
+                                    </div>
                             </div>
                         </div>
 
@@ -1049,7 +1146,11 @@
                             @for ($i = 1; $i <= 20; $i++)
                                 <div class="group-input">
                                     <label for="annexure-{{ $i }}">Annexure A-{{ $i }}</label>
+                                    <!-- <div class="relative-container"> -->
                                     <textarea class="summernote" name="annexuredata[]" id="annexure-{{ $i }}"></textarea>
+                                    <!-- @component('frontend.documents.language-model', ['name' => 'annexuredata', 'id' => 'annexure-{{ $i }}'])
+                                        @endcomponent -->
+                                    <!-- </div> -->
                                 </div>
                             @endfor
                         </div>
