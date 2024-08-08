@@ -55,6 +55,7 @@
             height: 20px;
             border-radius: 50%;
             display: inline-block;
+            margin-left: 35px;
         }
 
         .status-complete {
@@ -568,7 +569,7 @@
                                                     $statusClass = 'status-past-due';
                                                 }
                                             @endphp
-                                            <span class="status-circle {{ $statusClass }}"></span>
+                                            <span class="status-circle {{ $statusClass }}" style="justify-items: center" ></span>
                                         </td>
                                         @php
                                             // Deserialize the serialized IDs

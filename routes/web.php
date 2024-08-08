@@ -150,7 +150,8 @@ Route::middleware(['auth', 'prevent-back-history', 'user-activity'])->group(func
     //     return redirect()->back()->with('success', 'Data Imported Successfully');
     // });
     Route::get('example/{id}/', [TMSController::class, 'example']);
-    Route::post('logs', [TMSController::class, 'logsTms_dashboard'])->name('logstms');
+    //Route::post('logs', [TMSController::class, 'logsTms_dashboard'])->name('logstms');
+     Route::match(['get', 'post'],'logs', [TMSController::class, 'logsTms_dashboard'])->name('logstms');
 
     
 

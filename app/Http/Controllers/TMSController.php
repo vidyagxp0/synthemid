@@ -194,7 +194,7 @@ class TMSController extends Controller
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
     
         
-        $perPage = 1;
+        $perPage = 2;
         $currentResults = $train->slice(($currentPage - 1) * $perPage, $perPage)->all();
         $train = new LengthAwarePaginator($currentResults, $train->count(), $perPage, $currentPage, [
             'path' => LengthAwarePaginator::resolveCurrentPath()
@@ -1039,37 +1039,40 @@ class TMSController extends Controller
     }
 
 
-    public function logsTms_dashboard(Request $request){
-
-
+    public function logsTms_dashboard(Request $request) {
         if ($request->revision == "traininglog") {
-           
-            // return view('frontend.TMS.logs_tms_dasboard');
             return redirect(url('TMS'));
         }
+    
         if ($request->revision == "traineesLogs") {
-
             $trainings = Training::all(); 
-            
             $processedTrainings = [];
-
-        foreach ($trainings as $training) {
-            $trainees = explode(',', $training->trainees); 
-            foreach ($trainees as $trainee) {
-                $processedTrainings[] = [
-                    'id' => $training->id,
-                    'traning_plan_name' => $training->traning_plan_name,
-                    'trainee' => trim($trainee),
-                    'due_date' => $training->training_end_date
-                ];
+    
+            foreach ($trainings as $training) {
+                $trainees = explode(',', $training->trainees);
+                foreach ($trainees as $trainee) {
+                    $processedTrainings[] = [
+                        'id' => $training->id,
+                        'traning_plan_name' => $training->traning_plan_name,
+                        'trainee' => trim($trainee),
+                        'due_date' => $training->training_end_date
+                    ];
+                }
             }
+    
+            
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $perPage = 5;
+            $currentPageResults = array_slice($processedTrainings, ($currentPage - 1) * $perPage, $perPage);
+            $paginatedResults = new LengthAwarePaginator($currentPageResults, count($processedTrainings), $perPage);
+    
+            $paginatedResults->setPath($request->url());
+            $paginatedResults->appends($request->except('page'));
+    
+            return view('frontend.TMS.logs_tms_dasboard', compact('paginatedResults'));
         }
-        return view('frontend.TMS.logs_tms_dasboard', compact('processedTrainings'));
+    
+        return view('frontend.TMS.logs_tms_dasboard', ['paginatedResults' => []]);
     }
     
-        
-
-       
-        
-    }
 }
