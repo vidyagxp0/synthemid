@@ -109,6 +109,8 @@ Route::middleware(['auth', 'prevent-back-history', 'user-activity'])->group(func
     Route::get('documents/setReadonly/{document}/{annexure}', [DocumentController::class, 'setReadonly'])->name('document.set.readonly');
     Route::get('documents/reviseAnnexure/{document}/{annexure}', [DocumentController::class, 'reviseAnnexure'])->name('document.revise.annexure');
     Route::post('documents/saveAnnexures/{document}', [DocumentController::class, 'saveAnnexures'])->name('document.save.annexures');
+
+Route::get('documents/{document}/annexures', [DocumentController::class, 'showAnnexures'])->name('documents.annexures');
     // Route::post('documents/{id}/save', [DocumentController::class, 'saveDocument'])->name('saveDocument');
 
     // Route::post('documents/saveAnnexures/{document}', [DocumentController::class, 'saveAnnexures'])->name('document.save.annexures');
@@ -165,6 +167,13 @@ Route::middleware(['auth', 'prevent-back-history', 'user-activity'])->group(func
     Route::get('datag/{id}', [QuizeController::class, 'data'])->name('datag');
     //-----------------------QMS----------------
     Route::get('qms-dashboard', [RcmsDashboardController::class, 'index']);
+
+    /**
+     * Annexures Routes
+     */
+
+     Route::get('/annexure/{id}/revise', [DocumentController::class, 'revise_annexure'])->name('annexure.revise');
+     Route::get('/annexure/{id}/obsolete', [DocumentController::class, 'obsolete_annexure'])->name('annexure.obsolete');
 });
 
 // ====================================Capa=======================

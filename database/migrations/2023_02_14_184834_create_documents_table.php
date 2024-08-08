@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('revised_doc')->default('0');
             $table->longtext('document_name');
             $table->longtext('short_description')->nullable();
+            $table->longtext('annexuredata')->nullable();
             $table->string('due_dateDoc')->nullable();
             $table->longtext('description')->nullable();
             $table->longtext('notify_to')->nullable();

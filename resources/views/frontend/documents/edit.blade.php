@@ -2083,67 +2083,66 @@
 
                 </div>
                 {{-- HOD REMARKS TAB END --}}
-                
+
+
                 <div id="annexures" class="tabcontent">
                     <form action="{{ route('documents.update', $document->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
                         <div class="d-flex justify-content-end mb-3">
                             <div class="me-2">
                                 <button data-bs-toggle="modal" data-bs-target="#annexure-modal" type="button" class="btn btn-primary">Annexure Print</button>
                             </div>
-                            <div class="me-2">
+                            {{-- <div class="me-2">
                                 <button data-bs-toggle="modal" data-bs-target="#annexure-modal-revise" type="button" class="btn btn-primary">Annexure Revise</button>
                             </div>
                             <div>
                                 <button data-bs-toggle="modal" data-bs-target="#annexure-modal-obsolete" type="button" class="btn btn-primary">Obsolete</button>
-                            </div>
+                            </div> --}}
                         </div>
                 
-                    <div class="input-fields">
-                        @if ($document->document_content && !empty($document->document_content->annexuredata))
-                            @foreach (unserialize($document->document_content->annexuredata) as $index => $data)
-                                <div class="group-input mb-3">
-                                    <label>Annexure A-{{ $index + 1 }}</label>
-                                    @php
-                                        $readonly = '';
-                                        $content = '';
-                                        $sub_annexures = [];
-                                        if (is_array($data)) {
-                                            $readonly = isset($data['readonly']) && $data['readonly'] == true ? 'readonly' : '';
-                                            $content = isset($data['content']) ? $data['content'] : '';
-                                            $sub_annexures = isset($data['sub_annexures']) ? $data['sub_annexures'] : [];
-                                        } else {
-                                            $content = $data;
-                                        }
-                                    @endphp
-                                    <textarea class="summernote" name="annexuredata[]" {{ $readonly }}>{{ $content }}</textarea>
-                                        
-                                    <!-- Display sub-annexures -->
-                                    @foreach ($sub_annexures as $sub_index => $sub_annexure)
-                                        <div class="group-input mb-3">
-                                            <label>{{ $sub_annexure['name'] }}</label>
-                                            <textarea class="summernote" name="sub_annexuredata[]" {{ $sub_annexure['readonly'] ? 'readonly' : '' }}>{{ $sub_annexure['content'] }}</textarea>
+                        <div>
+                            @foreach ($document_annexures as $document_annexure)
+                                <div style="margin: 2rem 0;">
+                                    <div class="btn-group" style="margin: 1rem 0;">
+                                        <a href="{{ route('annexure.revise', $document_annexure->id) }}" class="btn btn-primary">Revise</a>
+                                        @if (!$document_annexure->is_obselete)
+                                            <a href="{{ route('annexure.obsolete', $document_annexure->id) }}" class="btn btn-secondary" {{ $document_annexure->is_obselete ? 'disabled' : '' }}>Obselete</a>
+                                        @else 
+                                            <button class="btn btn-light text-danger">Obsolete</button>
+                                        @endif
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ann-{{ $document_annexure->id }}">Annexure A-{{ $document_annexure->version }}</label>
+                                        <textarea class="form-control {{ $document_annexure->is_obselete ? 'summernote-disabled' : 'summernote' }}" name="annexures[{{ $document_annexure->id }}]" id="ann-{{ $document_annexure->id }}" cols="30" rows="10" >{{ $document_annexure->content }}</textarea>
+                                    </div>
+                                    
+                                    @foreach ($document_annexure->childs as $child_annexure)
+                                        <div class="btn-group" style="margin: 1rem 0;">
+                                            @if (!$child_annexure->is_obselete)
+                                                <a href="{{ route('annexure.obsolete', $child_annexure->id) }}" class="btn btn-secondary">Obsolete</a>
+                                            @else 
+                                                <button class="btn btn-light text-danger">Obsolete</button>
+                                            @endif
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="ann-{{ $child_annexure->id }}">Annexure A-{{ $child_annexure->version }} <small>(Revised)</small></label>
+                                            <textarea class="form-control {{ $child_annexure->is_obselete ? 'summernote-disabled' : 'summernote' }}" name="annexures[{{ $child_annexure->id }}]" id="ann-{{ $child_annexure->id }}" cols="30" rows="10" >{{ $child_annexure->content }}</textarea>
                                         </div>
                                     @endforeach
                                 </div>
+                                <hr>
                             @endforeach
-                        @else
-                            @for ($i = 1; $i <= 20; $i++)
-                                <div class="group-input mb-3">
-                                    <label for="annexure-{{ $i }}">Annexure A-{{ $i }}</label>
-                                    <textarea class="summernote" name="annexuredata[]" id="annexure-{{ $i }}"></textarea>
-                                </div>
-                            @endfor
-                        @endif
-                    </div>
+                        </div>
                 
-                    <div class="button-block">
-                        <button type="submit" name="submit" value="save" class="saveButton">Save</button>
-                        <button type="button" class="backButton" onclick="previousStep()">Back</button>
-                        <button type="button" class="nextButton" onclick="nextStep()">Next</button>
-                    </div>
+                        <div class="button-block">
+                            <button type="submit" name="submit" value="save" class="saveButton">Save</button>
+                            <button type="button" class="backButton" onclick="previousStep()">Back</button>
+                            <button type="button" class="nextButton" onclick="nextStep()">Next</button>
+                        </div>
+                    </form>
                 </div>
-            </form>
-                
+
                 <div id="distribution-retrieval" class="tabcontent">
                     <div class="orig-head">
                         Distribution & Retrieval
@@ -2832,35 +2831,33 @@
     </div>
 
 
-   
-
- <div class="modal fade" id="annexure-modal-obsolete">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title">Obsolete</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <form action="{{ route('document.print.pdf', $document->id) }}" method="GET" target="_blank">
-                    @csrf
-                    <!-- Modal body -->
-                    <div class="modal-body">
-                        @for ($i = 1; $i <= 20; $i++)
-                            <a href='{{ route('document.set.readonly', ['document' => $document->id, 'annexure' => $i]) }}' target="_blank">Obsolete Annexure A-{{ $i }}</a> <br>
-                        @endfor
-                    </div>
-    
-                    <!-- Modal footer -->
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary rounded">Submit</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </form>
+<!-- Modal for Obsolete Annexures -->
+<div class="modal fade" id="annexure-modal-obsolete">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Obsolete</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
+            <form action="{{ route('document.print.pdf', $document->id) }}" method="GET" target="_blank">
+                @csrf
+                <!-- Modal body -->
+                <div class="modal-body">
+                    @for ($i = 1; $i <= 20; $i++)
+                        <a href='{{ route('document.set.readonly', ['document' => $document->id, 'annexure' => $i]) }}' target="_blank">Obsolete Annexure A-{{ $i }}</a> <br>
+                    @endfor
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary rounded">Submit</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
         </div>
     </div>
-
+</div>
     
     <div class="modal fade" id="annexure-modal-revise">
         <div class="modal-dialog modal-dialog-centered">
@@ -3109,17 +3106,49 @@
         //     ]
         // });
 
-        // $('.summernote').summernote({
-        //     toolbar: [
-        //         ['style', ['style']],
-        //         ['font', ['bold', 'underline', 'clear', 'italic']],
-        //         ['color', ['color']],
-        //         ['para', ['ul', 'ol', 'paragraph']],
-        //         ['table', ['table']],
-        //         ['insert', ['link', 'picture', 'video']],
-        //         ['view', ['fullscreen', 'codeview', 'help']]
-        //     ]
-        // });
+        $('.summernote').summernote({
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear', 'italic']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ]
+        });
+
+        $('.summernote-disabled').each(function() {
+            $(this).summernote({
+                airMode: false
+            });
+            $(this).summernote('disable');
+        });
+        
+    </script>
+    <script>
+// annexure script
+            function openData(evt, tabName) {
+                // Declare all variables
+                var i, tabcontent, tablinks;
+
+                // Get all elements with class="tabcontent" and hide them
+                tabcontent = document.getElementsByClassName("tabcontent");
+                for (i = 0; i < tabcontent.length; i++) {
+                    tabcontent[i].style.display = "none";
+                }
+
+                // Get all elements with class="tablinks" and remove the class "active"
+                tablinks = document.getElementsByClassName("tablinks");
+                for (i = 0; i < tablinks.length; i++) {
+                    tablinks[i].className = tablinks[i].className.replace(" active", "");
+                }
+
+                // Show the current tab, and add an "active" class to the button that opened the tab
+                document.getElementById(tabName).style.display = "block";
+                evt.currentTarget.className += " active";
+            }
+
     </script>
 
     <script>
@@ -3167,6 +3196,68 @@
             })
         });
     </script>
+
+
+<script>
+    $(document).ready(function() {
+        const openTab = '{{ session('open_tab') }}';
+        if (openTab) {
+            openData(null, openTab);
+        }
+
+        $('.add-hod-attachment-btn').click(function() {
+            $('.add-hod-attachment-file').trigger('click');
+        });
+
+        const saveButtons = document.querySelectorAll(".saveButton");
+        const nextButtons = document.querySelectorAll(".nextButton");
+        const form = document.getElementById("step-form");
+        const stepButtons = document.querySelectorAll(".tablinks");
+        const steps = document.querySelectorAll(".tabcontent");
+        let currentStep = 0;
+
+        function openData(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            if (evt) {
+                evt.currentTarget.className += " active";
+                // Find the index of the clicked tab button
+                const index = Array.from(tablinks).findIndex(button => button === evt.currentTarget);
+                // Update the currentStep to the index of the clicked tab
+                currentStep = index;
+            }
+        }
+
+        window.nextStep = function() {
+            if (currentStep < steps.length - 1) {
+                steps[currentStep].style.display = "none";
+                steps[currentStep + 1].style.display = "block";
+                stepButtons[currentStep + 1].classList.add("active");
+                stepButtons[currentStep].classList.remove("active");
+                currentStep++;
+            }
+        };
+
+        window.previousStep = function() {
+            if (currentStep > 0) {
+                steps[currentStep].style.display = "none";
+                steps[currentStep - 1].style.display = "block";
+                stepButtons[currentStep - 1].classList.add("active");
+                stepButtons[currentStep].classList.remove("active");
+                currentStep--;
+            }
+        };
+    });
+</script>
+
 
     <script>
         function openData(evt, cityName) {

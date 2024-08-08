@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Imports\DocumentsImport;
 use App\Models\Annexure;
+use App\Models\DocumentAnnexure;
 use App\Models\Department;
 use App\Models\Division;
 use App\Models\Document;
@@ -457,6 +458,8 @@ class DocumentController extends Controller
     public function store(Request $request)
     {
         // $request->dd();
+        // dd($request->all());
+
         // effective_date, review_period
 
         if ($request->submit == 'save') {
@@ -472,6 +475,13 @@ class DocumentController extends Controller
                 $document->division_id = $request->division_id;
                 $document->process_id = $request->process_id;
             }
+
+            
+
+            
+
+
+           
        
             $document->record = DB::table('record_numbers')->value('counter') + 1;
             $document->originator_id = Auth::id();
@@ -585,6 +595,15 @@ class DocumentController extends Controller
             }
             $document->save();
 
+            foreach ($request->annexuredata as $index => $annData)
+            {
+                $documentannexure = new DocumentAnnexure();
+                $documentannexure->document_id = $document->id;
+                $documentannexure->version = $index+1;       
+                $documentannexure->content = $annData;
+                $documentannexure->save();
+            }
+
             DocumentService::update_document_numbers();
             
             if($document){
@@ -654,9 +673,9 @@ class DocumentController extends Controller
 
                 $content->hod_attachments = json_encode($files);
             }
-            $annexure_data = $request->input('annexuredata');
-            $document->doc_content->annexuredata = serialize($annexure_data);
-            $document->doc_content->save();
+            // $annexure_data = $request->input('annexuredata');
+            // $document->doc_content->annexuredata = serialize($annexure_data);
+            // $document->doc_content->save();
 
             if (! empty($request->materials_and_equipments)) {
                 $content->materials_and_equipments = serialize($request->materials_and_equipments);
@@ -705,6 +724,8 @@ class DocumentController extends Controller
             }
 
             $content->save();
+
+
             $annexure_data = $request->input('annexuredata');
                     $document->doc_content->annexuredata = serialize($annexure_data);
                     $document->doc_content->save();
@@ -717,6 +738,9 @@ class DocumentController extends Controller
 
             return redirect()->back();
         }
+
+
+        
     }
 
     /**
@@ -758,6 +782,12 @@ class DocumentController extends Controller
         }
         $print_history = PrintHistory::join('users', 'print_histories.user_id', 'users.id')->select('print_histories.*', 'users.name as user_name')->where('document_id', $id)->get();
         $document = Document::find($id);
+        
+        $document_annexures = DocumentAnnexure::where([
+            'document_id' => $id,
+            'is_child' => 0
+        ])->get();
+
         $document->date = Carbon::parse($document->created_at)->format('d-M-Y');
         $document['document_content'] = DocumentContent::where('document_id', $id)->first();
         $document_distribution_grid = PrintHistory::where('document_id', $id)->leftjoin('documents','documents.id','print_histories.document_id')->get(['print_histories.*', 'documents.document_name']);
@@ -843,7 +873,8 @@ class DocumentController extends Controller
             'ccrecord',
             'annexure',
             'documentsubTypes',
-            'document_distribution_grid'
+            'document_distribution_grid',
+            'document_annexures'
         ));
     }
 
@@ -1060,7 +1091,15 @@ class DocumentController extends Controller
                     $document->approver_group = implode(',', $request->approver_group);
                 }
             }
+
             
+            
+              // Save the annexure data
+        $annexure_data = [];
+       
+
+        $document->annexuredata = serialize($annexure_data);
+        // $document->save();
 
             $document->update();
 
@@ -1083,7 +1122,11 @@ class DocumentController extends Controller
                     $keyword->save();
                 }
 
+
             }
+
+
+
 
             if ($request->training_required == 'yes') {
                 $trainning = DocumentTraining::where('document_id', $id)->first();
@@ -1552,6 +1595,15 @@ class DocumentController extends Controller
                 $documentcontet->distribution = serialize($request->distribution);
             }
 
+            foreach ($request->annexures as $annId => $content)
+            {
+                $ann = DocumentAnnexure::find($annId);
+                if ($ann) {
+                    $ann->content = $content;
+                    $ann->save();
+                }
+            }
+
 
             $documentcontet->save();
             $annexure_data = $request->input('annexuredata');
@@ -1709,9 +1761,9 @@ class DocumentController extends Controller
 
             toastr()->success('Document Updated');
             if (Helpers::checkRoles(3)) {
-                return redirect('doc-details/'.$id);
+                return redirect('doc-details/'. $document->id);
             } else {
-                return redirect('rev-details/'.$id);
+                return redirect('rev-details/'. $document->id);
             }
         } else {
             toastr()->error('Not working');
@@ -2157,7 +2209,7 @@ class DocumentController extends Controller
                     $download->issue_copies = $issue_copies;
                     $download->save();
 
-                    // download PDF file with download method
+                    // download PDF file with download method 
 
                     return $pdf->stream('SOP'.$id.'.pdf');
                 } else {
@@ -2278,10 +2330,12 @@ public function setReadonly($documentId, $annexure_number)
                     $annexure_data[$annexure_number - 1] = [
                         'content' => $annexure_data[$annexure_number - 1],
                         'readonly' => true,
+                        'name' => 'Annexure A-' . $annexure_number . ' (Obsolete)'
                     ];
                 } else {
                     // If it's already an array, set the readonly attribute and retain existing content
                     $annexure_data[$annexure_number - 1]['readonly'] = true;
+                    $annexure_data[$annexure_number - 1]['name'] = 'Annexure A-' . $annexure_number . ' (Obsolete)';
                 }
 
                 // Save the updated annexure data back to the document
@@ -2300,53 +2354,51 @@ public function setReadonly($documentId, $annexure_number)
     }
 }
 
-
 public function reviseAnnexure($documentId, $annexure_number)
 {
-try {
-    $document = Document::findOrFail($documentId);
+    try {
+        $document = Document::findOrFail($documentId);
 
-    if ($document->doc_content && !empty($document->doc_content->annexuredata)) {
-        $annexure_data = unserialize($document->doc_content->annexuredata);
+        if ($document->doc_content && !empty($document->doc_content->annexuredata)) {
+            $annexure_data = unserialize($document->doc_content->annexuredata);
 
-        // Ensure the annexure exists and is properly formatted
-        if (isset($annexure_data[$annexure_number - 1])) {
-            // If it's not an array, convert it into an array with content and readonly fields
-            if (!is_array($annexure_data[$annexure_number - 1])) {
-                $annexure_data[$annexure_number - 1] = [
-                    'content' => $annexure_data[$annexure_number - 1],
-                    'readonly' => true,
-                    'sub_annexures' => []
+            // Ensure the annexure exists and is properly formatted
+            if (isset($annexure_data[$annexure_number - 1])) {
+                // If it's not an array, convert it into an array with content and readonly fields
+                if (!is_array($annexure_data[$annexure_number - 1])) {
+                    $annexure_data[$annexure_number - 1] = [
+                        'content' => $annexure_data[$annexure_number - 1],
+                        'readonly' => true,
+                        'sub_annexures' => []
+                    ];
+                } else {
+                    // If it's already an array, set the readonly attribute and retain existing content
+                    $annexure_data[$annexure_number - 1]['readonly'] = true;
+                }
+
+                // Generate a new sub-annexure
+                $sub_annexure_count = count($annexure_data[$annexure_number - 1]['sub_annexures']);
+                $annexure_data[$annexure_number - 1]['sub_annexures'][] = [
+                    'content' => '',
+                    'readonly' => false,
+                    'name' => 'Sub-Annexure A' . $annexure_number . '.' . ($sub_annexure_count + 1) . ' (Revised)'
                 ];
+
+                // Save the updated annexure data back to the document
+                $document->doc_content->annexuredata = serialize($annexure_data);
+                $document->doc_content->save();
+
+                return redirect()->back()->with('success', 'Annexure A-' . $annexure_number . ' set to readonly and new sub-annexure created.');
             } else {
-                // If it's already an array, set the readonly attribute and retain existing content
-                $annexure_data[$annexure_number - 1]['readonly'] = true;
+                throw new \Exception('Annexure not found.');
             }
-
-            // Generate a new sub-annexure
-            $sub_annexure_count = count($annexure_data[$annexure_number - 1]['sub_annexures']);
-            $annexure_data[$annexure_number - 1]['sub_annexures'][] = [
-                'content' => '',
-                'readonly' => false,
-                'name' => 'Sub-Annexure A' . $annexure_number . '.' . ($sub_annexure_count + 1)
-            ];
-
-            // Save the updated annexure data back to the document
-            $document->doc_content->annexuredata = serialize($annexure_data);
-            $document->doc_content->save();
-
-            return redirect()->back()->with('success', 'Annexure A-' . $annexure_number . ' set to readonly and new sub-annexure created.');
         } else {
-            throw new \Exception('Annexure not found.');
+            throw new \Exception('Annexure Data Not Found');
         }
-    } else {
-        throw new \Exception('Annexure Data Not Found');
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', $e->getMessage());
     }
-} catch (\Exception $e) {
-    return redirect()->back()->with('error', $e->getMessage());
 }
-}
-
 
 
 
@@ -2583,4 +2635,56 @@ try {
 
             
         }
+
+
+        public function revise_annexure($id)
+        {
+            $annexure = DocumentAnnexure::find($id);
+            
+            if ($annexure) {
+
+                if (count($annexure->childs) > 0) {
+                    $child = $annexure->childs()->latest()->first();
+                }
+
+                $revised_annexure = new DocumentAnnexure;
+                $revised_annexure->document_id = $annexure->document_id;
+                $revised_annexure->is_child = 1;
+                $revised_annexure->parent_id = $annexure->id;
+                $revised_annexure->content = isset($child) ? $child->content : $annexure->content;
+                $revised_annexure->version = isset($child) ? number_format($child->version, 1) + 0.1 : number_format($annexure->version, 1) + 0.1;
+                $revised_annexure->save();
+
+                $annexure->is_revised = 1;
+                $annexure->save();
+            }
+
+            // return redirect()->back();
+            return redirect()->back()->with('open_tab', 'annexures');
+        //    return view('documents.annexures', compact('document'));
+        }
+
+        public function obsolete_annexure($id)
+        {
+            $annexure = DocumentAnnexure::find($id);
+            
+            if ($annexure) {
+                $annexure->is_obselete = 1;
+                $annexure->save();
+
+
+                $obsolete_annexure = new DocumentAnnexure;
+                $obsolete_annexure->document_id = $annexure->document_id;
+                $obsolete_annexure->is_child = 0;
+                $obsolete_annexure->parent_id = $annexure->id;
+                $obsolete_annexure->content = $annexure->content;
+                
+            }
+
+            // return redirect()->back();
+            return redirect()->back()->with('open_tab', 'annexures');
+            // return redirect()->route('documents.show', [$annexure->document_id, 'tab' => 'annexures']);
+        
+        }
+        
 }
