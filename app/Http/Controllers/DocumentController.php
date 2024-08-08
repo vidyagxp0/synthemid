@@ -2632,7 +2632,7 @@ if (is_array($request->attach_effective_docuement_comment)) {
             $print_history->document_name = $request->document_name;
             $print_history->issue_copies = $request->issue_copies;
             $print_history->print_reason = $request->print_reason;
-            $print_history->document_title = $request->document_title;
+            // $print_history->document_title = $request->document_title;
             $print_history->printed_by = Auth::user()->id;
             $print_history->printed_on = date('Y-m-d');
            
