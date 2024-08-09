@@ -161,7 +161,8 @@
                             <div id="comment-container1">
                             </div>
                             <div class="button-container">
-                                <div class="button" style="display: inline-block; padding: 2px 8px; background-color: #fff; color: black; border-radius: 5px; cursor: pointer; text-align: center; box-sizing: border-box; border: 2px solid black;" onclick="addCommentField01()">+ Add Comment</div>
+                                <div class="button" style="display: inline-block; padding: 2px 8px; background-color: #fff; color: black; border-radius: 5px; 
+                                cursor: pointer; text-align: center; box-sizing: border-box; border: 2px solid black;" onclick="addCommentField01()">+ Add Comment</div>
                             </div>
                         </div>
                 </div>
@@ -871,11 +872,11 @@
             </p>
             <input class="input-field" style="background: #ffff0061;
                                     color: black;" type="text" value="{{ $tempHistory->comment }}" disabled>
+
             @endif
             @endforeach
         </div>
         {{-- <p id="approverError" style="color:red">**Approvers are required</p> --}}
-
 
         @if (Auth::user()->role != 3)
         @if ($document->stage > 4 && $document->stage <= 10) <div class="comment-section">
@@ -2760,7 +2761,6 @@
                                                             </div>
                                                         </div>
                                                     </td>
-
 
 
                                                     <td>

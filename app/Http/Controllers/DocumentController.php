@@ -138,6 +138,7 @@ class DocumentController extends Controller
     }
     public function index(Request $request)
     {
+
         $query = Document::query();
         $query->where('originator_id', auth()->id());
 
@@ -164,11 +165,10 @@ class DocumentController extends Controller
         $documentValues = Document::withoutTrashed()->select('id', 'document_type_id')->get();
         $documentTypeIds = $documentValues->pluck('document_type_id')->unique()->toArray();
         $documentTypes = DocumentType::whereIn('id', $documentTypeIds)->select('id', 'name')->get();
-
+        $document_type = Document::where('document_type_id', $documentTypeIds)->get();
         $documentStatus = Document::withoutTrashed()->select('id', 'status')->get();
         $documentStatusIds = $documentValues->pluck('document_type_id')->unique()->toArray();
-
-
+        // dd($documentStatusIds);
         $OriValues = Document::withoutTrashed()->select('id', 'originator_id')->get();
         $OriTypeIds = $OriValues->pluck('originator_id')->unique()->toArray();
         $originator = User::whereIn('id', $OriTypeIds)->select('id', 'name')->get();
@@ -179,7 +179,7 @@ class DocumentController extends Controller
         // $documents = Document::join('users', 'documents.originator_id', 'users.id')->join('document_types', 'documents.document_type_id', 'document_types.id')
         //     ->join('divisions', 'documents.division_id', 'divisions.id')
         //     ->select('documents.*', 'users.name as originator_name', 'document_types.name as document_type_name', 'divisions.name as division_name')->where('documents.originator_id', Auth::user()->id)->orderByDesc('documents.id')->paginate(10);
-        return view('frontend.documents.index', compact('documents', 'count', 'divisions', 'originator', 'documentTypes', 'documentStatus'));
+        return view('frontend.documents.index', compact('documents', 'count', 'divisions', 'document_type', 'originator', 'documentTypes', 'documentValues', 'documentStatus'));
     }
 
     public function filterRecord(Request $request)
@@ -1485,7 +1485,9 @@ class DocumentController extends Controller
 
             // QA and Hod 
             if ($lastDocument->hods != $document->hods || !empty($request->hods_comment)) {
+                // dd($request->hods_comment);
                 $history = new DocumentHistory;
+
                 $history->document_id = $id;
                 $history->activity_type = "HOD's";
                 $temp = explode(',', $lastDocument->hods);
@@ -1513,7 +1515,9 @@ class DocumentController extends Controller
 
 
             if ($lastDocument->reviewers != $document->reviewers || !empty($request->reviewers_comment)) {
+
                 $history = new DocumentHistory;
+
                 $history->document_id = $id;
                 $history->activity_type = 'Reviewers';
                 $temp = explode(',', $lastDocument->reviewers);
@@ -2618,7 +2622,7 @@ class DocumentController extends Controller
         $print_history->document_name = $request->document_name;
         $print_history->issue_copies = $request->issue_copies;
         $print_history->print_reason = $request->print_reason;
-        $print_history->document_title = $request->document_title;
+        // $print_history->document_title = $request->document_title;
         $print_history->printed_by = Auth::user()->id;
         $print_history->printed_on = date('Y-m-d');
 
@@ -2661,8 +2665,6 @@ class DocumentController extends Controller
 
 
     }
-
-
 
     // SOp pdf convert in word .docx file 
     public function downloadWord($id)
@@ -3269,236 +3271,6 @@ class DocumentController extends Controller
         return response()->download($filePath)->deleteFileAfterSend(true);
     }
 
-    // public function printWordDocument($id)
-    // {
-    //     $issue_copies = intval(request('number_of_copies'));
-    //     $IssuedCopies = intval(request('number_of_issued_copies'));
-    //     $document_print_by = request('user_id');
-
-    //     if ($issue_copies < 1) {
-    //         return "Cannot issue less than 1 copies! Requested $issue_copies no. of copies.";
-    //     }
-
-    //     $document = Document::find($id);
-    //     if (!$document) {
-    //         return response()->json(['error' => 'Document not found'], 404);
-    //     }
-
-    //     $ModalData = new DownloadHistory();
-    //     $ModalData->number_of_copies = $issue_copies;
-    //     $ModalData->document_id = $document->id;
-    //     $ModalData->user_id = $document_print_by;
-    //     $ModalData->number_of_issued_copies = $IssuedCopies;
-    //     $ModalData->save();
-
-    //     $roles = Auth::user()->userRoles()->select('role_id')->distinct()->pluck('role_id')->toArray();
-    //     $controls = PrintControl::whereIn('role_id', $roles)->first();
-
-    //     if ($controls) {
-    //         set_time_limit(250);
-
-    //         // Fetch related data
-    //         $department = $document->department;
-    //         $originator = $document->originator;
-    //         $documentType = $document->documentType;
-    //         $division = $document->division;
-
-    //         $data = [
-    //             'department_name' => $department ? $department->name : '',
-    //             'originator' => $originator ? $originator->name : '',
-    //             'originator_email' => $originator ? $originator->email : '',
-    //             'document_type_name' => $documentType ? $documentType->name : '',
-    //             'document_type_code' => $documentType ? $documentType->typecode : '',
-    //             'document_division' => $division ? $division->name : '',
-    //             'year' => Carbon::parse($document->created_at)->format('Y'),
-    //             'document_content' => DocumentContent::where('document_id', $id)->first(),
-    //             'short_description' => Document::where('id', $id)->first(),
-    //             'description' => Document::where('id', $id)->first(),
-    //             'effective_date' => $document->effective_date,
-    //             'next_review_date' => $document->next_review_date,
-    //             'document_name' => $document->document_name,
-    //             'stage' => $document->stage,
-    //             'sop_type' => $document->sop_type ?? '',
-    //             'revised' => $document->revised ?? 'No',
-    //             'document_id' => $document->id ?? '',
-    //             'document_number' => $document->document_number ?? '',
-    //             'major' => $document->major ?? '',
-    //             'minor' => $document->minor ?? '',
-    //             'sop_type_short' => $document->sop_type_short ?? '',
-    //             'department_id' => $document->department_id ?? '',
-    //             'id' => $document->id ?? '',
-    //             'division_id' => $document->division_id ?? '',
-    //             'legacy_number' => $document->legacy_number ?? 'NA',
-    //             'created_at' => $document->created_at,
-    //             'hods' => $document->hods,
-    //             'reviewers' => $document->reviewers,
-    //             'approvers' => $document->approvers,
-    //             'approver_group' => $document->approver_group,
-    //         ];
-
-    //         // Create a new PHPWord instance
-    //         $phpWord = new \PhpOffice\PhpWord\PhpWord();
-
-    //         // Add a section to the Word document
-    //         $section = $phpWord->addSection();
-
-    //         // Add Header with tables
-    //         $header = $section->addHeader();
-
-    //         // First Table in Header
-    //         $headerTable = $header->addTable([
-    //             'width' => 100 * 50,
-    //             'borderSize' => 4,
-    //             'borderColor' => '000000',
-    //             'cellMargin' => 40
-    //         ]);
-
-    //         $headerTable->addRow(500);
-    //         $headerTable->addCell(2000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addImage('https://navin.mydemosoftware.com/public/user/images/logo.png', [
-    //             'width' => 90,
-    //             'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER
-    //         ]);
-
-    //         $cell = $headerTable->addCell(6000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000']);
-    //         $cell->addText(config('site.pdf_title'), ['size' => 14, 'bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
-    //         $cell->addText($data['document_name'], ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
-
-    //         $headerTable->addCell(2000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addImage('https://navin.mydemosoftware.com/public/user/images/logo.png', [
-    //             'width' => 70,
-    //             'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER
-    //         ]);
-
-    //         // Second Table in Header
-    //         $headerTable = $header->addTable([
-    //             'width' => 100 * 50,
-    //             'borderSize' => 4,
-    //             'borderColor' => '000000',
-    //             'cellMargin' => 40
-    //         ]);
-
-    //         $headerTable->addRow(500);
-    //         $headerTable->addCell(3000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addText($data['sop_type'], ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
-
-    //         $cell = $headerTable->addCell(4000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000']);
-
-    //         // Retrieve the type code from the database
-    //         $temp = DB::table('document_types')->where('name', $data['document_type_name'])->value('typecode');
-
-    //         if ($data['revised'] === 'Yes') {
-    //             $sopNumber = Helpers::getDivisionName($data['division_id']) . '/'
-    //                 . ($data['document_type_name'] ? $temp . ' /' : '')
-    //                 . $data['year'] . '/000'
-    //                 . $data['document_'] . '/R'
-    //                 . $data['major'] . '.' . $data['minor'];
-    //         } else {
-    //             $sopNumber = Helpers::getDivisionName($data['division_id']) . '/'
-    //                 . ($data['document_type_name'] ? $temp . ' /' : '')
-    //                 . $data['year'] . '/000'
-    //                 . $data['document_id'] . '/V'
-    //                 . $data['major'] . '.' . $data['minor'];
-    //         }
-
-    //         $cell->addText($sopNumber, ['size' => 12, 'bold' => true], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
-
-    //         $headerTable->addCell(3000, ['valign' => 'center', 'borderSize' => 4, 'borderColor' => '000000'])->addText($data['legacy_number'], ['size' => 12], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
-
-    //         // Add footer to the section
-    //         $footer = $section->addFooter();
-
-    //         $footerTable = $footer->addTable([
-    //             'width' => 100 * 50,
-    //             'borderSize' => 6,
-    //             'borderColor' => '000000',
-    //             'cellMargin' => 40
-    //         ]);
-
-    //         $footerTable->addRow(500);
-    //         $footerTable->addCell(4500, ['valign' => 'center', 'borderSize' => 6, 'borderColor' => '000000'])->addText('Rev. No: ' . $data['minor'], ['size' => 10], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::START]);
-
-    //         $footerTable->addCell(3500, ['valign' => 'center', 'borderSize' => 6, 'borderColor' => '000000'])->addText('Effective Date: ' . Carbon::parse($data['effective_date'])->format('d-m-Y'), ['size' => 10], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
-
-    //         $footerTable->addCell(3500, ['valign' => 'center', 'borderSize' => 6, 'borderColor' => '000000'])->addText('Next Review Date: ' . Carbon::parse($data['next_review_date'])->format('d-m-Y'), ['size' => 10], ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::END]);
-
-    //         // Add content and save the Word file
-    //         $section->addText(htmlspecialchars($data['document_content']->content));
-    //         $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
-
-    //         // Save each copy
-    //         $directoryPath = storage_path('app/public/temp/');
-    //         $filename = 'document_copy.docx';
-    //         $filePath = $directoryPath . $filename;
-
-    //         if (!File::exists($directoryPath)) {
-    //             File::makeDirectory($directoryPath, 0755, true);
-    //         }
-
-    //         for ($i = 1; $i <= $IssuedCopies; $i++) {
-    //             $filePathCopy = $directoryPath . "document_copy_$i.docx";
-    //             $objWriter->save($filePathCopy);
-    //         }
-
-    //         // Check if files are created
-    //         for ($i = 1; $i <= $IssuedCopies; $i++) {
-    //             if (!File::exists($directoryPath . "document_copy_$i.docx")) {
-    //                 return response()->json(['error' => "File document_copy_$i.docx not created"], 500);
-    //             }
-    //         }
-
-    //         // Download zip file
-    //         $zip = new \ZipArchive();
-    //         $zipFileName = 'document_copies.zip';
-
-    //         if ($zip->open($directoryPath . $zipFileName, \ZipArchive::CREATE) === TRUE) {
-    //             for ($i = 1; $i <= $IssuedCopies; $i++) {
-    //                 $zip->addFile($directoryPath . "document_copy_$i.docx", "document_copy_$i.docx");
-    //             }
-    //             $zip->close();
-    //         } else {
-    //             return response()->json(['error' => 'Could not create zip file'], 500);
-    //         }
-
-    //         // Check if zip file is created
-    //         if (!File::exists($directoryPath . $zipFileName)) {
-    //             return response()->json(['error' => 'Zip file not created'], 500);
-    //         }
-
-    //         // Remove individual files after adding them to zip
-    //         for ($i = 1; $i <= $IssuedCopies; $i++) {
-    //             File::delete($directoryPath . "document_copy_$i.docx");
-    //         }
-
-    //         // Redirect to download the zip file
-    //         return response()->download($directoryPath . $zipFileName)->deleteFileAfterSend(true);
-    //     } else {
-    //         return response()->json(['error' => 'Unauthorized'], 401);
-    //     }
-    // }
-
-    public function printWordDocument(Request $request, $id)
-    {
-
-        $numberOfCopies = $request->input('number_of_copies');
-        $document = Document::find($id);
-
-        // Generate the Word document
-        $phpWord = new \PhpOffice\PhpWord\PhpWord();
-        $section = $phpWord->addSection();
-        $section->addText("Document Title: " . $document->document_name);
-        // Add other document content here
-
-        // Save the Word document to a temporary location
-        $fileName = 'Document_' . $id . '.docx';
-        // $tempFilePath = storage_path('app/temp/' . $fileName);
-        $tempFilePath = public_path('\upload\Print' . $fileName);
-        $phpWord->save($tempFilePath, 'Word2007');
-
-        // Return the file path to the view
-        return response()->json([
-            'file_path' => asset('upload/print/' . $fileName),
-            // $existingPdfPath = public_path('upload/PDF/' . $pdfFile);
-            'number_of_copies' => $numberOfCopies
-        ]);
-    }
 
     public function printDownloadPDF($id)
     {

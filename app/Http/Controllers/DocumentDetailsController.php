@@ -1284,7 +1284,9 @@ class DocumentDetailsController extends Controller
     $document->originator = User::where('id', $document->originator_id)->value('name');
     $document['year'] = Carbon::parse($document->created_at)->format('Y');
     $document['document_type_name'] = DocumentType::where('id', $document->document_type_id)->value('name');
-    return view('frontend.documents.audit-trial', compact('audit', 'document', 'today'));
+    $data = PrintHistory::where('id', $id)->get();
+    // $data2 = DownloadHistory::where('id', $id)->get();
+    return view('frontend.documents.audit-trial', compact('audit', 'document', 'data', 'today'));
   }
 
   function auditTrialIndividual($id, $user)

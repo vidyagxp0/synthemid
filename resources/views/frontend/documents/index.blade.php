@@ -72,16 +72,14 @@
                                             <label for="document_type_id">Document Type</label>
                                             <select name="document_type_id" class="filterSelect">
                                                 <option value="">All</option>
-                                                @foreach ($documentTypes as $data)
-                                                <option value="{{ $data->id }}">{{ $data->name }}
+                                                @foreach ( Helpers::getDocumentTypes() as $code => $name)
+                                                <option value="{{ $code }}"> {{ $name }}
                                                 </option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
                                 </div>
-
-
 
 
                                 <div class="filter-block">
@@ -185,18 +183,18 @@
                                             <td class="assign-name">
                                                 {{ $doc->request_for }}
                                             </td>
-                                            <td style="
-                                                            width: 305px;
+                                            <td style="width: 305px;
                                                             white-space: nowrap;
                                                             overflow: hidden !important;
                                                             text-overflow: ellipsis" class="short-desc">
+
                                                 {{ $doc->print_reason }}
                                             </td>
                                             <td class="assign-name">
-                                                {{ $doc->created_at }}
+                                                {{ \Carbon\Carbon::parse($doc->created_at)->format('d-M-Y H:i A') }}
                                             </td>
                                             <td class="modify-date">
-                                                {{ $doc->due_date }}
+                                                {{ \Carbon\Carbon::parse($doc->due_date) }}
                                             </td>
                                             <td class="status">
                                                 {{ $doc->status }}

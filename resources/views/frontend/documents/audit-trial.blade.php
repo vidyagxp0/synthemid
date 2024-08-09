@@ -43,7 +43,7 @@
                     </div>
                 </div>
 
-                <div class="row">
+                {{-- <div class="row">
                     <div class="print-table col-6">
                         <table class="table table-bordered">
                             <thead>
@@ -82,180 +82,179 @@
                                     @endphp
                                     <tr>
                                         <td>{{ $user->name }}</td>
-                                        <td>Reviewer</td>
-                                        <td>{{ $print_today }}</td>
-                                        <td>{{ $print }}</td>
-                                    </tr>
-                                    @endfor
-                                    @php
-                                    $rev_data = explode(',', $document->approvers);
-                                    $i = 0;
-                                    @endphp
-                                    @for ($i = 0; $i < count($rev_data); $i++) @php $user=DB::table('users') ->where('id', $rev_data[$i])
-                                        ->first();
+                <td>Reviewer</td>
+                <td>{{ $print_today }}</td>
+                <td>{{ $print }}</td>
+                </tr>
+                @endfor
+                @php
+                $rev_data = explode(',', $document->approvers);
+                $i = 0;
+                @endphp
+                @for ($i = 0; $i < count($rev_data); $i++) @php $user=DB::table('users') ->where('id', $rev_data[$i])
+                    ->first();
 
-                                        $print = DB::table('print_histories')
-                                        ->where('document_id', $document->id)
-                                        ->where('user_id', $rev_data[$i])
-                                        ->count();
-                                        $print_today = DB::table('print_histories')
-                                        ->where('date', $today)
-                                        ->where('user_id', $rev_data[$i])
-                                        ->count();
-                                        $download = DB::table('print_histories')
-                                        ->where('document_id', $document->id)
-                                        ->where('user_id', $rev_data[$i])
-                                        ->count();
-                                        $download_today = DB::table('print_histories')
-                                        ->where('date', $today)
-                                        ->count();
+                    $print = DB::table('print_histories')
+                    ->where('document_id', $document->id)
+                    ->where('user_id', $rev_data[$i])
+                    ->count();
+                    $print_today = DB::table('print_histories')
+                    ->where('date', $today)
+                    ->where('user_id', $rev_data[$i])
+                    ->count();
+                    $download = DB::table('print_histories')
+                    ->where('document_id', $document->id)
+                    ->where('user_id', $rev_data[$i])
+                    ->count();
+                    $download_today = DB::table('print_histories')
+                    ->where('date', $today)
+                    ->count();
 
-                                        @endphp
-                                        <tr>
-                                            <td>{{ $user->name }}</td>
-                                            <td>Approver</td>
-                                            <td>{{ $print_today }}</td>
-                                            <td>{{ $print }}</td>
-                                        </tr>
-                                        @endfor
+                    @endphp
+                    <tr>
+                        <td>{{ $user->name }}</td>
+                        <td>Approver</td>
+                        <td>{{ $print_today }}</td>
+                        <td>{{ $print }}</td>
+                    </tr>
+                    @endfor
 
 
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="print-table col-6">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Person</th>
-                                    <th>Role</th>
-                                    <th>Today Download Count</th>
-                                    <th>Total Count</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @php
-                                $rev_data = explode(',', $document->reviewers);
-                                $i = 0;
-                                @endphp
-                                @for ($i = 0; $i < count($rev_data); $i++) @php $user=DB::table('users') ->where('id', $rev_data[$i])
-                                    ->first();
-
-                                    $print = DB::table('download_histories')
-                                    ->where('document_id', $document->id)
-                                    ->where('user_id', $rev_data[$i])
-                                    ->count();
-                                    $print_today = DB::table('download_histories')
-                                    ->where('date', $today)
-                                    ->where('user_id', $rev_data[$i])
-                                    ->count();
-                                    $download = DB::table('download_histories')
-                                    ->where('document_id', $document->id)
-                                    ->where('user_id', $rev_data[$i])
-                                    ->count();
-                                    $download_today = DB::table('download_histories')
-                                    ->where('date', $today)
-                                    ->count();
-
-                                    @endphp
-                                    <tr>
-                                        <td>{{ $user->name }}</td>
-                                        <td>Reviewer</td>
-                                        <td>{{ $print_today }}</td>
-                                        <td>{{ $print }}</td>
-                                    </tr>
-                                    @endfor
-                                    @php
-                                    $rev_data = explode(',', $document->approvers);
-                                    $i = 0;
-                                    @endphp
-                                    @for ($i = 0; $i < count($rev_data); $i++) @php $user=DB::table('users') ->where('id', $rev_data[$i])
-                                        ->first();
-                                        $print = DB::table('print_histories')
-                                        ->where('document_id', $document->id)
-                                        ->where('user_id', $rev_data[$i])
-                                        ->count();
-                                        $print_today = DB::table('print_histories')
-                                        ->where('date', $today)
-                                        ->where('user_id', $rev_data[$i])
-                                        ->count();
-                                        $download = DB::table('print_histories')
-                                        ->where('document_id', $document->id)
-                                        ->where('user_id', $rev_data[$i])
-                                        ->count();
-                                        $download_today = DB::table('print_histories')
-                                        ->where('date', $today)
-                                        ->count();
-                                        @endphp
-                                        <tr>
-                                            <td>{{ $user->name }}</td>
-                                            <td>Approver</td>
-                                            <td>{{ $print_today }}</td>
-                                            <td>{{ $print }}</td>
-                                        </tr>
-                                        @endfor
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="activity-table">
-                    <table class="table table-bordered" id='auditTable'>
-                        <thead>
-                            <tr>
-                                <th>Activity Type</th>
-                                <th>Performed on</th>
-                                <th>Performed by</th>
-                                {{-- <th>Performer Role</th> --}}
-                                <th>Origin State</th>
-                                <th>Resulting State</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <a href="{{ route('print-histories', $document->id ) }}" target="_blank">Print History</a>
-                                </td>
-
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="{{ route('download-histories', $document->id ) }}" target="_blank">Download History</a>
-                                </td>
-
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                            </tr>
-                            </tr>
-                            @foreach ($audit as $audits)
-                            <tr>
-                                <td class="viewdetails"><a href="{{ route('audit-detail', $audits->id) }}">{{ $audits->activity_type }}</a>
-                                </td>
-                                <td>{{ $audits->created_at }}</td>
-                                <td>{{ $audits->user_name }}</td>
-                                {{-- <td>{{ $audits->user_role }}</td> --}}
-                                <td>{{ $audits->change_from ? $audits->change_from : $audits->origin_state }}</td>
-                                <td>{{ $audits->change_to ? $audits->change_to : $document->status }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
+                    </tbody>
                     </table>
-                </div>
-
-
-
-
             </div>
+            <div class="print-table col-6">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Person</th>
+                            <th>Role</th>
+                            <th>Today Download Count</th>
+                            <th>Total Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php
+                        $rev_data = explode(',', $document->reviewers);
+                        $i = 0;
+                        @endphp
+                        @for ($i = 0; $i < count($rev_data); $i++) @php $user=DB::table('users') ->where('id', $rev_data[$i])
+                            ->first();
 
+                            $print = DB::table('download_histories')
+                            ->where('document_id', $document->id)
+                            ->where('user_id', $rev_data[$i])
+                            ->count();
+                            $print_today = DB::table('download_histories')
+                            ->where('date', $today)
+                            ->where('user_id', $rev_data[$i])
+                            ->count();
+                            $download = DB::table('download_histories')
+                            ->where('document_id', $document->id)
+                            ->where('user_id', $rev_data[$i])
+                            ->count();
+                            $download_today = DB::table('download_histories')
+                            ->where('date', $today)
+                            ->count();
+
+                            @endphp
+                            <tr>
+                                <td>{{ $user->name }}</td>
+                                <td>Reviewer</td>
+                                <td>{{ $print_today }}</td>
+                                <td>{{ $print }}</td>
+                            </tr>
+                            @endfor
+                            @php
+                            $rev_data = explode(',', $document->approvers);
+                            $i = 0;
+                            @endphp
+                            @for ($i = 0; $i < count($rev_data); $i++) @php $user=DB::table('users') ->where('id', $rev_data[$i])
+                                ->first();
+                                $print = DB::table('print_histories')
+                                ->where('document_id', $document->id)
+                                ->where('user_id', $rev_data[$i])
+                                ->count();
+                                $print_today = DB::table('print_histories')
+                                ->where('date', $today)
+                                ->where('user_id', $rev_data[$i])
+                                ->count();
+                                $download = DB::table('print_histories')
+                                ->where('document_id', $document->id)
+                                ->where('user_id', $rev_data[$i])
+                                ->count();
+                                $download_today = DB::table('print_histories')
+                                ->where('date', $today)
+                                ->count();
+                                @endphp
+                                <tr>
+                                    <td>{{ $user->name }}</td>
+                                    <td>Approver</td>
+                                    <td>{{ $print_today }}</td>
+                                    <td>{{ $print }}</td>
+                                </tr>
+                                @endfor
+
+                    </tbody>
+                </table>
+            </div>
+        </div> --}}
+
+        <div class="activity-table">
+            <table class="table table-bordered" id='auditTable'>
+                <thead>
+                    <tr>
+                        <th>Activity Type</th>
+                        <th>Performed on</th>
+                        <th>Performed by</th>
+                        {{-- <th>Performer Role</th> --}}
+                        <th>Origin State</th>
+                        <th>Resulting State</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td>
+                            <a href="{{ route('print-histories', $document->id ) }}" target="_blank">Print History</a>
+                        </td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <a href="{{ route('download-histories', $document->id ) }}" target="_blank">Download History</a>
+                        </td>
+
+                        <td>N/A</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                    </tr>
+
+                    </tr>
+                    @foreach ($audit as $audits)
+                    <tr>
+                        <td class="viewdetails"><a href="{{ route('audit-detail', $audits->id) }}">{{ $audits->activity_type }}</a>
+                        </td>
+                        <td>{{ $audits->created_at }}</td>
+                        <td>{{ $audits->user_name }}</td>
+                        {{-- <td>{{ $audits->user_role }}</td> --}}
+                        <td>{{ $audits->change_from ? $audits->change_from : $audits->origin_state }}</td>
+                        <td>{{ $audits->change_to ? $audits->change_to : $document->status }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
+
     </div>
+
+</div>
+</div>
 </div>
 
 <div class="modal fade" id="activity-modal">
@@ -288,7 +287,6 @@
                 <div id="auditTableinfo"></div>
 
             </div>
-
         </div>
     </div>
 </div>
