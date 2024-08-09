@@ -161,10 +161,6 @@
         /* Ensure the text does not overlap the button */
     }
 </style>
-<script>
-    < link rel = "stylesheet"
-    href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" >
-</script>
 
 
 
@@ -209,10 +205,6 @@
     </div>
 </div>
 
-<script>
-    < link rel = "stylesheet"
-    href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" >
-</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -306,7 +298,7 @@
 
                 // Translate the text before converting to speech
                 translateText(textToSpeak, selectedLanguage).then(translatedText => {
-                    const apiKey = '42044285750c4bffb12529430412c4eb';
+                    const apiKey = '7fdc735bbfea4bfab96b30db2001d0cc';
                     const url =
                         `https://api.voicerss.org/?key=${apiKey}&hl=${selectedLanguage}&src=${encodeURIComponent(translatedText)}&r=0&c=WAV&f=44khz_16bit_stereo`;
                     audio = new Audio(url);
@@ -359,7 +351,7 @@
             const options = {
                 method: 'POST',
                 headers: {
-                    'x-rapidapi-key': '5246c9098fmshc966ee7f6cea588p14a110jsn3979434fe858',
+                    'x-rapidapi-key': 'd643df7db0msh30dc3dc2b5d04b8p12c47cjsnc87514f75cb8',
                     'x-rapidapi-host': 'google-translate1.p.rapidapi.com',
                     'Accept-Encoding': 'application/gzip',
                     'Content-Type': 'application/x-www-form-urlencoded'

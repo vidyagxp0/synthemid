@@ -457,14 +457,184 @@
     $(document).ready(function() {
 
 
-        $('#responsibilitybtnadd').click(function(e) {
+        let audio = null;
+        let selectedLanguage = 'en-us'; // Default language
+        let inputText = '';
 
+        // Function to translate text using RapidAPI
+        async function translateText(text, targetLanguage) {
+            const url = 'https://google-translate1.p.rapidapi.com/language/translate/v2';
+            const options = {
+                method: 'POST',
+                headers: {
+                    'x-rapidapi-key': 'd643df7db0msh30dc3dc2b5d04b8p12c47cjsnc87514f75cb8',
+                    'x-rapidapi-host': 'google-translate1.p.rapidapi.com',
+                    'Accept-Encoding': 'application/gzip',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    q: text,
+                    target: targetLanguage.split('-')[0] // Get the language code only
+                })
+            };
+
+            const response = await fetch(url, options);
+            const data = await response.json();
+            return data.data.translations[0].translatedText;
+        }
+
+        // Speech-to-Text functionality
+        const recognition = new(window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
+
+        function startRecognition(targetElement) {
+            recognition.start();
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                targetElement.value += transcript;
+            };
+            recognition.onerror = function(event) {
+                console.error(event.error);
+            };
+        }
+
+        // Show mic button on hover for dynamically added elements
+        $(document).on('mouseenter', '.relative-container', function() {
+            $(this).find('.mic-btn').show();
+        });
+
+        $(document).on('mouseleave', '.relative-container', function() {
+            $(this).find('.mic-btn').hide();
+        });
+
+        // Handle mic button click for dynamically added elements
+        $(document).on('click', '.mic-btn', function() {
+            const inputField = $(this).siblings('textarea, input');
+            startRecognition(inputField[0]);
+        });
+
+        // Handle speak button click for dynamically added elements
+        $(document).on('click', '.speak-btn', function() {
+            let inputField = $(this).siblings('textarea, input');
+            inputText = inputField.val();
+            let modal = $(this).siblings('.mini-modal');
+            if (inputText) {
+                // Store the input field element
+                $(modal).data('inputField', inputField);
+                modal.css({
+                    display: 'block',
+                    top: $(this).position().top - modal.outerHeight() - 10,
+                    left: $(this).position().left + $(this).outerWidth() - modal.outerWidth()
+                });
+            }
+        });
+
+        // Handle close modal click for dynamically added elements
+        $(document).on('click', '.close', function() {
+            $(this).closest('.mini-modal').css('display', 'none');
+        });
+
+        // Handle language selection click for dynamically added elements
+        $(document).on('click', '.select-language-btn', function(event) { // Changed selector to class
+            event.preventDefault(); // Prevent form submission
+            let modal = $(this).closest('.mini-modal');
+            selectedLanguage = modal.find('#language-select').val();
+            let inputField = modal.data('inputField');
+            let textToSpeak = inputText;
+
+            if (textToSpeak) {
+                if (audio) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+
+                // Translate the text before converting to speech
+                translateText(textToSpeak, selectedLanguage).then(translatedText => {
+                    const apiKey = '7fdc735bbfea4bfab96b30db2001d0cc';
+                    const url =
+                        `https://api.voicerss.org/?key=${apiKey}&hl=${selectedLanguage}&src=${encodeURIComponent(translatedText)}&r=0&c=WAV&f=44khz_16bit_stereo`;
+                    audio = new Audio(url);
+                    audio.play();
+                    audio.onended = function() {
+                        audio = null;
+                    };
+                });
+            }
+
+            modal.css('display', 'none');
+        });
+
+        // Event delegation for removing blocks
+        $(document).on('click', '.removeAllBlocks', function() {
+            $(this).closest('.singleResponsibilityBlock').remove();
+        });
+    });
+
+
+
+    $('#responsibilitybtnadd').click(function(e) {
+            console.log('Test');
             var html =
-                '<div class="singleResponsibilityBlock"><div class="resrow row"><div class="col-10"><textarea name="responsibility[]" class="myclassname"> </textarea> </div><div class="col-1"><button class="btn btn-dark subResponsibilityAdd">+</button></div><div class="col-1"><button class="btn btn-danger removeAllBlocks">Remove</button></div></div></div>';
+                '<div class="singleResponsibilityBlock">' +
+                '<div class="resrow row">' +
+                '<div class="col-10">' +
+                '<div class="relative-container">' +
+                '<textarea name="responsibility[]" class="myclassname mic-input"></textarea>' +
+                '<button class="mic-btn" type="button" style="display: none;">' +
+                '<i class="fas fa-microphone"></i>' +
+                '</button>' +
+                '<button class="speak-btn" type="button">' +
+                '<i class="fas fa-volume-up"></i>' +
+                '</button>' +
+                '<div class="mini-modal">' +
+                '<div class="mini-modal-content">' +
+                '<span class="close">&times;</span>' +
+                '<h2>Select Language</h2>' +
+                '<select id="language-select">' +
+                '<option value="en-us">English</option>' +
+                '<option value="hi-in">Hindi</option>' +
+                '<option value="te-in">Telugu</option>' +
+                '<option value="fr-fr">French</option>' +
+                '<option value="es-es">Spanish</option>' +
+                '<option value="zh-cn">Chinese (Mandarin)</option>' +
+                '<option value="ja-jp">Japanese</option>' +
+                '<option value="de-de">German</option>' +
+                '<option value="ru-ru">Russian</option>' +
+                '<option value="ko-kr">Korean</option>' +
+                '<option value="it-it">Italian</option>' +
+                '<option value="pt-br">Portuguese (Brazil)</option>' +
+                '<option value="ar-sa">Arabic</option>' +
+                '<option value="bn-in">Bengali</option>' +
+                '<option value="pa-in">Punjabi</option>' +
+                '<option value="mr-in">Marathi</option>' +
+                '<option value="gu-in">Gujarati</option>' +
+                '<option value="ur-pk">Urdu</option>' +
+                '<option value="ta-in">Tamil</option>' +
+                '<option value="kn-in">Kannada</option>' +
+                '<option value="ml-in">Malayalam</option>' +
+                '<option value="or-in">Odia</option>' +
+                '<option value="as-in">Assamese</option>' +
+                '</select>' +
+                '<button class="select-language-btn">Select</button>' + // Changed ID to class for dynamic binding
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '<div class="col-1">' +
+                '<button class="btn btn-dark subResponsibilityAdd">+</button>' +
+                '</div>' +
+                '<div class="col-1">' +
+                '<button class="btn btn-danger removeAllBlocks">Remove</button>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
 
             $('#responsibilitydiv').append(html);
-
         });
+
+
         
         $('#accountabilitybtnadd').click(function(e) {
 
@@ -1591,7 +1761,6 @@
             tableBody.append(newRow);
         });
         // ---------------------------------------------------
-    });
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
@@ -1685,7 +1854,7 @@
 
     // Call the countCharacters function initially to display character count for any existing text
     countCharacters();
-  </script>
+</script>
 
 
 

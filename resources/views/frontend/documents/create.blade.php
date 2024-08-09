@@ -768,37 +768,79 @@
                                 </div>
                                 
                                 <div class="col-md-12">
-                                    <div class="group-input">
-                                        
-                                        <label for="responsibility" id="responsibility">
-                                            Responsibility<button type="button" id="responsibilitybtnadd"
-                                                name="button">+</button>
-                                                <div><small class="text-primary">Please insert "NA" in the data field if it does not require completion</small></div>
-                                        </label>
-                                        
-                                        <div id="responsibilitydiv">
-                                            <div class="singleResponsibilityBlock">
-                                                <div class="row">
-                                                    <div class="col-sm-10">
-                                                    <div class="relative-container">
+    <div class="group-input">
+        <label for="responsibility" id="responsibility">
+            Responsibility
+            <button type="button" id="responsibilitybtnadd" name="button">+</button>
+            <div>
+                <small class="text-primary">Please insert "NA" in the data field if it does not require completion</small>
+            </div>
+        </label>
 
-                                                        <textarea name="responsibility[]" class="myclassname" class="mic-input"></textarea>
-                                                        @component('frontend.documents.language-model', ['name' => 'responsibility', 'id' => 'responsibility']) @endcomponent
-                                    </div>
-
-                                                    </div>
-                                                    <div class="col-sm-1">
-                                                        <button class="btn btn-dark subResponsibilityAdd">+</button>
-                                                    </div>
-                                                    <div class="col-sm-1">
-                                                        <button class="btn btn-danger removeAllBlocks">Remove</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
+        <div id="responsibilitydiv">
+            <div class="singleResponsibilityBlock">
+                <div class="row">
+                    <div class="col-sm-10">
+                        <div class="relative-container">
+                            <textarea name="responsibility[]" class="myclassname mic-input"></textarea>
+                            
+                            <!-- Mic and Speak Buttons -->
+                            <button class="mic-btn" type="button" style="display: none;">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                            <button class="speak-btn" type="button">
+                                <i class="fas fa-volume-up"></i>
+                            </button>
+                            
+                            <!-- Language Selection Modal -->
+                            <div class="mini-modal">
+                                <div class="mini-modal-content">
+                                    <span class="close">&times;</span>
+                                    <h2>Select Language</h2>
+                                    <select id="language-select">
+                                        <option value="en-us">English</option>
+                                        <option value="hi-in">Hindi</option>
+                                        <option value="te-in">Telugu</option>
+                                        <option value="fr-fr">French</option>
+                                        <option value="es-es">Spanish</option>
+                                        <option value="zh-cn">Chinese (Mandarin)</option>
+                                        <option value="ja-jp">Japanese</option>
+                                        <option value="de-de">German</option>
+                                        <option value="ru-ru">Russian</option>
+                                        <option value="ko-kr">Korean</option>
+                                        <option value="it-it">Italian</option>
+                                        <option value="pt-br">Portuguese (Brazil)</option>
+                                        <option value="ar-sa">Arabic</option>
+                                        <option value="bn-in">Bengali</option>
+                                        <option value="pa-in">Punjabi</option>
+                                        <option value="mr-in">Marathi</option>
+                                        <option value="gu-in">Gujarati</option>
+                                        <option value="ur-pk">Urdu</option>
+                                        <option value="ta-in">Tamil</option>
+                                        <option value="kn-in">Kannada</option>
+                                        <option value="ml-in">Malayalam</option>
+                                        <option value="or-in">Odia</option>
+                                        <option value="as-in">Assamese</option>
+                                        <!-- Add more languages as needed -->
+                                    </select>
+                                    <button id="select-language-btn">Select</button>
                                 </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <button class="btn btn-dark subResponsibilityAdd">+</button>
+                    </div>
+                    <div class="col-sm-1">
+                        <button class="btn btn-danger removeAllBlocks">Remove</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
                                 <div class="col-md-12">
                                     <div class="group-input">
