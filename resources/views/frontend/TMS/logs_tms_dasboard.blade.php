@@ -104,7 +104,7 @@ $divisions = DB::table('q_m_s_divisions')->select('id', 'name')->get();
                             <th>Trainee Name</th>
                             <th>Trainee Plan Id</th>
                             <th>Due Date</th>
-                            <th>Attendance</th>
+                            <th>Attend</th>
                             <th>Pass/Fail</th>
                             <th>Remark</th>
                             <th>Report</th>
@@ -114,8 +114,8 @@ $divisions = DB::table('q_m_s_divisions')->select('id', 'name')->get();
                         @foreach($paginatedResults as $index => $training)
                             <tr class="training-row" data-trainee="{{ $training['traning_plan_name'] }}">
                                 <td>{{ $paginatedResults->firstItem() + $index }}</td>
-                                <td>{{ $training['traning_plan_name'] }}</td>
-                                <td>{{ $training['trainee'] }}-TP</td>
+                                <td>{{ Helpers::getInitiatorName($training['trainee']) }}</td>
+                                <td>{{ 'TP-'.$training['id'] }}</td>
                                 <td>{{ $training['due_date'] }}</td>
                                 @php
                                     $trainingstatus = DB::table('training_statuses')->where(['user_id' => $training['trainee'], 'training_id' => $training['id']])->latest()->first();
@@ -123,7 +123,14 @@ $divisions = DB::table('q_m_s_divisions')->select('id', 'name')->get();
                                 <td>{{ $trainingstatus ? 'Yes' : ($training['due_date'] < now() ? 'No' : 'Pending') }}</td>
                                 <td>{{ $trainingstatus ? 'Pass' : 'Fail' }}</td>
                                 <td></td>
-                                <td> <i class="fa-solid fa-file-pdf"></i></td>
+                                <td>
+                                    {{-- <a href="{{  url('/traneeLogsreport/'.$training['id'],)  }}" target="_blank">
+                                        <i class="fa-solid fa-file-pdf"></i>
+                                    </a> --}}
+                                    <a href="{{ route('traneeLogsreport', ['training_id' => $training['id'], 'trainee_id' => $training['trainee']]) }}" target="_blank">
+                                        <i class="fa-solid fa-file-pdf"></i>
+                                    </a>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>

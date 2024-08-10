@@ -152,7 +152,9 @@ Route::middleware(['auth', 'prevent-back-history', 'user-activity'])->group(func
     Route::get('example/{id}/', [TMSController::class, 'example']);
     //Route::post('logs', [TMSController::class, 'logsTms_dashboard'])->name('logstms');
      Route::match(['get', 'post'],'logs', [TMSController::class, 'logsTms_dashboard'])->name('logstms');
+    Route::get('/traneeLogsreport/{training_id}/{trainee_id}', [TMSController::class, 'logsReportTranee'])->name('traneeLogsreport');
 
+   
     
 
     // Questions Part
