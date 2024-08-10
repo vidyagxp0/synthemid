@@ -3295,7 +3295,9 @@ class DocumentController extends Controller
         $ModalData->document_id = $addNew;
         $ModalData->issued_copies = $IssuedCopies;
         $ModalData->save();
+
         // dd($ModalData = new DownloadHistory());
+
         $roles = Auth::user()->userRoles()->select('role_id')->distinct()->pluck('role_id')->toArray();
         $controls = PrintControl::whereIn('role_id', $roles)->first();
 

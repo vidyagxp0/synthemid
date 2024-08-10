@@ -235,8 +235,8 @@ class DocumentDetailsController extends Controller
             $document->save();
             return redirect()->back();
           }
-          if ($stage->stage == "Obsolete") {
-            $document->stage = 10;
+          if ($stage->stage == "Effective") {
+            $document->stage = 11;
             $document->status = "Obsolete";
             $history = new DocumentHistory();
             $history->document_id = $request->document_id;

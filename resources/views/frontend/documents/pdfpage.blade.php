@@ -468,8 +468,8 @@ $total_copies_static = $total_copies;
         <table class="border" style="height: 145px;">
             <tbody>
                 <tr>
-                    <td class="logo w-20">
-                        <img src="https://vidyagxp.com/vidyaGxp_logo.png" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem;">
+                    <td class="logo w-25">
+                        <img src="https://vidyagxp.com/vidyaGxp_logo.png" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem; height:3rem;">
                     </td>
                     <td class="title w-60" style="height: 150px; padding: 0px;  margin: 0px; border-left: 1px solid rgb(104, 104, 104); border-right: 1px solid rgb(104, 104, 104);">
                         <p style="margin-top: -0.1rem; border-bottom: 1px solid rgb(104, 104, 104);">{{ config('site.pdf_title') }}</p>
@@ -478,8 +478,8 @@ $total_copies_static = $total_copies;
                             {{ $data->document_name }}
                         </p>
                     </td>
-                    <td class="logo w-20">
-                        <img src="https://vidyagxp.com/vidyaGxp_logo.png" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem;">
+                    <td class="logo w-25">
+                        <img src="https://vidyagxp.com/vidyaGxp_logo.png" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem; height:3rem;">
                     </td>
                 </tr>
             </tbody>
@@ -1127,9 +1127,9 @@ $total_copies_static = $total_copies;
                                     <th class="w-30 text-left vertical-baseline">Last Changed</th>
                                     <td class="w-70 text-left">
                                         @if ($last)
-                                        {{ $last->created_at }}
+                                        {{ \Carbon\Carbon::parse($last->created_at)->format('d-M-Y H:i A') }}
                                         @else
-                                        {{ $data->created_at }}
+                                        {{ \Carbon\Carbon::parse($data->created_at)->format('d-M-Y H:i A') }}
                                         @endif
                                     </td>
                                 </tr>
@@ -1169,6 +1169,7 @@ $total_copies_static = $total_copies;
                 ->latest()
                 ->first();
                 @endphp
+
                 <div class="block mb-40">
                     <div class="block-head">
                         Originator
@@ -1198,6 +1199,7 @@ $total_copies_static = $total_copies;
                         </table>
                     </div>
                 </div>
+
                 <div class="block mb-40">
                     <div class="block-head">
                         HOD
@@ -1314,13 +1316,13 @@ $total_copies_static = $total_copies;
                                             @endif
                                             @endfor
 
-
                                             @endif
 
                             </tbody>
                         </table>
                     </div>
                 </div>
+
                 <div class="block mb-40">
                     <div class="block-head">
                         Reviews

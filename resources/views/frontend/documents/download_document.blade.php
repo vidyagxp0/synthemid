@@ -553,7 +553,7 @@ $total_copies_static = $total_copies;
                         {{Helpers::getDivisionName($data->division_id)}}/@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}{{$data->department_id}}/000{{ $data->id }}/R{{$data->major}}.{{$data->minor}}
                         @endif
 
-                    <td class="w-30">Printed On : {{ $time }}</td>
+                    <td class="w-40">Printed On : {{ \Carbon\Carbon::parse($time)->format('d-M-Y H:i A') }}</td>
                     <td class="text-right w-20"></td>
                 </tr>
             </tbody>
@@ -1127,9 +1127,9 @@ $total_copies_static = $total_copies;
                                     <th class="w-30 text-left vertical-baseline">Last Changed</th>
                                     <td class="w-70 text-left">
                                         @if ($last)
-                                        {{ $last->created_at }}
+                                        {{ \Carbon\Carbon::parse($last->created_at)->format('d-M-Y H:i A') }}
                                         @else
-                                        {{ $data->created_at }}
+                                        {{ \Carbon\Carbon::parse($data->created_at)->format('d-M-Y H:i A') }}
                                         @endif
                                     </td>
                                 </tr>

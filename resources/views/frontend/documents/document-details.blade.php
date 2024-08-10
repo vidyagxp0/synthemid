@@ -100,9 +100,9 @@
                     <div>
                         <div class="head">Last Modified On</div>
                         @if ($document->last_modify)
-                        <div>{{ $document->last_modify_date->created_at }}</div>
+                        <div>{{ \Carbon\Carbon::parse($document->last_modify_date->created_at)->format('d-M-Y H:i A') }}</div>
                         @else
-                        <div>{{ $document->created_at }}</div>
+                        <div>{{ \Carbon\Carbon::parse($document->created_at)->format('d-M-Y H:i A') }}</div>
                         @endif
                     </div>
                 </div>
@@ -122,6 +122,7 @@
                         Send For Author<i class="fa-regular fa-paper-plane"></i>
                     </button>
                     @endif
+
                     @if ($document->training_required == 'yes')
                     @if ($document->stage == 7)
                     <input type="hidden" name="stage_id" value="8" />
@@ -205,6 +206,7 @@
 
     <div class="container">
         <div class="row justify-content-between text-center">
+
             <div class="col-2">
                 <div class="inner-block person-table">
                     <div class="main-title mb-0">
@@ -1340,7 +1342,7 @@
 
                     <div class="group-input mb-3">
                         <label for="issue_copies">No. Of Copies <span class="text-danger">*</span></label>
-                        <input type="number" id="issue_copies" name="issue_copies" value="1" min="1" class="form-control w-100" required>
+                        <input type="number" id="issue_copie" name="issue_copies" value="1" min="1" class="form-control w-100" required>
                     </div>
 
                     @php
@@ -1351,7 +1353,7 @@
                     </div>
 
                     <div class="group-input mb-3"><label for="issued_copies" style="position: relative; left: 16px;">Number of Issued Copies</label>
-                        <input type="text" id="issued_copies" name="issued_copies" class="form-control" maxlength="255" style="width: 95%; position: relative; left: 16px;">
+                        <input type="text" id="issued_copie" name="issued_copies" class="form-control" maxlength="255" style="width: 95%; position: relative; left: 16px;">
                     </div>
 
                     <div class="group-input mb-3">
@@ -1359,7 +1361,6 @@
                         <textarea name="print_reason" class="form-control w-100" maxlength="255"></textarea>
                     </div>
                 </div>
-
 
                 <!-- Modal footer -->
                 <div class="modal-footer">
@@ -1370,7 +1371,12 @@
         </div>
     </div>
 </div>
-
+<script>
+    document.getElementById('issue_copie').addEventListener('input', function() {
+        const issueCopies = document.getElementById('issue_copie').value;
+        document.getElementById('issued_copie').value = issueCopies;
+    });
+</script>
 
 
 <div class="modal fade" id="child-modal">
