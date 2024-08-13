@@ -189,7 +189,7 @@ class TMSController extends Controller
             $currentPage = LengthAwarePaginator::resolveCurrentPage();
 
 
-            $perPage = 2;
+            $perPage = 5;
             $currentResults = $train->slice(($currentPage - 1) * $perPage, $perPage)->all();
             $train = new LengthAwarePaginator($currentResults, $train->count(), $perPage, $currentPage, [
                 'path' => LengthAwarePaginator::resolveCurrentPath()

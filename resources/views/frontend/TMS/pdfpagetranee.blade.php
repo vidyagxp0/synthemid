@@ -463,7 +463,6 @@
 </head>
 
 <body>
-
     <header class="">
         <table class="border" style="height: 147px;">
             <tbody>
@@ -586,7 +585,7 @@
                         <td style="width: 30%; text-align: left;">{{ Helpers::getInitiatorName($training->trainner_id) }}</td>
                         <th style="width: 20%; text-align: left;">Status :-</th>
 
-                        <td style="width: 30%; text-align: left;">{{ $trainingstatus ? 'Pass' : 'Fail' }}</td>
+                         <td style="width: 30%; text-align: left;">{{ $training->status == 'Complete' ? $training->status : ($training->training_end_date < now() ? 'Past Due' : 'Pending') }}</td>
                     </tr>
                     <tr>
                         <th style="width: 20%; text-align: left;">Due Date:</th>
