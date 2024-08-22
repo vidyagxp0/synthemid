@@ -10,7 +10,6 @@ use App\Models\Division;
 use App\Models\Document;
 use App\Models\QMSDivision;
 use App\Models\PrintPdfHistory;
-use App\Models\PrintPdfHistory;
 
 use Helpers;
 use App\Models\DocumentContent;
