@@ -175,6 +175,19 @@ class RiskManagementController extends Controller
 
             $data->reference = json_encode($files);
         }
+        if (!empty($request->initial_attachment)) {
+            $files = [];
+            if ($request->hasfile('initial_attachment')) {
+                foreach ($request->file('initial_attachment') as $file) {
+                    $name = $request->name . 'initial_attachment' . rand(1, 100) . '.' . $file->getClientOriginalExtension();
+                    $file->move('upload/', $name);
+                    $files[] = $name;
+                }
+            }
+
+
+            $data->initial_attachment = json_encode($files);
+        }
         $data->status = 'Opened';
         $data->stage = 1;
         // return $data;
@@ -1297,6 +1310,19 @@ class RiskManagementController extends Controller
 
 
             $data->reference = json_encode($files);
+        }
+        if (!empty($request->initial_attachment)) {
+            $files = [];
+            if ($request->hasfile('initial_attachment')) {
+                foreach ($request->file('initial_attachment') as $file) {
+                    $name = $request->name . 'initial_attachment' . rand(1, 100) . '.' . $file->getClientOriginalExtension();
+                    $file->move('upload/', $name);
+                    $files[] = $name;
+                }
+            }
+
+
+            $data->initial_attachment = json_encode($files);
         }
         // return $data;
         $data->update();

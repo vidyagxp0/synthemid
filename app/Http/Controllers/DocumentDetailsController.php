@@ -70,7 +70,8 @@ class DocumentDetailsController extends Controller
           $stage->comment = $request->comment;
           $stage->save();
 
-          StageManage::where('document_id', $request->document_id)
+          if($document->stage == 3){
+            StageManage::where('document_id', $request->document_id)
               ->where('stage', 'Draft Review Complete')
               ->delete();
           StageManage::where('document_id', $request->document_id)
@@ -78,22 +79,99 @@ class DocumentDetailsController extends Controller
               ->delete();
               // For Backword 
 
-          $document->status = "Draft";
+            $document->status = "Pending Draft Creation";
             $document->stage = 2;
             $history = new DocumentHistory();
             $history->document_id = $request->document_id;
-            $history->activity_type = 'Send To Draft';
+            $history->activity_type = 'Send To Author';
             $history->previous = '';
             $history->current = '';
             $history->comment = $request->comment;
             $history->action_name = 'Submit';
-            $history->change_from = $request->status;
-            $history->change_to = 'Draft';
+            $history->change_from = 'HOD Review';
+            $history->change_to = 'Pending Draft Creation';
             $history->user_id = Auth::user()->id;
             $history->user_name = Auth::user()->name;
             $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
             $history->origin_state = 'In-HOD Review';
-            $history->save();            
+            $history->save();  
+          }
+          if($document->stage == 4){
+            StageManage::where('document_id', $request->document_id)
+              ->where('stage', 'HOD Review Complete')
+              ->delete();
+            StageManage::where('document_id', $request->document_id)
+                ->where('stage', 'HOD Review Submit')
+                ->delete();
+
+            $document->status = "HOD Review";
+            $document->stage = 3;
+            $history = new DocumentHistory();
+            $history->document_id = $request->document_id;
+            $history->activity_type = 'Send To HOD Review';
+            $history->previous = '';
+            $history->current = '';
+            $history->comment = $request->comment;
+            $history->action_name = 'Submit';
+            $history->change_from = 'QA Review';
+            $history->change_to = 'HOD Review';
+            $history->user_id = Auth::user()->id;
+            $history->user_name = Auth::user()->name;
+            $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
+            $history->origin_state = 'In-HOD Review';
+            $history->save();  
+          }
+          if($document->stage == 5){
+            StageManage::where('document_id', $request->document_id)
+              ->where('stage', 'QA Review Complete')
+              ->delete();
+            StageManage::where('document_id', $request->document_id)
+                ->where('stage', 'QA Review Submit')
+                ->delete();
+
+            $document->status = "QA Review";
+            $document->stage = 4;
+            $history = new DocumentHistory();
+            $history->document_id = $request->document_id;
+            $history->activity_type = 'Send To QA Review';
+            $history->previous = '';
+            $history->current = '';
+            $history->comment = $request->comment;
+            $history->action_name = 'Submit';
+            $history->change_from = 'Reviewer Review';
+            $history->change_to = 'QA Review';
+            $history->user_id = Auth::user()->id;
+            $history->user_name = Auth::user()->name;
+            $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
+            $history->origin_state = 'In-QA Review';
+            $history->save();  
+          }
+          if($document->stage == 6){
+            StageManage::where('document_id', $request->document_id)
+              ->where('stage', 'HOD Review Complete')
+              ->delete();
+            StageManage::where('document_id', $request->document_id)
+                ->where('stage', 'HOD Review Submit')
+                ->delete();
+
+            $document->status = "Reviewer Review";
+            $document->stage = 5;
+            $history = new DocumentHistory();
+            $history->document_id = $request->document_id;
+            $history->activity_type = 'Send To Reviewer Review';
+            $history->previous = '';
+            $history->current = '';
+            $history->comment = $request->comment;
+            $history->action_name = 'Submit';
+            $history->change_from = 'Approver Pending';
+            $history->change_to = 'Reviewer Review';
+            $history->user_id = Auth::user()->id;
+            $history->user_name = Auth::user()->name;
+            $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
+            $history->origin_state = 'In-Reviewer Review';
+            $history->save();  
+          }
+                    
           
             try {
               Mail::send(

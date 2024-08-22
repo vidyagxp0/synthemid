@@ -887,6 +887,57 @@ class Helpers
 
         return $full_department_name;
     }
-
+    public static function getFullDepartmentTypeName($code)
+    {
+        $full_document_type_name = '';
+    
+        switch ($code) {
+            case 'SOP':
+                $full_document_type_name = "SOP’s (All types)";
+                break;
+            case 'BOM':
+                $full_document_type_name = "Bill of Material";
+                break;
+            case 'BMR':
+                $full_document_type_name = "Batch Manufacturing Record";
+                break;
+            case 'BPR':
+                $full_document_type_name = "Batch Packing Record";
+                break;
+            case 'SPEC':
+                $full_document_type_name = "Specification (All types)";
+                break;
+            case 'STP':
+                $full_document_type_name = "Standard Testing Procedure (All types)";
+                break;
+            case 'TDS':
+                $full_document_type_name = "Test Data Sheet";
+                break;
+            case 'GTP':
+                $full_document_type_name = "General Testing Procedure";
+                break;
+            case 'PROTO':
+                $full_document_type_name = "Protocols (All types)";
+                break;
+            case 'REPORT':
+                $full_document_type_name = "Reports (All types)";
+                break;
+            case 'SMF':
+                $full_document_type_name = "Site Master File";
+                break;
+            case 'VMP':
+                $full_document_type_name = "Validation Master Plan";
+                break;
+            case 'QM':
+                $full_document_type_name = "Quality Manual";
+                break;
+            default:
+                $full_document_type_name = "-";
+                break;
+        }
+    
+        return $full_document_type_name;
+    }
+    
 
 }
