@@ -15,8 +15,12 @@
                                 <div class="list-item">
                                     <div class="head">Site/Division/Process</div>
                                     <div>:</div>
-                                    <div>{{ $doc->division }}/{{ $doc->process }}</div>
+                                    <div>{{ Helpers::getDivisionName($doc->division_id) }}
+                                        /@if($doc->document_type_name){{ $doc->document_type_name }} @endif{{ $doc->year }}
+                                        000{{ $doc->id }}
+                                    </div>
                                 </div>
+
                                 <div class="list-item">
                                     <div class="head">Document Stage</div>
                                     <div>:</div>
@@ -107,7 +111,7 @@
                             <div class="list-item">
                                 <div class="head">Changed To</div>
                                 <div>:</div>
-                                <div>{{ $temp->current }}</div>
+                                <div>{{ $temp->change_to }}</div>
                             </div>
                             @endif
                             @endif

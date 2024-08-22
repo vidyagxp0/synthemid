@@ -234,7 +234,10 @@
                                     <td>N/A</td>
                                     <td>N/A</td>
                                 </tr>
-                                </tr>
+                                
+                                @php
+                                    // dd($audit);
+                                @endphp
                                 @foreach ($audit as $audits)
                                     <tr>
                                         <td class="viewdetails"><a
@@ -242,9 +245,14 @@
                                         </td>
                                         <td>{{ $audits->created_at }}</td>
                                         <td>{{ $audits->user_name }}</td>
-                                        {{-- <td>{{ $audits->user_role }}</td> --}}
-                                        <td>{{ $audits->change_from ? $audits->change_from : $audits->origin_state }}</td>
-                                        <td>{{ $audits->change_to ? $audits->change_to : $document->status }}</td>
+                                        {{-- <td>{{ $audits->user_role }}</td> --}}                                        
+                                        
+                                        {{-- <td>{{ $audits->change_from ? $audits->change_from : $audits->origin_state }}</td> --}}
+                                        {{-- <td>{{ $audits->change_to ? $audits->change_to : $document->status }}</td> --}}
+                                        <td>{{ $audits->origin_state }}</td>
+
+                                        <td>{{ $document->status }}</td>
+
                                     </tr>
                                 @endforeach
                             </tbody>

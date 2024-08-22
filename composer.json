@@ -9,9 +9,12 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        
+         "mistralys/text-diff": "*",
         "barryvdh/laravel-dompdf": "1.0.0",
         "guzzlehttp/guzzle": "^7.2",
         "jackiedo/timezonelist": "^5.1",
+        "jfcherng/php-diff": "^6.16",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
@@ -32,11 +35,18 @@
         "phpunit/phpunit": "^9.5.10",
         "spatie/laravel-ignition": "^1.0"
     },
+    "repositories": [
+        {
+            "type": "path",
+             "url": "vendor/mistralys/text-diff"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Seeders\\": "database/seeders/",
+              "Mistralys\\TextDiff\\": "vendor/mistralys/text-diff/src/"
         },
         "files": [
             "app/Helpers.php"

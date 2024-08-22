@@ -94,6 +94,7 @@ class DocumentController extends Controller
         $new->revised = $request->revised;
         $new->revised_doc = $request->revised_doc;
         $new->document_name = $request->document_name;
+        $new->annexures = serialize($request->annexures);//an1
         $new->short_description = $request->short_description;
         $new->due_dateDoc = $request->due_dateDoc;
         $new->sop_type = $request->sop_type;
@@ -491,6 +492,8 @@ class DocumentController extends Controller
             $document->originator_id = Auth::id();
             $document->legacy_number = $request->legacy_number;
             $document->document_name = $request->document_name;
+            $document->annexures = serialize($request->annexures);//an1
+
             $document->short_description = $request->short_desc;
             $document->description = $request->description;
             $document->stage = 1;
@@ -599,6 +602,7 @@ class DocumentController extends Controller
             }
             $document->save();
 
+            //Annexures tab code
             foreach ($request->annexuredata as $index => $annData)
             {
                 $documentannexure = new DocumentAnnexure();
@@ -675,9 +679,9 @@ class DocumentController extends Controller
 
                 $content->hod_attachments = json_encode($files);
             }
-            // $annexure_data = $request->input('annexuredata');
-            // $document->doc_content->annexuredata = serialize($annexure_data);
-            // $document->doc_content->save();
+            //  $annexure_data = $request->input('annexuredata');
+            //  $document->doc_content->annexuredata = serialize($annexure_data);
+            //  $document->doc_content->save();
 
             // if (!empty($request->short_description)) {
             //     $content->short_description = serialize($request->short_description);
@@ -743,10 +747,7 @@ class DocumentController extends Controller
             toastr()->error('Not working');
 
             return redirect()->back();
-        }
-
-
-        
+        }        
     }
 
     /**
@@ -901,10 +902,17 @@ class DocumentController extends Controller
             $lastContent = DocumentContent::firstOrNew([
                 'document_id' => $id
             ]);
+            // $lastannexure= DocumentAnnexure::first([
+            //     'document_id' => $id
+            // ]);
+            $lastannexure = DocumentAnnexure::where('document_id', $id)->first();
+
             $lastTraining = DocumentTraining::where('document_id', $id)->first();
             $document = Document::find($id);
             if ($document->stage <= 7) {
                 $document->document_name = $request->document_name;
+            $document->annexures = serialize($request->annexures);//an1
+
                 $document->short_description = $request->short_desc;
                 $document->description = $request->description;
 
@@ -1160,10 +1168,35 @@ class DocumentController extends Controller
                     $trainning->update();
                 }
             }
-            if ($lastDocument->document_name != $document->document_name || !empty($request->document_name_comment)) {
+            // dd($lastDocument->annexures);
+            if ($lastDocument->annexures != $document->annexures || ! empty($request->document_annexure_comment)) {
+                $history = new DocumentHistory;
+                $history->document_id = $id;
+                $history->activity_type = 'Annexures';
+                $history->change_from =$lastDocument->annexures;
+                $history->change_to = serialize($document->annexures);
+
+                $history->previous = $lastDocument->annexures;
+                $history->current = $document->annexures;
+                $history->comment = $request->document_annexure_comment;
+                $history->user_id = Auth::user()->id;
+                $history->user_name = Auth::user()->name;
+                $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
+                $history->origin_state = $lastDocument->status;
+                $history->save();
+                $changeControl = OpenStage::where('title', $lastDocument->annexures)->first();
+                if($changeControl){
+                    $changeControl->title = $document->annexures;
+                    $changeControl->update();
+                }
+            }
+            if ($lastDocument->document_name != $document->document_name || ! empty($request->document_name_comment)) {
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Document Name';
+                $history->change_from = $lastDocument->document_name;
+                $history->change_to = $document->document_name;
+
                 $history->previous = $lastDocument->document_name;
                 $history->current = $document->document_name;
                 $history->comment = implode($request->document_name_comment);
@@ -1178,10 +1211,14 @@ class DocumentController extends Controller
                     $changeControl->update();
                 }
             }
-            if ($lastDocument->short_description != $document->short_description || !empty($request->short_desc_comment)) {
+            // dd($lastDocument->short_description);
+            if ($lastDocument->short_description != $document->short_description || ! empty($request->short_desc_comment)) {
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Short Description';
+                $history->change_from = $lastDocument->short_description;
+                $history->change_to = $document->short_description;
+
                 $history->previous = $lastDocument->short_description;
                 $history->current = $document->short_description;
                 $history->comment = implode($request->short_desc_comment);
@@ -1195,6 +1232,9 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Due Date';
+                
+                $history->change_from = $lastDocument->due_dateDoc;
+                $history->change_to = $document->due_dateDoc;
                 $history->previous = $lastDocument->due_dateDoc;
                 $history->current = $document->due_dateDoc;
                 $history->comment = implode($request->due_dateDoc_comment);
@@ -1208,6 +1248,9 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'SOP Type';
+                
+                $history->change_from = $lastDocument->sop_type;
+                $history->change_to = $document->sop_type;
                 $history->previous = $lastDocument->sop_type;
                 $history->current = $document->sop_type;
                 $history->comment = $request->sop_type_comment;
@@ -1221,6 +1264,9 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Reference Record';
+                
+                $history->change_from = $lastDocument->reference_record;
+                $history->change_to = $document->reference_record;
                 $history->previous = $lastDocument->reference_record;
                 $history->current = $document->reference_record;
                 $history->comment = $request->reference_record_comment;
@@ -1234,6 +1280,9 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Notify To';
+                
+                $history->change_from = $lastDocument->notify_to;
+                $history->change_to = $document->notify_to;
                 $history->previous = $lastDocument->notify_to;
                 $history->current = $document->notify_to;
                 $history->comment = $request->notify_to_comment;
@@ -1247,6 +1296,9 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Description';
+                
+                $history->change_from = $lastDocument->description;
+                $history->change_to = $document->description;
                 $history->previous = $lastDocument->description;
                 $history->current = $document->description;
                 $history->comment = $request->description_comment;
@@ -1257,33 +1309,36 @@ class DocumentController extends Controller
                 $history->save();
             }
 
-
-            if ($lastDocument->department_id != $document->department_id || !empty($request->department_id_comment)) {
-                $history = new DocumentHistory;
-                $history->document_id = $id;
-                $history->activity_type = 'Department';
-                $history->previous = Department::where('id', $lastDocument->department_id)->value('name');
-                $history->current = Department::where('id', $document->department_id)->value('name');
-                $history->comment = $request->department_id_comment;
-                $history->user_id = Auth::user()->id;
-                $history->user_name = Auth::user()->name;
-                $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
-                $history->origin_state = $lastDocument->status;
-                $history->save();
-            }
-            if ($lastDocument->document_type_id != $document->document_type_id || !empty($request->document_type_id_comment)) {
-                $history = new DocumentHistory;
-                $history->document_id = $id;
-                $history->activity_type = 'Document';
-                $history->previous = DocumentType::where('id', $lastDocument->document_type_id)->value('name');
-                $history->current = DocumentType::where('id', $document->document_type_id)->value('name');
-                $history->comment = implode($request->document_type_id_comment);
-                $history->user_id = Auth::user()->id;
-                $history->user_name = Auth::user()->name;
-                $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
-                $history->origin_state = $lastDocument->status;
-                $history->save();
-            }
+           
+             if ($lastDocument->department_id != $document->department_id || ! empty($request->department_id_comment)) {
+                 $history = new DocumentHistory;
+                 $history->document_id = $id;
+                 $history->activity_type = 'Department';
+                 
+                 $history->change_from = Department::where('id', $lastDocument->department_id)->value('name');
+                 $history->change_to = Department::where('id', $document->department_id)->value('name');
+                 $history->previous = Department::where('id', $lastDocument->department_id)->value('name');
+                 $history->current = Department::where('id', $document->department_id)->value('name');
+                 $history->comment = $request->department_id_comment;
+                 $history->user_id = Auth::user()->id;
+                 $history->user_name = Auth::user()->name;
+                 $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
+                 $history->origin_state = $lastDocument->status;
+                 $history->save();
+             }
+            // if ($lastDocument->document_type_id != $document->document_type_id || ! empty($request->document_type_id_comment)) {
+            //     $history = new DocumentHistory;
+            //     $history->document_id = $id;
+            //     $history->activity_type = 'Document';
+            //     $history->previous = DocumentType::where('id', $lastDocument->document_type_id)->value('name');
+            //     $history->current = DocumentType::where('id', $document->document_type_id)->value('name');
+            //     $history->comment = $request->document_type_id_comment;
+            //     $history->user_id = Auth::user()->id;
+            //     $history->user_name = Auth::user()->name;
+            //     $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
+            //     $history->origin_state = $lastDocument->status;
+            //     $history->save();
+            // }
             // if ($lastDocument->document_subtype_id != $document->document_subtype_id || ! empty($request->document_type_id_comment)) {
             //     $history = new DocumentHistory;
             //     $history->document_id = $id;
@@ -1314,6 +1369,9 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Effective Date';
+                
+                $history->change_from = $lastDocument->effective_date;
+                $history->change_to = $document->effective_date;
                 $history->previous = $lastDocument->effective_date;
                 $history->current = $document->effective_date;
                 $history->comment = implode($request->effective_date_comment);
@@ -1327,6 +1385,9 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Next-Review Date';
+                
+                $history->change_from = $lastDocument->next_review_date;
+                $history->change_to = $document->next_review_date;
                 $history->previous = $lastDocument->next_review_date;
                 $history->current = $document->next_review_date;
                 $history->comment = implode($request->next_review_date_comment);
@@ -1340,6 +1401,9 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Review Period';
+                
+                $history->change_from = $lastDocument->review_period;
+                $history->change_to = $document->review_period;
                 $history->previous = $lastDocument->review_period;
                 $history->current = $document->review_period;
                 $history->comment = implode($request->review_period_comment);
@@ -1353,6 +1417,9 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Revision Type';
+                
+                $history->change_from = $lastDocument->revision_type;
+                $history->change_to = $document->revision_type;
                 $history->previous = $lastDocument->revision_type;
                 $history->current = $document->revision_type;
                 $history->comment = $request->revision_type_comment;
@@ -1366,6 +1433,9 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Major';
+                
+                $history->change_from = $lastDocument->major;
+                $history->change_to = $document->major;
                 $history->previous = $lastDocument->major;
                 $history->current = $document->major;
                 $history->comment = $request->major_comment;
@@ -1379,6 +1449,9 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Minor';
+                
+                $history->change_from = $lastDocument->minor;
+                $history->change_to = $document->minor;
                 $history->previous = $lastDocument->minor;
                 $history->current = $document->minor;
                 $history->comment = $request->minor_comment;
@@ -1392,6 +1465,9 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Draft Document';
+                
+                $history->change_from = $lastDocument->attach_draft_doocument;
+                $history->change_to = $document->attach_draft_doocument;
                 $history->previous = $lastDocument->attach_draft_doocument;
                 $history->current = $document->attach_draft_doocument;
                 $history->comment = implode($request->attach_draft_doocument_comment);
@@ -1462,6 +1538,8 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Effective Document';
+                $history->change_from = $lastDocument->attach_effective_docuement;
+                $history->change_to = $document->attach_effective_docuement;
                 $history->previous = $lastDocument->attach_effective_docuement;
                 $history->current = $document->attach_effective_docuement;
                 $history->comment = implode($request->attach_effective_docuement_comment);
@@ -1517,7 +1595,9 @@ class DocumentController extends Controller
                     $dataRenew = User::where('id', $temped[$i])->value('name');
                     array_push($revewnew, $dataRenew);
                 }
-
+                
+                $history->change_from = implode(',', $revew);
+                $history->change_to = implode(',', $revewnew);
                 $history->previous = implode(',', $revew);
                 $history->current = implode(',', $revewnew);
                 $history->comment = implode($request->reviewers_comment);
@@ -1544,7 +1624,9 @@ class DocumentController extends Controller
                     $dataRenew = User::where('id', $temped[$i])->value('name');
                     array_push($revewnew, $dataRenew);
                 }
-
+                
+                $history->change_from = implode(',', $revew);
+                $history->change_to = implode(',', $revewnew);
                 $history->previous = implode(',', $revew);
                 $history->current = implode(',', $revewnew);
                 $history->comment = implode($request->approvers_comment);
@@ -1572,6 +1654,8 @@ class DocumentController extends Controller
                     array_push($revewnew, $dataRenew);
                 }
 
+                $history->change_from = implode(',', $revew);
+                $history->change_to = implode(',', $revewnew);
                 $history->previous = implode(',', $revew);
                 $history->current = implode(',', $revewnew);
                 $history->comment = $request->reviewers_group_comment;
@@ -1601,6 +1685,8 @@ class DocumentController extends Controller
 
                 $history->previous = implode(',', $revew);
                 $history->current = implode(',', $revewnew);
+                $history->change_from = implode(',', $revew);
+                $history->change_to = implode(',', $revewnew);
                 $history->comment = $request->approver_group_comment;
                 $history->user_id = Auth::user()->id;
                 $history->user_name = Auth::user()->name;
@@ -1613,6 +1699,9 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Revision Summery';
+                
+                $history->change_from = $lastDocument->revision_summary;
+                $history->change_to = $document->revision_summary;
                 $history->previous = $lastDocument->revision_summary;
                 $history->current = $document->revision_summary;
                 $history->comment = $request->revision_summary_comment;
@@ -1708,15 +1797,37 @@ class DocumentController extends Controller
 
             $documentcontet->save();
             $annexure_data = $request->input('annexuredata');
-                    $document->doc_content->annexuredata = serialize($annexure_data);
+            $document->doc_content->annexuredata = serialize($annexure_data);
+            // dd();
                     $document->doc_content->save();
 
                     // dd($document->doc_content);
 
-            if ($lastContent->purpose != $documentcontet->purpose || !empty($request->purpose_comment)) {
+                    if ($lastannexure->annexures !=  $document->doc_content->annexuredata || ! empty($request->annexure_comment)) {
+                        $history = new DocumentHistory;
+                        $history->document_id = $id;
+                        $history->activity_type = 'Annexures';
+                        
+                        $history->change_from = $lastannexure->annexures;
+                        $history->change_to = serialize( $request->annexures); 
+                        $history->previous = $lastannexure->annexures;
+                        $history->current = serialize( $request->annexures); 
+                        $history->comment = $request->annexure_comment;
+                        $history->user_id = Auth::user()->id;
+                        $history->user_name = Auth::user()->name;
+                        $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
+                        $history->origin_state = $lastDocument->status;
+                        $history->save();
+                    }            
+
+
+            if ($lastContent->purpose != $documentcontet->purpose || ! empty($request->purpose_comment)) {
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Purpose';
+                
+                $history->change_from = $lastContent->purpose;
+                $history->change_to = $documentcontet->purpose;
                 $history->previous = $lastContent->purpose;
                 $history->current = $documentcontet->purpose;
                 $history->comment = $request->purpose_comment;
@@ -1730,6 +1841,9 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Scope';
+                
+                $history->change_from = $lastContent->scope;
+                $history->change_to = $documentcontet->scope;
                 $history->previous = $lastContent->scope;
                 $history->current = $documentcontet->scope;
                 $history->comment = $request->scope_comment;
@@ -1743,6 +1857,9 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Responsibility';
+                
+                $history->change_from = $lastContent->responsibility;
+                $history->change_to = $documentcontet->responsibility;
                 $history->previous = $lastContent->responsibility;
                 $history->current = $documentcontet->responsibility;
                 $history->comment = $request->responsibility_comment;
@@ -1756,6 +1873,9 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Abbreviation';
+                
+                $history->change_from = $lastContent->abbreviation;
+                $history->change_to = $documentcontet->abbreviation;
                 $history->previous = $lastContent->abbreviation;
                 $history->current = $documentcontet->abbreviation;
                 $history->comment = $request->abbreviation_comment;
@@ -1769,6 +1889,9 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Defination';
+                
+                $history->change_from = $lastContent->defination;
+                $history->change_to = $documentcontet->defination;
                 $history->previous = $lastContent->defination;
                 $history->current = $documentcontet->defination;
                 $history->comment = $request->defination_comment;
@@ -1782,6 +1905,9 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Materials and Equipments';
+                
+                $history->change_from = $lastContent->materials_and_equipments;
+                $history->change_to = $documentcontet->materials_and_equipments;
                 $history->previous = $lastContent->materials_and_equipments;
                 $history->current = $documentcontet->materials_and_equipments;
                 $history->comment = $request->materials_and_equipments_comment;
@@ -1796,6 +1922,9 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Procedure';
+                
+                $history->change_from = $lastContent->procedure;
+                $history->change_to = $documentcontet->procedure;
                 $history->previous = $lastContent->procedure;
                 $history->current = $documentcontet->procedure;
                 $history->comment = $request->procedure_comment;
@@ -1810,6 +1939,9 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Reporting';
+                
+                $history->change_from = $lastContent->reporting;
+                $history->change_to = $documentcontet->reporting;
                 $history->previous = $lastContent->reporting;
                 $history->current = $documentcontet->reporting;
                 $history->comment = $request->reporting_comment;
@@ -1823,6 +1955,8 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'References';
+                $history->change_from = $lastContent->references;
+                $history->change_to = $documentcontet->references;
                 $history->previous = $lastContent->references;
                 $history->current = $documentcontet->references;
                 $history->comment = $request->references_comment;
@@ -1850,6 +1984,9 @@ class DocumentController extends Controller
                 $history = new DocumentHistory;
                 $history->document_id = $id;
                 $history->activity_type = 'Distribution';
+                
+                $history->change_from = $lastContent->distribution;
+                $history->change_to = $documentcontet->distribution;
                 $history->previous = $lastContent->distribution;
                 $history->current = $documentcontet->distribution;
                 $history->comment = $request->distribution_comment;
@@ -2476,6 +2613,8 @@ class DocumentController extends Controller
             $newdoc->revised = 'Yes';
             $newdoc->revised_doc = $document->id;
             $newdoc->document_name = $document->document_name;
+            $newdoc->annexures = $document->annexures;//an1
+
             $newdoc->major = $request->major;
             $newdoc->minor = $request->minor;
             $newdoc->sop_type = $request->sop_type;
@@ -2536,6 +2675,11 @@ class DocumentController extends Controller
                     $trainning->save();
                 }
             }
+            // $documentannexure = DocumentAnnexure::where('id', $id)->first();
+            // $documentannexure = new DocumentAnnexure();
+
+
+
 
             $annexure = Annexure::where('document_id', $id)->first();
             $new_annexure = new Annexure();

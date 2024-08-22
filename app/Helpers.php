@@ -1,5 +1,7 @@
 <?php
 // namespace App;
+// namespace Jfcherng\Diff;
+
 use App\Models\ActionItem;
 use App\Models\Division;
 use App\Models\QMSDivision;
@@ -9,6 +11,17 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
+
+use Mistralys\Diff\Diff;
+
+use Jfcherng\Diff\Differ;
+use Jfcherng\Diff\DiffHelper;
+use Jfcherng\Diff\Factory\RendererFactory;
+use Jfcherng\Diff\Renderer\RendererConstant;
+
+
+
+
 
 class Helpers
 {
@@ -939,5 +952,79 @@ class Helpers
         return $full_document_type_name;
     }
     
+
+    public static function compareValues($val1, $val2)
+    {
+        $html = '-';
+
+        try {
+
+            $val1 = $val1 ? strip_tags($val1) : 'NULL';
+            $val2 = $val2 ? strip_tags($val2) : 'NULL';
+            
+            $diff = Diff::compareStrings($val1, $val2);
+            
+            
+            // $diff->setCompareCharacters(true);
+
+            $html = $diff->toHTML();
+
+            $html = str_replace('<span> </span>', '&nbsp;', $html);
+            $html = str_replace('<ins> </ins>', '&nbsp;', $html);
+            $html = str_replace('<del> </del>', '&nbsp;', $html);
+
+        } catch (\Exception $e) {
+
+        }
+
+        return $html;
+    }
+    
+    public static function compareValues2($old, $new)
+    {
+        $html = '-';
+
+        try {
+
+            $old = $old ? $old : '';
+            $new = $new ? $new : '';
+
+            $rendererName = 'SideBySide';
+
+            $differOptions = [
+                'context' => 3,
+                'ignoreCase' => false,
+                'ignoreLineEnding' => false,
+                'ignoreWhitespace' => false,
+                'lengthLimit' => 2000,
+                'fullContextIfIdentical' => false,
+            ];
+
+            $rendererOptions = [
+                'detailLevel' => 'word',
+                'language' => 'eng',
+                'lineNumbers' => false,
+                'separateBlock' => true,
+                'showHeader' => true,
+                'spacesToNbsp' => false,
+                'tabSize' => 4,
+                'mergeThreshold' => 0.8,
+                'cliColorization' => RendererConstant::CLI_COLOR_AUTO,
+                'outputTagAsString' => false,
+                'jsonEncodeFlags' => \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE,
+                'wordGlues' => [' ', '-'],
+                'resultForIdenticals' => null,
+                'wrapperClasses' => ['diff-wrapper'],
+            ];
+
+            $html = DiffHelper::calculate($old, $new, $rendererName, $differOptions, $rendererOptions);
+
+        } catch (\Exception $e) {
+
+        }
+
+        return $html;
+    }
+
 
 }

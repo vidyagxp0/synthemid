@@ -2551,23 +2551,24 @@
                         </div>
                         </div>
 
-                        {{-- HOD REMARKS TAB START --}}
-                        <div id="hod-remarks-tab" class="tabcontent">
+                {{-- HOD REMARKS TAB START --}}
+                <div id="hod-remarks-tab" class="tabcontent">
 
-                            <div class="input-fields">
-                                <div class="group-input">
-                                    <label for="hod-remark">HOD Comments</label>
-                                    <textarea class="summernote {{ !Helpers::checkRoles(4) ? 'summernote-disabled' : '' }}" name="hod_comments">{{ $document->document_content ? $document->document_content->hod_comments : '' }}</textarea>
-                                </div>
-                            </div>
+                    <div class="input-fields">
+                        <div class="group-input">
+                            <label for="hod-remark">HOD Comments</label>
+                            <textarea class="summernote {{ !Helpers::checkRoles(4) ? 'summernote-disabled' : '' }}" name="hod_comments">{{ $document->document_content ? $document->document_content->hod_comments : '' }}</textarea>
+                        </div>
+                    </div>
 
-                            <div class="input-fields">
-                                <label for="tran-attach">HOD Attachments</label>
-                                <div class="file-attachment-field">
-                                    <div class="file-attachment-list" id="hod_attachments">
-                                        @if ($document->document_content && $document->document_content->hod_attachments)
-                                        @foreach (json_decode($document->document_content->hod_attachments) as $file)
-                                        <h6 type="button" class="file-container text-dark" style="background-color: rgb(243, 242, 240);">
+                    <div class="input-fields">
+                        <label for="tran-attach">HOD Attachments</label>
+                        <div class="file-attachment-field">
+                            <div class="file-attachment-list" id="hod_attachments">
+                                @if ($document->document_content && $document->document_content->hod_attachments)
+                                    @foreach (json_decode($document->document_content->hod_attachments) as $file)
+                                        <h6 type="button" class="file-container text-dark"
+                                            style="background-color: rgb(243, 242, 240);">
                                             <input type="hidden" name="existing_hod_attachments[{{ $file }}]">
                                             <b>{{ $file }}</b>
                                             <a href="{{ asset('upload/' . $file) }}" target="_blank"><i class="fa fa-eye text-primary" style="font-size:20px; margin-right:-10px;"></i></a>
@@ -2591,8 +2592,9 @@
                                 </button>
                             </div>
 
-                        </div>
-                        {{-- HOD REMARKS TAB END --}}
+                </div>
+                {{-- HOD REMARKS TAB END --}}
+
 
                 <div id="annexures" class="tabcontent">
                     <form action="{{ route('documents.update', $document->id) }}" method="POST">
@@ -3337,67 +3339,12 @@
                                 </div>
                                 </div>
 
-                                <div class="modal fade" id="annexure-modal">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <!-- Modal Header -->
-                                            <div class="modal-header">
-                                                <h4 class="modal-title">Annexure Print</h4>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                            </div>
-                                            <form action="{{ route('document.print.pdf', $document->id) }}" method="GET" target="_blank">
-                                                @csrf
-                                                <!-- Modal body -->
-                                                <div class="modal-body">
-                                                    @for ($i = 1; $i <= 20; $i++) <a href='{{ route('document.print.annexure', ['document' => $document->id, 'annexure' => $i]) }}' target="_blank">Print Annexure A-{{ $i }}</a> <br>
-                                                        @endfor
-                                                </div>
-
-                                                <!-- Modal footer -->
-                                                <div class="modal-footer">
-                                                    <button type="submit" class="btn btn-primary rounded">Submit</button>
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-<!-- Modal for Obsolete Annexures -->
-<div class="modal fade" id="annexure-modal-obsolete">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title">Obsolete</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form action="{{ route('document.print.pdf', $document->id) }}" method="GET" target="_blank">
-                @csrf
-                <!-- Modal body -->
-                <div class="modal-body">
-                    @for ($i = 1; $i <= 20; $i++)
-                        <a href='{{ route('document.set.readonly', ['document' => $document->id, 'annexure' => $i]) }}' target="_blank">Obsolete Annexure A-{{ $i }}</a> <br>
-                    @endfor
-                </div>
-
-                <!-- Modal footer -->
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary rounded">Submit</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-    
-    <div class="modal fade" id="annexure-modal-revise">
+    <div class="modal fade" id="annexure-modal">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">Revise</h4>
+                    <h4 class="modal-title">Annexure Print</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form action="{{ route('document.print.pdf', $document->id) }}" method="GET" target="_blank">
@@ -3405,7 +3352,7 @@
                     <!-- Modal body -->
                     <div class="modal-body">
                         @for ($i = 1; $i <= 20; $i++)
-                            <a href='{{ route('document.revise.annexure', ['document' => $document->id, 'annexure' => $i]) }}' target="_blank">Revise Annexure A-{{ $i }}</a> <br>
+                            <a href='{{ route('document.print.annexure', ['document' => $document->id, 'annexure' => $i]) }}' target="_blank">Print Annexure A-{{ $i }}</a> <br>
                         @endfor
                     </div>
     
@@ -3418,9 +3365,6 @@
             </div>
         </div>
     </div>
-    
-    
-    
 
 
 <!-- Modal for Obsolete Annexures -->

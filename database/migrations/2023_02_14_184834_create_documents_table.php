@@ -24,6 +24,8 @@ return new class extends Migration
             $table->longtext('document_name');
             $table->longtext('short_description')->nullable();
             $table->longtext('annexuredata')->nullable();
+            $table->longtext('annexures')->nullable();
+
             $table->string('due_dateDoc')->nullable();
             $table->longtext('description')->nullable();
             $table->longtext('notify_to')->nullable();

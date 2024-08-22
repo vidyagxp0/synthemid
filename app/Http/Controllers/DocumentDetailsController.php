@@ -19,6 +19,10 @@ use App\Models\Stage;
 use App\Models\DocumentHistory;
 use App\Models\Grouppermission;
 use App\Models\DocumentType;
+
+use App\Models\DocumentAnnexure;
+
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -226,7 +230,7 @@ class DocumentDetailsController extends Controller
             $history = new DocumentHistory();
             $history->document_id = $request->document_id;
             $history->activity_type = 'Send to Author ';
-            $history->previous = '';
+            $history->previous = 'Initiate';
             $history->current = '';
             $history->comment = $request->comment;
             $history->action_name = 'Submit';
@@ -247,7 +251,7 @@ class DocumentDetailsController extends Controller
             $history = new DocumentHistory();
             $history->document_id = $request->document_id;
             $history->activity_type = 'Obsolete';
-            $history->previous = '';
+            $history->previous = 'Effective';
             $history->current = '';
             $history->comment = $request->comment;
             $history->action_name = 'Submit';
@@ -285,8 +289,8 @@ class DocumentDetailsController extends Controller
 
             $history = new DocumentHistory();
             $history->document_id = $request->document_id;
-            $history->activity_type = 'Send for HOD Review';
-            $history->previous = '';
+            $history->activity_type = 'Draft Complete';
+            $history->previous = 'Pending Draft Creation';
             $history->current = '';
             $history->comment = $request->comment;
             $history->action_name = 'Submit';
@@ -311,7 +315,7 @@ class DocumentDetailsController extends Controller
             $history = new DocumentHistory();
             $history->document_id = $request->document_id;
             $history->activity_type = 'HOD Review Submit';
-            $history->previous = '';
+            $history->previous = 'HOD/CFT Review';
             $history->current = '';
             $history->comment = $request->comment;
             $history->action_name = 'Submit';
@@ -336,7 +340,7 @@ class DocumentDetailsController extends Controller
             $history = new DocumentHistory();
             $history->document_id = $request->document_id;
             $history->activity_type = 'QA Review Complete';
-            $history->previous = '';
+            $history->previous = 'HOD/CFT Review';
             $history->current = '';
             $history->comment = $request->comment;
             $history->action_name = 'Submit';
@@ -345,7 +349,7 @@ class DocumentDetailsController extends Controller
             $history->user_id = Auth::user()->id;
             $history->user_name = Auth::user()->name;
             $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
-            $history->origin_state = 'Draft';
+            $history->origin_state = 'In-QA Review';
             $history->save();
           }
 
@@ -361,7 +365,7 @@ class DocumentDetailsController extends Controller
             $history = new DocumentHistory();
             $history->document_id = $request->document_id;
             $history->activity_type = 'Review Submit';
-            $history->previous = '';
+            $history->previous = 'In Review';
             $history->current = '';
             $history->comment = $request->comment;
             $history->action_name = 'Submit';
@@ -386,7 +390,7 @@ class DocumentDetailsController extends Controller
             $history = new DocumentHistory();
             $history->document_id = $request->document_id;
             $history->activity_type = 'Approval Submit';
-            $history->previous = '';
+            $history->previous = 'Approval-Pending';
             $history->current = '';
             $history->comment = $request->comment;
             $history->action_name = 'Submit';
@@ -425,7 +429,7 @@ class DocumentDetailsController extends Controller
             $history = new DocumentHistory();
             $history->document_id = $request->document_id;
             $history->activity_type = 'Cancel-by-Drafter';
-            $history->previous = '';
+            $history->previous = 'Draft';
             $history->current = '';
             $history->comment = $request->comment;
             $history->action_name = 'Submit';
@@ -586,11 +590,11 @@ class DocumentDetailsController extends Controller
             $history = new DocumentHistory();
             $history->document_id = $request->document_id;
             $history->activity_type = 'Cancel-by-HOD';
-            $history->previous = '';
+            $history->previous = 'HOD Review';
             $history->current = '';
             $history->comment = $request->comment;
             $history->action_name = 'Submit';
-            $history->change_from = 'HOD/CFT Review';
+            $history->change_from = 'HOD Review';
             $history->change_to = 'Draft';
             $history->user_id = Auth::user()->id;
             $history->user_name = Auth::user()->name;
@@ -748,7 +752,7 @@ class DocumentDetailsController extends Controller
             $history = new DocumentHistory();
             $history->document_id = $request->document_id;
             $history->activity_type = 'Cancel-by-QA';
-            $history->previous = '';
+            $history->previous = 'QA Review';
             $history->current = '';
             $history->comment = $request->comment;
             $history->action_name = 'Submit';
@@ -912,7 +916,7 @@ class DocumentDetailsController extends Controller
               $history = new DocumentHistory();
               $history->document_id = $request->document_id;
               $history->activity_type = 'Cancel-by-Reviewer';
-              $history->previous = '';
+              $history->previous = 'Reviewer Review';
               $history->current = '';
               $history->comment = $request->comment;
               $history->action_name = 'Submit';
@@ -1064,7 +1068,7 @@ class DocumentDetailsController extends Controller
               $history = new DocumentHistory();
               $history->document_id = $request->document_id;
               $history->activity_type = 'Cancel-by-Approver';
-              $history->previous = '';
+              $history->previous = 'Approver Pending';
               $history->current = '';
               $history->comment = $request->comment;
               $history->action_name = 'Submit';
@@ -1258,11 +1262,11 @@ class DocumentDetailsController extends Controller
               $history = new DocumentHistory();
               $history->document_id = $request->document_id;
               $history->activity_type = 'Send for Effective';
-              $history->previous = '';
+              $history->previous = Stage::where('id', $document->stage_id)->value('name');
               $history->current = '';
               $history->comment = $request->comment;
               $history->action_name = 'Submit'; 
-              $history->change_from = Stage::where('id', $document->stage_id)->value('name');;
+              $history->change_from = Stage::where('id', $document->stage_id)->value('name');
               $history->change_to = 'Effective';
               $history->user_id = Auth::user()->id;
               $history->user_name = Auth::user()->name;
@@ -1277,7 +1281,7 @@ class DocumentDetailsController extends Controller
               $history = new DocumentHistory();
               $history->document_id = $request->document_id;
               $history->activity_type = 'Send for Effective';
-              $history->previous = '';
+              $history->previous = Stage::where('id', $document->stage_id)->value('name');
               $history->current = '';
               $history->comment = $request->comment;
               $history->action_name = 'Submit'; 
@@ -1313,13 +1317,15 @@ class DocumentDetailsController extends Controller
     $audit = DocumentHistory::where('document_id', $id)->orderByDESC('id')->get()->unique('activity_type');
     $today = Carbon::now()->format('d-m-y');
     $document = Document::where('id', $id)->first();
+    $docannexure = DocumentAnnexure::where('id', $id)->first();
+    
     $document->doctype = DocumentType::where('id', $document->document_type_id)->value('typecode');
     $document->division = Division::where('id', $document->division_id)->value('name');
     $document->process = Process::where('id', $document->process_id)->value('process_name');
     $document->originator = User::where('id', $document->originator_id)->value('name');
     $document['year'] = Carbon::parse($document->created_at)->format('Y');
     $document['document_type_name'] = DocumentType::where('id', $document->document_type_id)->value('name');
-    return view('frontend.documents.audit-trial', compact('audit', 'document', 'today'));
+    return view('frontend.documents.audit-trial', compact('audit', 'document', 'today','docannexure'));
   }
 
   function auditTrialIndividual($id, $user)
@@ -1397,6 +1403,8 @@ class DocumentDetailsController extends Controller
   {
     $detail = DocumentHistory::find($id);
     $detail_data = DocumentHistory::where('activity_type', $detail->activity_type)->where('document_id', $detail->document_id)->latest()->get();
+    // $document_annexure = DocumentAnnexure::where('content')->where('document_id', $detail->document_id)->latest()->get();
+
     $doc = Document::where('id', $detail->document_id)->first();
     $doc->division = Division::where('id', $doc->division_id)->value('name');
     $doc->process = Process::where('id', $doc->process_id)->value('process_name');
