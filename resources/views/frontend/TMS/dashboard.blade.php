@@ -55,6 +55,7 @@
             height: 20px;
             border-radius: 50%;
             display: inline-block;
+            margin-left: 35px;
         }
 
         .status-complete {
@@ -67,6 +68,35 @@
 
         .status-past-due {
             background-color: red;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination li {
+            margin: 0 5px;
+        }
+
+        .pagination li a,
+        .pagination li span {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .pagination li.active span {
+            background-color: #007bff;
+            color: white;
+            border: 1px solid #007bff;
+        }
+
+        .pagination li.disabled span {
+            color: #ccc;
         }
     </style>
     <script>
@@ -87,7 +117,23 @@
         const saveButtons = document.querySelectorAll('.saveButton1');
         const form = document.getElementById('step-form');
     </script>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#status').on('change', function() {
+                var selectedStatus = $(this).val();
+                $('.training-row').each(function() {
+                    var rowStatus = $(this).data('status');
+                    if (selectedStatus === 'all' || selectedStatus === '' || rowStatus ===
+                        selectedStatus) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+        });
+    </script>
     {{-- ======================================
                     DASHBOARD
     ======================================= --}}
@@ -473,11 +519,11 @@
                                 <label for="status" style="margin-right: 10px;"><b>Status:</b></label>
                                 <select name="status" id="status"
                                     style="padding: 5px; border-radius: 4px; border: 1px solid #ccc;">
-                                    <option value="">Select</option>
+                                    <option value="all">Select All</option>
                                     <option value="past_due_date">Past Due Date</option>
                                     <option value="pending">Pending</option>
                                     <option value="complete">Complete</option>
-                                    <option value="all">All</option>
+
                                 </select>
                             </div>
                             <div style="display: flex; align-items: center;">
@@ -495,6 +541,7 @@
                                     <th>Training Plan</th>
                                     <th>Type</th>
                                     <th>Status</th>
+                                    <th>Effective Criteria</th>
                                     <th>Due Date</th>
                                     <th>Completion Date</th>
 
@@ -503,7 +550,9 @@
                             <tbody class="tmstablelast">
 
                                 @foreach ($train as $index => $training)
-                                    <tr>
+                                    <tr class="training-row"
+                                        data-status="{{ $training->status == 'Complete' ? 'complete' : ($training->training_end_date < now() ? 'past_due_date' : 'pending') }}">
+
                                         <td>
 
                                             @php
@@ -511,13 +560,16 @@
                                                 $statusClass = '';
                                                 if ($training->status == 'Complete') {
                                                     $statusClass = 'status-complete';
-                                                } elseif ($training->status == 'Pending' && $training->training_end_date > now()) {
+                                                } elseif (
+                                                    $training->status == 'Pending' &&
+                                                    $training->training_end_date > now()
+                                                ) {
                                                     $statusClass = 'status-pending';
-                                                } else{
+                                                } else {
                                                     $statusClass = 'status-past-due';
                                                 }
                                             @endphp
-                                            <span class="status-circle {{ $statusClass }}"></span>
+                                            <span class="status-circle {{ $statusClass }}" style="justify-items: center" ></span>
                                         </td>
                                         @php
                                             // Deserialize the serialized IDs
@@ -561,10 +613,12 @@
 
                                         @endphp
                                         <td>{{ $fetchRecord }}</td>
-                                        <td>{{ '('. $traineeCount .')   '.  $fetchRecordUser }}</td>
-                                        <td>{{ 'TP-'.$training->id .'-  '. $training->traning_plan_name }}</td>
+                                        <td>{{ '(' . $traineeCount . ')   ' . $fetchRecordUser }}</td>
+                                        <td>{{ 'TP-' . $training->id . '-  ' . $training->traning_plan_name }}</td>
                                         <td>{{ $training->training_plan_type }}</td>
-                                        <td>{{ $training->status == 'Complete' ? $training->status : ($training->training_end_date < now() ? 'Past Due' : 'Pending') }}</td>  
+                                        <td>{{ $training->status == 'Complete' ? $training->status : ($training->training_end_date < now() ? 'Past Due' : 'Pending') }}
+                                        </td>
+                                        <td>{{ $training->effective_criteria . '%' }}</td>
                                         @php
 
                                             if ($training->status == 'Complete') {
@@ -574,7 +628,7 @@
                                                     ->first();
                                                 $completionDate = $latestDocument ? $latestDocument->updated_at : null;
                                             } else {
-                                                $completionDate = "	-";
+                                                $completionDate = '	-';
                                             }
                                         @endphp
                                         <td>{{ $training->training_end_date }}</td>
@@ -584,6 +638,7 @@
 
                             </tbody>
                         </table>
+                        {{ $train->links() }}
                     </div>
                 </div>
             </div>
@@ -762,7 +817,7 @@
                     </div>
                 </div>
 
-                <!-- Modal footer --> 
+                <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" data-bs-dismiss="modal">Cancel</button>
                     <button>Save</button>
@@ -771,6 +826,7 @@
             </div>
         </div>
     </div>
+
 
     <script>
         VirtualSelect.init({

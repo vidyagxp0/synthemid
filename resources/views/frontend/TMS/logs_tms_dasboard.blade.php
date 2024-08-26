@@ -18,6 +18,36 @@ $divisions = DB::table('q_m_s_divisions')->select('id', 'name')->get();
             min-height: 60px; 
             padding: 14px 5px; 
         }
+
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination li {
+            margin: 0 5px;
+        }
+
+        .pagination li a,
+        .pagination li span {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .pagination li.active span {
+            background-color: #007bff;
+            color: white;
+            border: 1px solid #007bff;
+        }
+
+        .pagination li.disabled span {
+            color: #ccc;
+        }
 </style>
 
     
@@ -56,19 +86,15 @@ $divisions = DB::table('q_m_s_divisions')->select('id', 'name')->get();
                         <select name="" id="search" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc; width: 200px;">
                             <option value="">Select All</option>
                             @php
-                               
-                                $uniqueTrainings = collect($processedTrainings)->unique('traning_plan_name');
+                                $uniqueTrainings = collect($paginatedResults->items())->unique('traning_plan_name');
                             @endphp
                             @foreach($uniqueTrainings as $training)
                                 <option value="{{ $training['traning_plan_name'] }}">{{ $training['traning_plan_name'] }}</option>
                             @endforeach
-            
                         </select>
                     </div>
                     <div style="display: flex; align-items: center;">
-                        <a class="text-white"
-                                href="{{ url('TMS') }}"><button type="button" class="exit" style="padding: 5px; border-radius: 4px;"> 
-                                Back  </button></a>
+                        <a class="text-white" href="{{ url('TMS') }}"><button type="button" class="exit" style="padding: 5px; border-radius: 4px;">Back</button></a>
                     </div>
                 </div><br>
                 <table class="table table-bordered" style="width: 100%; border-collapse: collapse;">
@@ -78,30 +104,38 @@ $divisions = DB::table('q_m_s_divisions')->select('id', 'name')->get();
                             <th>Trainee Name</th>
                             <th>Trainee Plan Id</th>
                             <th>Due Date</th>
-                            <th>Attendance </th>
+                            <th>Attend</th>
                             <th>Pass/Fail</th>
                             <th>Remark</th>
+                            <th>Report</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($processedTrainings as $index => $training)
-                        <tr class="training-row" data-trainee="{{ $training['traning_plan_name'] }}">
-                            <td>{{ $index + 1 }}</td>
-                                <td>{{ $training['traning_plan_name']}}</td>
-                                <td>TP-{{ $training['trainee'] }}</td>
+                        @foreach($paginatedResults as $index => $training)
+                            <tr class="training-row" data-trainee="{{ $training['traning_plan_name'] }}">
+                                <td>{{ $paginatedResults->firstItem() + $index }}</td>
+                                <td>{{ Helpers::getInitiatorName($training['trainee']) }}</td>
+                                <td>{{ 'TP-'.$training['id'] }}</td>
                                 <td>{{ $training['due_date'] }}</td>
-                            @php
-                                $trainingstatus = DB::table('training_statuses')->where(['user_id'=>$training['trainee'],'training_id'=>$training['id']])->latest()->first();
-                                // dd($trainingstatus);
-                            @endphp
-    
+                                @php
+                                    $trainingstatus = DB::table('training_statuses')->where(['user_id' => $training['trainee'], 'training_id' => $training['id']])->latest()->first();
+                                @endphp
                                 <td>{{ $trainingstatus ? 'Yes' : ($training['due_date'] < now() ? 'No' : 'Pending') }}</td>
-                                <td>{{ $trainingstatus ? 'Pass' : 'Fail'}}</td>
+                                <td>{{ $trainingstatus ? 'Pass' : 'Fail' }}</td>
                                 <td></td>
+                                <td>
+                                    {{-- <a href="{{  url('/traneeLogsreport/'.$training['id'],)  }}" target="_blank">
+                                        <i class="fa-solid fa-file-pdf"></i>
+                                    </a> --}}
+                                    <a href="{{ route('traneeLogsreport', ['training_id' => $training['id'], 'trainee_id' => $training['trainee']]) }}" target="_blank">
+                                        <i class="fa-solid fa-file-pdf"></i>
+                                    </a>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
+                {{ $paginatedResults->appends(request()->input())->links() }}
             </div>
         </div>
     </div>
