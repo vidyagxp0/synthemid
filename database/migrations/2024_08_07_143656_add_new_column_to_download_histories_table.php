@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::table('download_histories', function (Blueprint $table) {
-            $table->string('number_of_copies')->nullable();
-            $table->string('number_of_issued_copies')->nullable();
+            $table->string('issue_copies')->nullable();
+            $table->string('issued_copies')->nullable();
         });
     }
 

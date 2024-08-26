@@ -465,11 +465,11 @@ $total_copies_static = $total_copies;
 <body>
 
     <header class="">
-        <table class="border" style="height: 145px;">
+        <table class="border" style="height: 138px;">
             <tbody>
                 <tr>
                     <td class="logo w-25">
-                        <img src="https://vidyagxp.com/vidyaGxp_logo.png" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem; height:3rem;">
+                        <img src="https://vidyagxp.com/vidyaGxp_logo.png" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem; height:2.5rem;">
                     </td>
                     <td class="title w-60" style="height: 150px; padding: 0px;  margin: 0px; border-left: 1px solid rgb(104, 104, 104); border-right: 1px solid rgb(104, 104, 104);">
                         <p style="margin-top: -0.1rem; border-bottom: 1px solid rgb(104, 104, 104);">{{ config('site.pdf_title') }}</p>
@@ -479,7 +479,7 @@ $total_copies_static = $total_copies;
                         </p>
                     </td>
                     <td class="logo w-25">
-                        <img src="https://vidyagxp.com/vidyaGxp_logo.png" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem; height:3rem;">
+                        <img src="https://vidyagxp.com/vidyaGxp_logo.png" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem; height:2.5rem;">
                     </td>
                 </tr>
             </tbody>
