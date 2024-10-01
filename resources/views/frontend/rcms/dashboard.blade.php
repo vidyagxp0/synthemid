@@ -223,315 +223,312 @@
 
                                     @endphp
                                     @foreach (collect($tables->data)->sortByDesc('date_open') as $datas)
-                                        <tr>
-                                            <td>
-                                                @if ($datas->type == 'Change-Control')
-                                                    <a href="{{ route('CC.show', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    <a href="{{ url('rcms/qms-dashboard', $datas->id) }}/CC">
-                                                        <div class="icon" onclick="showChild()" data-bs-toggle="tooltip"
-                                                            title="Related Records">
-                                                            {{-- <img src="{{ asset('user/images/single.png') }}" alt="..."
-                                                                class="w-100 h-100"> --}}
-                                                        </div>
-                                                    </a>
-                                                    {{-- -----------------------by pankaj-------------------- --}}
-                                                @elseif ($datas->type == 'Internal-Audit')
-                                                    <a href="{{ route('showInternalAudit', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a
-                                                            href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/internal_audit">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                                {{-- <img src="{{ asset('user/images/parent.png') }}"
-                                                                    alt="..." class="w-100 h-100"> --}}
-                                                            </div>
-                                                        </a>
-                                                    @endif
-                                                                {{-- market complaint --}}
+                                        @php
+                                            $userRoles = DB::table('user_roles')
+                                                ->where(['user_id' => Auth::user()->id, 'q_m_s_divisions_id' => $datas->division_id])
+                                                ->pluck('q_m_s_roles_id')
+                                                ->toArray();
 
-                                                @elseif ($datas->type == 'Market Complaint')
-                                                    <a href="{{ route('marketcomplaint.marketcomplaint_view', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a
-                                                            href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/internal_audit">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                                {{-- <img src="{{ asset('user/images/parent.png') }}"
-                                                                    alt="..." class="w-100 h-100"> --}}
-                                                            </div>
-                                                        </a>
-                                                    @endif
-                                                @elseif ($datas->type == 'Risk-Assesment')
-                                                    <a href="{{ route('showRiskManagement', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a
-                                                            href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/risk_assesment">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                                {{-- <img src="{{ asset('user/images/parent.png') }}"
-                                                                    alt="..." class="w-100 h-100"> --}}
-                                                            </div>
-                                                        </a>
-                                                    @endif
-                                                @elseif ($datas->type == 'Lab-Incident')
-                                                    <a href="{{ route('ShowLabIncident', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a
-                                                            href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/lab_incident">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                                {{-- <img src="{{ asset('user/images/parent.png') }}"
-                                                                    alt="..." class="w-100 h-100"> --}}
-                                                            </div>
-                                                        </a>
-                                                    @endif
+                                            $stagesToHide = [
+                                                'Closed-Cancelled', 
+                                                'Closed - Cancelled', 
+                                                'Closed - Done', 
+                                                'Closed Done', 
+                                                'Closed-Reject', 
+                                                'Closed - Rejected', 
+                                                'Closed – Effective', 
+                                                'Closed – Not Effective'
+                                            ];
 
-                                                @elseif ($datas->type == 'Incident')
-                                                    <a href="{{ route('incident-show', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a
-                                                            href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/lab_incident">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                                {{-- <img src="{{ asset('user/images/parent.png') }}"
-                                                                    alt="..." class="w-100 h-100"> --}}
-                                                            </div>
-                                                        </a>
-                                                    @endif
+                                            // Check if the stage is in the stagesToHide array
+                                            $hideRecord = in_array($datas->stage, $stagesToHide);
 
-                                                @elseif ($datas->type == 'Out Of Calibration')
-                                                    <a href="{{ route('ShowOutofCalibration', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a
-                                                            href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/Out_Of_Calibration">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                                {{-- <img src="{{ asset('user/images/parent.png') }}"
-                                                                    alt="..." class="w-100 h-100"> --}}
-                                                            </div>
-                                                        </a>
-                                                    @endif
-                                                @elseif ($datas->type == 'External-Audit')
-                                                    <a href="{{ route('showExternalAudit', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a
-                                                            href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/external_audit">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                                {{-- <img src="{{ asset('user/images/parent.png') }}"
-                                                                    alt="..." class="w-100 h-100"> --}}
-                                                            </div>
-                                                        </a>
-                                                    @endif
-                                                @elseif ($datas->type == 'Audit-Program')
-                                                    <a href="{{ route('ShowAuditProgram', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a
-                                                            href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/audit_program">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                                {{-- <img src="{{ asset('user/images/parent.png') }}"
-                                                                    alt="..." class="w-100 h-100"> --}}
-                                                            </div>
-                                                        </a>
-                                                    @endif
-                                                @elseif ($datas->type == 'Observation')
-                                                    <a href="{{ route('showobservation', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a
-                                                            href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/observation">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                                {{-- <img src="{{ asset('user/images/parent.png') }}"
-                                                                    alt="..." class="w-100 h-100"> --}}
-                                                            </div>
-                                                        </a>
-                                                    @endif
-                                                @elseif($datas->type == 'Action-Item')
-                                                    <a href="{{ route('actionItem.show', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a
-                                                            href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/action_item">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                                {{-- <img src="{{ asset('user/images/parent.png') }}"
-                                                                    alt="..." class="w-100 h-100"> --}}
-                                                            </div>
-                                                        </a>
-                                                    @endif
-                                                @elseif($datas->type == 'Extension')
-                                                    <a href="{{ url('extension_newshow', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a
-                                                            href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/extension">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                            </div>
-                                                        </a>
-                                                    @endif
-                                                @elseif($datas->type == 'Effectiveness-Check')
-                                                    <a href="{{ route('effectiveness.show', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a
-                                                            href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/effectiveness_check">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                                {{-- <img src="{{ asset('user/images/parent.png') }}"
-                                                                    alt="..." class="w-100 h-100"> --}}
-                                                            </div>
-                                                        </a>
-                                                    @endif
-                                                @elseif($datas->type == 'Capa')
-                                                    <a href="{{ route('capashow', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/capa">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                                {{-- <img src="{{ asset('user/images/parent.png') }}"
-                                                                    alt="..." class="w-100 h-100"> --}}
-                                                            </div>
-                                                        </a>
-                                                    @endif
-                                                {{-- @elseif($datas->type == 'OOS Chemical')
-                                                    <a href="{{ route('oos.oos_view', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a
-                                                            href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/management_review">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                            </div>
-                                                        </a>
-                                                    @endif --}}
-                                                @elseif($datas->type == 'OOS Chemical')
-                                                    <a href="{{ route('oos.oos_view', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a
-                                                            href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/errata">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                                {{-- <img src="{{ asset('user/images/parent.png') }}"
-                                                                    alt="..." class="w-100 h-100"> --}}
-                                                            </div>
-                                                        </a>
-                                                    @endif
-                                                @elseif($datas->type == 'ERRATA')
-                                                    <a href="{{ route('errata.show', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a
-                                                            href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/errata">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                                {{-- <img src="{{ asset('user/images/parent.png') }}"
-                                                                    alt="..." class="w-100 h-100"> --}}
-                                                            </div>
-                                                        </a>
-                                                    @endif
-                                                @elseif($datas->type == 'OOS Microbiology')
-                                                    <a href="{{ route('oos_micro.edit', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/capa">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                                {{-- <img src="{{ asset('user/images/parent.png') }}"
-                                                                    alt="..." class="w-100 h-100"> --}}
-                                                            </div>
-                                                        </a>
-                                                    @endif
+                                            // Check if the user has one of the allowed roles
+                                            $userHasAllowedRole = in_array(1, $userRoles);
+                                        @endphp
 
-                                                @elseif($datas->type == 'ERRATA')
-                                                    <a href="{{ route('errata.show', $datas->id) }}">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}{{ $datas->id }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a
-                                                            href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/management_review">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                                {{-- <img src="{{ asset('user/images/parent.png') }}"
-                                                                    alt="..." class="w-100 h-100"> --}}
+                                        @if(!$hideRecord || $userHasAllowedRole)
+                                            <tr>
+                                                <td>
+                                                    @if ($datas->type == 'Change-Control')
+                                                        <a href="{{ route('CC.show', $datas->id) }}" style="color: blue">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
+                                                        </a>
+                                                        <a href="{{ url('rcms/qms-dashboard', $datas->id) }}/CC">
+                                                            <div class="icon" onclick="showChild()" data-bs-toggle="tooltip"
+                                                                title="Related Records">
+                                                                {{-- <img src="{{ asset('user/images/single.png') }}" alt="..."
+                                                                    class="w-100 h-100"> --}}
                                                             </div>
                                                         </a>
-                                                    @endif
-                                                @elseif($datas->type == 'Management-Review')
-                                                    <a href="{{ route('manageshow', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a
-                                                            href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/management_review">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                                {{-- <img src="{{ asset('user/images/parent.png') }}"
-                                                                    alt="..." class="w-100 h-100"> --}}
-                                                            </div>
+                                                        {{-- -----------------------by pankaj-------------------- --}}
+                                                    @elseif ($datas->type == 'Internal-Audit')
+                                                        <a href="{{ route('showInternalAudit', $datas->id) }}" style="color: blue">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
                                                         </a>
-                                                    @endif
-                                                @elseif($datas->type == 'Deviation')
-                                                    <a href="{{ route('devshow', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a
-                                                            href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/deviation">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                                {{-- <img src="{{ asset('user/images/parent.png') }}"
-                                                                    alt="..." class="w-100 h-100"> --}}
-                                                            </div>
+                                                        @if (!empty($datas->parent_id))
+                                                            <a
+                                                                href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/internal_audit">
+                                                                <div class="icon" onclick="showChild()"
+                                                                    data-bs-toggle="tooltip" title="Related Records">
+                                                                    {{-- <img src="{{ asset('user/images/parent.png') }}"
+                                                                        alt="..." class="w-100 h-100"> --}}
+                                                                </div>
+                                                            </a>
+                                                        @endif
+                                                                    {{-- market complaint --}}
+
+                                                    @elseif ($datas->type == 'Market Complaint')
+                                                        <a href="{{ route('marketcomplaint.marketcomplaint_view', $datas->id) }}" style="color: blue">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
                                                         </a>
-                                                    @endif
-                                                @elseif($datas->type == 'Deviation')
-                                                    <a href="{{ route('devshow', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a
-                                                            href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/deviation">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                                {{-- <img src="{{ asset('user/images/parent.png') }}"
-                                                                    alt="..." class="w-100 h-100"> --}}
-                                                            </div>
+                                                        @if (!empty($datas->parent_id))
+                                                            <a
+                                                                href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/internal_audit">
+                                                                <div class="icon" onclick="showChild()"
+                                                                    data-bs-toggle="tooltip" title="Related Records">
+                                                                    {{-- <img src="{{ asset('user/images/parent.png') }}"
+                                                                        alt="..." class="w-100 h-100"> --}}
+                                                                </div>
+                                                            </a>
+                                                        @endif
+                                                    @elseif ($datas->type == 'Risk-Assesment')
+                                                        <a href="{{ route('showRiskManagement', $datas->id) }}" style="color: blue">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
                                                         </a>
-                                                    @endif
-                                                @elseif($datas->type == 'Failure Investigation')
-                                                        <a href="{{ route('failure-investigation-show', $datas->id) }}" style="color: blue">
+                                                        @if (!empty($datas->parent_id))
+                                                            <a
+                                                                href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/risk_assesment">
+                                                                <div class="icon" onclick="showChild()"
+                                                                    data-bs-toggle="tooltip" title="Related Records">
+                                                                    {{-- <img src="{{ asset('user/images/parent.png') }}"
+                                                                        alt="..." class="w-100 h-100"> --}}
+                                                                </div>
+                                                            </a>
+                                                        @endif
+                                                    @elseif ($datas->type == 'Lab-Incident')
+                                                        <a href="{{ route('ShowLabIncident', $datas->id) }}" style="color: blue">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
+                                                        </a>
+                                                        @if (!empty($datas->parent_id))
+                                                            <a
+                                                                href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/lab_incident">
+                                                                <div class="icon" onclick="showChild()"
+                                                                    data-bs-toggle="tooltip" title="Related Records">
+                                                                    {{-- <img src="{{ asset('user/images/parent.png') }}"
+                                                                        alt="..." class="w-100 h-100"> --}}
+                                                                </div>
+                                                            </a>
+                                                        @endif
+
+                                                    @elseif ($datas->type == 'Incident')
+                                                        <a href="{{ route('incident-show', $datas->id) }}" style="color: blue">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
+                                                        </a>
+                                                        @if (!empty($datas->parent_id))
+                                                            <a
+                                                                href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/lab_incident">
+                                                                <div class="icon" onclick="showChild()"
+                                                                    data-bs-toggle="tooltip" title="Related Records">
+                                                                    {{-- <img src="{{ asset('user/images/parent.png') }}"
+                                                                        alt="..." class="w-100 h-100"> --}}
+                                                                </div>
+                                                            </a>
+                                                        @endif
+
+                                                    @elseif ($datas->type == 'Out Of Calibration')
+                                                        <a href="{{ route('ShowOutofCalibration', $datas->id) }}" style="color: blue">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
+                                                        </a>
+                                                        @if (!empty($datas->parent_id))
+                                                            <a
+                                                                href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/Out_Of_Calibration">
+                                                                <div class="icon" onclick="showChild()"
+                                                                    data-bs-toggle="tooltip" title="Related Records">
+                                                                    {{-- <img src="{{ asset('user/images/parent.png') }}"
+                                                                        alt="..." class="w-100 h-100"> --}}
+                                                                </div>
+                                                            </a>
+                                                        @endif
+                                                    @elseif ($datas->type == 'External-Audit')
+                                                        <a href="{{ route('showExternalAudit', $datas->id) }}" style="color: blue">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
+                                                        </a>
+                                                        @if (!empty($datas->parent_id))
+                                                            <a
+                                                                href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/external_audit">
+                                                                <div class="icon" onclick="showChild()"
+                                                                    data-bs-toggle="tooltip" title="Related Records">
+                                                                    {{-- <img src="{{ asset('user/images/parent.png') }}"
+                                                                        alt="..." class="w-100 h-100"> --}}
+                                                                </div>
+                                                            </a>
+                                                        @endif
+                                                    @elseif ($datas->type == 'Audit-Program')
+                                                        <a href="{{ route('ShowAuditProgram', $datas->id) }}" style="color: blue">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
+                                                        </a>
+                                                        @if (!empty($datas->parent_id))
+                                                            <a
+                                                                href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/audit_program">
+                                                                <div class="icon" onclick="showChild()"
+                                                                    data-bs-toggle="tooltip" title="Related Records">
+                                                                    {{-- <img src="{{ asset('user/images/parent.png') }}"
+                                                                        alt="..." class="w-100 h-100"> --}}
+                                                                </div>
+                                                            </a>
+                                                        @endif
+                                                    @elseif ($datas->type == 'Observation')
+                                                        <a href="{{ route('showobservation', $datas->id) }}" style="color: blue">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
+                                                        </a>
+                                                        @if (!empty($datas->parent_id))
+                                                            <a
+                                                                href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/observation">
+                                                                <div class="icon" onclick="showChild()"
+                                                                    data-bs-toggle="tooltip" title="Related Records">
+                                                                    {{-- <img src="{{ asset('user/images/parent.png') }}"
+                                                                        alt="..." class="w-100 h-100"> --}}
+                                                                </div>
+                                                            </a>
+                                                        @endif
+                                                    @elseif($datas->type == 'Action-Item')
+                                                        <a href="{{ route('actionItem.show', $datas->id) }}" style="color: blue">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
+                                                        </a>
+                                                        @if (!empty($datas->parent_id))
+                                                            <a
+                                                                href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/action_item">
+                                                                <div class="icon" onclick="showChild()"
+                                                                    data-bs-toggle="tooltip" title="Related Records">
+                                                                    {{-- <img src="{{ asset('user/images/parent.png') }}"
+                                                                        alt="..." class="w-100 h-100"> --}}
+                                                                </div>
+                                                            </a>
+                                                        @endif
+                                                    @elseif($datas->type == 'Extension')
+                                                        <a href="{{ url('extension_newshow', $datas->id) }}" style="color: blue">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
+                                                        </a>
+                                                        @if (!empty($datas->parent_id))
+                                                            <a
+                                                                href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/extension">
+                                                                <div class="icon" onclick="showChild()"
+                                                                    data-bs-toggle="tooltip" title="Related Records">
+                                                                </div>
+                                                            </a>
+                                                        @endif
+                                                    @elseif($datas->type == 'Effectiveness-Check')
+                                                        <a href="{{ route('effectiveness.show', $datas->id) }}" style="color: blue">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
+                                                        </a>
+                                                        @if (!empty($datas->parent_id))
+                                                            <a
+                                                                href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/effectiveness_check">
+                                                                <div class="icon" onclick="showChild()"
+                                                                    data-bs-toggle="tooltip" title="Related Records">
+                                                                    {{-- <img src="{{ asset('user/images/parent.png') }}"
+                                                                        alt="..." class="w-100 h-100"> --}}
+                                                                </div>
+                                                            </a>
+                                                        @endif
+                                                    @elseif($datas->type == 'Capa')
+                                                        <a href="{{ route('capashow', $datas->id) }}" style="color: blue">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
+                                                        </a>
+                                                        @if (!empty($datas->parent_id))
+                                                            <a href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/capa">
+                                                                <div class="icon" onclick="showChild()"
+                                                                    data-bs-toggle="tooltip" title="Related Records">
+                                                                    {{-- <img src="{{ asset('user/images/parent.png') }}"
+                                                                        alt="..." class="w-100 h-100"> --}}
+                                                                </div>
+                                                            </a>
+                                                        @endif
+                                                    {{-- @elseif($datas->type == 'OOS Chemical')
+                                                        <a href="{{ route('oos.oos_view', $datas->id) }}" style="color: blue">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
+                                                        </a>
+                                                        @if (!empty($datas->parent_id))
+                                                            <a
+                                                                href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/management_review">
+                                                                <div class="icon" onclick="showChild()"
+                                                                    data-bs-toggle="tooltip" title="Related Records">
+                                                                </div>
+                                                            </a>
+                                                        @endif --}}
+                                                    @elseif($datas->type == 'OOS Chemical')
+                                                        <a href="{{ route('oos.oos_view', $datas->id) }}" style="color: blue">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
+                                                        </a>
+                                                        @if (!empty($datas->parent_id))
+                                                            <a
+                                                                href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/errata">
+                                                                <div class="icon" onclick="showChild()"
+                                                                    data-bs-toggle="tooltip" title="Related Records">
+                                                                    {{-- <img src="{{ asset('user/images/parent.png') }}"
+                                                                        alt="..." class="w-100 h-100"> --}}
+                                                                </div>
+                                                            </a>
+                                                        @endif
+                                                    @elseif($datas->type == 'ERRATA')
+                                                        <a href="{{ route('errata.show', $datas->id) }}" style="color: blue">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
+                                                        </a>
+                                                        @if (!empty($datas->parent_id))
+                                                            <a
+                                                                href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/errata">
+                                                                <div class="icon" onclick="showChild()"
+                                                                    data-bs-toggle="tooltip" title="Related Records">
+                                                                    {{-- <img src="{{ asset('user/images/parent.png') }}"
+                                                                        alt="..." class="w-100 h-100"> --}}
+                                                                </div>
+                                                            </a>
+                                                        @endif
+                                                    @elseif($datas->type == 'OOS Microbiology')
+                                                        <a href="{{ route('oos_micro.edit', $datas->id) }}" style="color: blue">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
+                                                        </a>
+                                                        @if (!empty($datas->parent_id))
+                                                            <a href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/capa">
+                                                                <div class="icon" onclick="showChild()"
+                                                                    data-bs-toggle="tooltip" title="Related Records">
+                                                                    {{-- <img src="{{ asset('user/images/parent.png') }}"
+                                                                        alt="..." class="w-100 h-100"> --}}
+                                                                </div>
+                                                            </a>
+                                                        @endif
+
+                                                    @elseif($datas->type == 'ERRATA')
+                                                        <a href="{{ route('errata.show', $datas->id) }}">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}{{ $datas->id }}
+                                                        </a>
+                                                        @if (!empty($datas->parent_id))
+                                                            <a
+                                                                href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/management_review">
+                                                                <div class="icon" onclick="showChild()"
+                                                                    data-bs-toggle="tooltip" title="Related Records">
+                                                                    {{-- <img src="{{ asset('user/images/parent.png') }}"
+                                                                        alt="..." class="w-100 h-100"> --}}
+                                                                </div>
+                                                            </a>
+                                                        @endif
+                                                    @elseif($datas->type == 'Management-Review')
+                                                        <a href="{{ route('manageshow', $datas->id) }}" style="color: blue">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
+                                                        </a>
+                                                        @if (!empty($datas->parent_id))
+                                                            <a
+                                                                href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/management_review">
+                                                                <div class="icon" onclick="showChild()"
+                                                                    data-bs-toggle="tooltip" title="Related Records">
+                                                                    {{-- <img src="{{ asset('user/images/parent.png') }}"
+                                                                        alt="..." class="w-100 h-100"> --}}
+                                                                </div>
+                                                            </a>
+                                                        @endif
+                                                    @elseif($datas->type == 'Deviation')
+                                                        <a href="{{ route('devshow', $datas->id) }}" style="color: blue">
                                                             {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
                                                         </a>
                                                         @if (!empty($datas->parent_id))
@@ -544,8 +541,8 @@
                                                                 </div>
                                                             </a>
                                                         @endif
-                                                @elseif($datas->type == 'Non Conformance')
-                                                        <a href="{{ route('non-conformance-show', $datas->id) }}" style="color: blue">
+                                                    @elseif($datas->type == 'Deviation')
+                                                        <a href="{{ route('devshow', $datas->id) }}" style="color: blue">
                                                             {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
                                                         </a>
                                                         @if (!empty($datas->parent_id))
@@ -558,100 +555,129 @@
                                                                 </div>
                                                             </a>
                                                         @endif
-                                                @elseif($datas->type == 'Root-Cause-Analysis')
-                                                    <a href="{{ route('root_show', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a
-                                                            href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/root_cause_analysis">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                                {{-- <img src="{{ asset('user/images/parent.png') }}"
-                                                                    alt="..." class="w-100 h-100"> --}}
-                                                            </div>
+                                                    @elseif($datas->type == 'Failure Investigation')
+                                                            <a href="{{ route('failure-investigation-show', $datas->id) }}" style="color: blue">
+                                                                {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
+                                                            </a>
+                                                            @if (!empty($datas->parent_id))
+                                                                <a
+                                                                    href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/deviation">
+                                                                    <div class="icon" onclick="showChild()"
+                                                                        data-bs-toggle="tooltip" title="Related Records">
+                                                                        {{-- <img src="{{ asset('user/images/parent.png') }}"
+                                                                            alt="..." class="w-100 h-100"> --}}
+                                                                    </div>
+                                                                </a>
+                                                            @endif
+                                                    @elseif($datas->type == 'Non Conformance')
+                                                            <a href="{{ route('non-conformance-show', $datas->id) }}" style="color: blue">
+                                                                {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
+                                                            </a>
+                                                            @if (!empty($datas->parent_id))
+                                                                <a
+                                                                    href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/deviation">
+                                                                    <div class="icon" onclick="showChild()"
+                                                                        data-bs-toggle="tooltip" title="Related Records">
+                                                                        {{-- <img src="{{ asset('user/images/parent.png') }}"
+                                                                            alt="..." class="w-100 h-100"> --}}
+                                                                    </div>
+                                                                </a>
+                                                            @endif
+                                                    @elseif($datas->type == 'Root-Cause-Analysis')
+                                                        <a href="{{ route('root_show', $datas->id) }}" style="color: blue">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
                                                         </a>
-                                                    @endif
-                                                @elseif($datas->type == 'OOT')
-                                                    <a href="{{ route('rcms/oot_view', $datas->id) }}" style="color: blue">
-                                                        {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
-                                                    </a>
-                                                    @if (!empty($datas->parent_id))
-                                                        <a
-                                                            href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/root_cause_analysis">
-                                                            <div class="icon" onclick="showChild()"
-                                                                data-bs-toggle="tooltip" title="Related Records">
-                                                                {{-- <img src="{{ asset('user/images/parent.png') }}"
-                                                                    alt="..." class="w-100 h-100"> --}}
-                                                            </div>
+                                                        @if (!empty($datas->parent_id))
+                                                            <a
+                                                                href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/root_cause_analysis">
+                                                                <div class="icon" onclick="showChild()"
+                                                                    data-bs-toggle="tooltip" title="Related Records">
+                                                                    {{-- <img src="{{ asset('user/images/parent.png') }}"
+                                                                        alt="..." class="w-100 h-100"> --}}
+                                                                </div>
+                                                            </a>
+                                                        @endif
+                                                    @elseif($datas->type == 'OOT')
+                                                        <a href="{{ route('rcms/oot_view', $datas->id) }}" style="color: blue">
+                                                            {{ str_pad(($total_count - $loop->index), 4, '0', STR_PAD_LEFT) }}
                                                         </a>
+                                                        @if (!empty($datas->parent_id))
+                                                            <a
+                                                                href="{{ url('rcms/qms-dashboard_new', $datas->id) }}/root_cause_analysis">
+                                                                <div class="icon" onclick="showChild()"
+                                                                    data-bs-toggle="tooltip" title="Related Records">
+                                                                    {{-- <img src="{{ asset('user/images/parent.png') }}"
+                                                                        alt="..." class="w-100 h-100"> --}}
+                                                                </div>
+                                                            </a>
+                                                        @endif
                                                     @endif
+                                                </td>
+                                                @if ($datas->parent_id != null)
+                                                            <td>
+                                                                {{ str_pad($datas->parent_id, 4, '0', STR_PAD_LEFT) }}
+                                                            </td>
+                                                        @else
+                                                            <td>
+                                                                -
+                                                            </td>
                                                 @endif
-                                            </td>
-                                            @if ($datas->parent_id != null)
-                                                        <td>
-                                                            {{ str_pad($datas->parent_id, 4, '0', STR_PAD_LEFT) }}
-                                                        </td>
+                                                <td class="viewdetails" data-id="{{ $datas->id }}"
+                                                    data-type="{{ $datas->type }}" data-bs-toggle="modal"
+                                                    data-bs-target="#record-modal">
+                                                    @if ($datas->division_id)
+                                                        {{ Helpers::getDivisionName($datas->division_id) }}
                                                     @else
-                                                        <td>
-                                                            -
-                                                        </td>
-                                            @endif
-                                            <td class="viewdetails" data-id="{{ $datas->id }}"
-                                                data-type="{{ $datas->type }}" data-bs-toggle="modal"
-                                                data-bs-target="#record-modal">
-                                                @if ($datas->division_id)
-                                                    {{ Helpers::getDivisionName($datas->division_id) }}
-                                                @else
-                                                    -
-                                                @endif
-                                            </td>
-                                            <td class="viewdetails" data-id="{{ $datas->id }}"
-                                                data-type="{{ $datas->type }}" data-bs-toggle="modal"
-                                                data-bs-target="#record-modal" style="{{ $datas->type == 'Capa' ? 'text-transform: uppercase' : '' }}">
-                                                {{ $datas->type }}
-                                            </td>
+                                                        -
+                                                    @endif
+                                                </td>
+                                                <td class="viewdetails" data-id="{{ $datas->id }}"
+                                                    data-type="{{ $datas->type }}" data-bs-toggle="modal"
+                                                    data-bs-target="#record-modal" style="{{ $datas->type == 'Capa' ? 'text-transform: uppercase' : '' }}">
+                                                    {{ $datas->type }}
+                                                </td>
 
-                                            <td class="viewdetails" data-id="{{ $datas->id }}"
-                                                data-type="{{ $datas->type }}" data-bs-toggle="modal"
-                                                data-bs-target="#record-modal">
-                                                {{ ucwords(str_replace('_', ' ', $datas->initiated_through)) }}
-                                            </td>
+                                                <td class="viewdetails" data-id="{{ $datas->id }}"
+                                                    data-type="{{ $datas->type }}" data-bs-toggle="modal"
+                                                    data-bs-target="#record-modal">
+                                                    {{ ucwords(str_replace('_', ' ', $datas->initiated_through)) }}
+                                                </td>
 
-                                            <td id="short_width" class="viewdetails" data-id="{{ $datas->id }}"
-                                                data-type="{{ $datas->type }}" data-bs-toggle="modal"
-                                                data-bs-target="#record-modal">
-                                                {{ $datas->short_description }}
-                                            </td>
-                                            @php
-                                                $date = new \DateTime($datas->date_open);
-                                                $formattedDate = $date->format('d-M-Y H:i:s');
-                                            @endphp
+                                                <td id="short_width" class="viewdetails" data-id="{{ $datas->id }}"
+                                                    data-type="{{ $datas->type }}" data-bs-toggle="modal"
+                                                    data-bs-target="#record-modal">
+                                                    {{ $datas->short_description }}
+                                                </td>
+                                                @php
+                                                    $date = new \DateTime($datas->date_open);
+                                                    $formattedDate = $date->format('d-M-Y H:i:s');
+                                                @endphp
 
-                                            <td class="viewdetails" data-id="{{ $datas->id }}"
-                                                data-type="{{ $datas->type }}" data-bs-toggle="modal"
-                                                data-bs-target="#record-modal">
-                                                {{ $formattedDate }}
-                                            </td>
-                                            <td class="viewdetails" data-id="{{ $datas->id }}"
-                                                data-type="{{ $datas->type }}" data-bs-toggle="modal"
-                                                data-bs-target="#record-modal">
-                                                {{ Helpers::getInitiatorName($datas->initiator_id) }}
-                                            </td>
-                                            <td class="viewdetails" data-id="{{ $datas->id }}"
-                                                data-type="{{ $datas->type }}" data-bs-toggle="modal"
-                                                data-bs-target="#record-modal">
-                                                @if (property_exists($datas, 'due_date'))
-                                                    {{ $datas->type !== 'Extension' ? Helpers::getdateFormat($datas->due_date) : ''  }}
-                                                @endif
-                                            </td>
-                                            <td class="viewdetails" data-id="{{ $datas->id }}"
-                                                data-type="{{ $datas->type }}" data-bs-toggle="modal"
-                                                data-bs-target="#record-modal">
-                                                {{ $datas->stage }}
-                                            </td>
+                                                <td class="viewdetails" data-id="{{ $datas->id }}"
+                                                    data-type="{{ $datas->type }}" data-bs-toggle="modal"
+                                                    data-bs-target="#record-modal">
+                                                    {{ $formattedDate }}
+                                                </td>
+                                                <td class="viewdetails" data-id="{{ $datas->id }}"
+                                                    data-type="{{ $datas->type }}" data-bs-toggle="modal"
+                                                    data-bs-target="#record-modal">
+                                                    {{ Helpers::getInitiatorName($datas->initiator_id) }}
+                                                </td>
+                                                <td class="viewdetails" data-id="{{ $datas->id }}"
+                                                    data-type="{{ $datas->type }}" data-bs-toggle="modal"
+                                                    data-bs-target="#record-modal">
+                                                    @if (property_exists($datas, 'due_date'))
+                                                        {{ $datas->type !== 'Extension' ? Helpers::getdateFormat($datas->due_date) : ''  }}
+                                                    @endif
+                                                </td>
+                                                <td class="viewdetails" data-id="{{ $datas->id }}"
+                                                    data-type="{{ $datas->type }}" data-bs-toggle="modal"
+                                                    data-bs-target="#record-modal">
+                                                    {{ $datas->stage }}
+                                                </td>
 
-                                        </tr>
+                                            </tr>
+                                        @endif
                                     @endforeach
                                 </tbody>
                             </table>

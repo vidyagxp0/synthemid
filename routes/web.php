@@ -91,6 +91,8 @@ Route::middleware(['auth', 'prevent-back-history', 'user-activity'])->group(func
     Route::get('send-notification/{id}', [OpenStageController::class, 'notification']);
     Route::resource('documents', DocumentController::class);
     Route::post('revision/{id}', [DocumentController::class, 'revision']);
+    Route::get('delegate/{id}', [DocumentController::class, 'delegate']);
+    Route::post('delegate-updated', [DocumentController::class, 'delegateUpdate']);
     Route::get('/documentExportPDF', [DocumentController::class, 'documentExportPDF'])->name('documentExportPDF');
     Route::get('/documentExportEXCEL', [DocumentController::class, 'documentExportEXCEL'])->name('documentExportEXCEL');
     Route::post('/import', [DocumentController::class, 'import'])->name('csv.import');

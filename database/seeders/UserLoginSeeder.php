@@ -159,6 +159,9 @@ class UserLoginSeeder extends Seeder
                 foreach ($processes as $process) {
                     $q_m_s_divisions_id = $division->id;
                     $q_m_s_processes_id = $process->id;
+                    if($qmsroles == null){
+                        dd($q_m_s_roles_name);
+                    }
                     $q_m_s_roles_id = $qmsroles->id;
                     
                     $userRole = new UserRole();                

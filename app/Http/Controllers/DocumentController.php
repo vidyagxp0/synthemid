@@ -2550,7 +2550,90 @@ class DocumentController extends Controller
         // if ($pdfPath && Storage::disk('public')->exists($pdfPath)) {
         //     return response()->file(public_path($pdfPath));
         // }
+    }  
+    public function delegate($id){
+        $document = Document::find($id);
+        $ids=$id;
+        $hods = DB::table('user_roles')
+            ->join('users', 'user_roles.user_id', '=', 'users.id')
+            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the select statement
+            ->where('user_roles.q_m_s_processes_id', 24)
+            ->where('user_roles.q_m_s_roles_id', 4)
+            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the group by clause
+            ->get();
+        $qa = DB::table('user_roles')
+            ->join('users', 'user_roles.user_id', '=', 'users.id')
+            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the select statement
+            ->where('user_roles.q_m_s_processes_id', 24)
+            ->where('user_roles.q_m_s_roles_id', 7)
+            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the group by clause
+            ->get();
 
-
-    }    
+        $drafter = DB::table('user_roles')
+            ->join('users', 'user_roles.user_id', '=', 'users.id')
+            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the select statement
+            ->where('user_roles.q_m_s_processes_id', 24)
+            ->where('user_roles.q_m_s_roles_id', 40)
+            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the group by clause
+            ->get();
+            $reviewer = DB::table('user_roles')
+            ->join('users', 'user_roles.user_id', '=', 'users.id')
+            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the select statement
+            ->where('user_roles.q_m_s_processes_id', 24)
+            ->where('user_roles.q_m_s_roles_id', 2)
+            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the group by clause
+            ->get();
+        //$approvers = User::get();
+        $approvers = DB::table('user_roles')
+            ->join('users', 'user_roles.user_id', '=', 'users.id')
+            ->select('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the select statement
+            ->where('user_roles.q_m_s_processes_id', 24)
+            ->where('user_roles.q_m_s_roles_id', 1)
+            ->groupBy('user_roles.q_m_s_processes_id', 'users.id', 'users.role', 'users.name') // Include all selected columns in the group by clause
+            ->get();
+        return view('frontend.documents.comps.delegate_page', compact('ids', 'document','reviewer','approvers','hods','drafter','qa'));
+    }
+    public function delegateUpdate(Request $request) {
+        // Check if document_id is passed in the request
+        if (!$request->has('document_id') || empty($request->document_id)) {
+            toastr()->error('Document ID is missing in the request.');
+            return redirect()->back();
+        }
+    
+        // Attempt to find the document with the provided ID
+        $document = Document::find($request->document_id);
+    
+        // Check if the document exists in the database
+        if (!$document) {
+            toastr()->error('Document not found. Please check the Document ID.');
+            return redirect()->back();
+        }
+    
+        // Debug the request data if necessary
+        // dd($request->all());
+    
+        // Update the document fields only if the request has the corresponding data
+        if ($document->stage <= 5 && (!empty($request->reviewers) || $request->reviewers != $document->reviewers)) {
+            $document->reviewers = implode(',', $request->reviewers);
+        }
+        if ($document->stage <= 6 && !empty($request->approvers)) {
+            $document->approvers = implode(',', $request->approvers);
+        }
+        if ($document->stage <= 3 && empty($request->hods)) {
+            $document->hods = implode(',', $request->hods);
+        }
+        if ($document->stage <= 4 && !empty($request->qa)) {
+            $document->qa = implode(',', $request->qa);
+        }
+        if ($document->stage <= 2 && !empty($request->drafters)) {
+            $document->drafters = implode(',', $request->drafters);
+        }
+    
+        // Save the updated document
+        $document->update();
+    
+        // toastr()->success('Document Updated by Delegate Person');
+        return redirect()->back();
+    }
+    
 }

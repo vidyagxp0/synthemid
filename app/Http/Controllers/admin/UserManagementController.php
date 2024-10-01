@@ -60,6 +60,7 @@ class UserManagementController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required',
             'departmentid' => 'required',
+            'delegate' => 'required',
             'roles' => 'required|array',
         ]);
         
@@ -104,6 +105,7 @@ class UserManagementController extends Controller
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
         $user->departmentid = $request->departmentid;
+        $user->delegate = $request->delegate ? ($request->delegate == 'Yes' ? true : false) : false;
         $usertableRole = ''; // Initialize the variable to store concatenated role IDs
 
         if ($user->save()) {
@@ -213,6 +215,7 @@ class UserManagementController extends Controller
         $user->password = Hash::make($request->password);
     }
     $user->departmentid = $request->departmentid;
+    $user->delegate = $request->delegate ? ($request->delegate == 'Yes' ? true : false) : false;
 
     if ($user->save()) {
         // Delete existing user roles
