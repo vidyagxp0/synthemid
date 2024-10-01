@@ -465,11 +465,11 @@ $total_copies_static = $total_copies;
 <body>
 
     <header class="">
-        <table class="border" style="height: 138px;">
+        <table class="border" style="height: 135px;">
             <tbody>
                 <tr>
-                    <td class="logo w-25">
-                        <img src="https://vidyagxp.com/vidyaGxp_logo.png" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem; height:2.5rem;">
+                    <td class="logo w-20">
+                        <img src="https://navin.mydemosoftware.com/public/user/images/logo.png" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem;">
                     </td>
                     <td class="title w-60" style="height: 150px; padding: 0px;  margin: 0px; border-left: 1px solid rgb(104, 104, 104); border-right: 1px solid rgb(104, 104, 104);">
                         <p style="margin-top: -0.1rem; border-bottom: 1px solid rgb(104, 104, 104);">{{ config('site.pdf_title') }}</p>
@@ -478,8 +478,8 @@ $total_copies_static = $total_copies;
                             {{ $data->document_name }}
                         </p>
                     </td>
-                    <td class="logo w-25">
-                        <img src="https://vidyagxp.com/vidyaGxp_logo.png" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem; height:2.5rem;">
+                    <td class="logo w-20">
+                        <img src="https://navin.mydemosoftware.com/public/user/images/logo.png" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem;">
                     </td>
                 </tr>
             </tbody>
@@ -560,19 +560,19 @@ $total_copies_static = $total_copies;
         </table>
     </footer>
 
-    @if ($printing)
+    {{-- @if ($printing)
     <div class="footer-info">
         <table class="border p-10">
             <tbody>
                 <tr class="border">
                     <td class="w-100">
                         <span style="font-weight: bold;">Print Reason</span>: {{ $print_reason }}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    </td>
+    </tr>
+    </tbody>
+    </table>
     </div>
-    @endif
+    @endif --}}
 
     @while ($total_copies != 0)
 
@@ -1169,7 +1169,6 @@ $total_copies_static = $total_copies;
                 ->latest()
                 ->first();
                 @endphp
-
                 <div class="block mb-40">
                     <div class="block-head">
                         Originator
@@ -1199,7 +1198,6 @@ $total_copies_static = $total_copies;
                         </table>
                     </div>
                 </div>
-
                 <div class="block mb-40">
                     <div class="block-head">
                         HOD
@@ -1316,13 +1314,13 @@ $total_copies_static = $total_copies;
                                             @endif
                                             @endfor
 
+
                                             @endif
 
                             </tbody>
                         </table>
                     </div>
                 </div>
-
                 <div class="block mb-40">
                     <div class="block-head">
                         Reviews

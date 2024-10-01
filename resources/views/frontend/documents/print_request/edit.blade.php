@@ -300,10 +300,24 @@
                                     </div>
                                     <p id="due_dateDocError" style="color:red">**Due Date is required</p>
                                 </div>
+                                <div class="col-lg-6 mb-3">
+                                    <div class="group-input">
+                                        <label for="No. of Copies">No. of Copies <span class="text-danger">*</span></label>
+                                        <input  type="number" min="0" name="no_of_copies" value="{{$print_history->no_of_copies}}" required>
+        
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <div class="group-input">
+                                        <label for="WaterMark">WaterMark</label>
+                                        <input  type="file" name="water_mark_attachment" value="{{$print_history->water_mark_attachment}}" id="water_mark_attachment">
+        
+                                    </div>
+                                </div>
                                 <div class="col-md-12">
                                     <div class="group-input">
                                         <label for="short-desc">Reason for Print <span class="text-danger">*</span></label>
-                                        <textarea id="print_reason" name="print_reason">{{$print_history->print_reason}}</textarea>
+                                        <textarea class="tiny" id="print_reason" name="print_reason">{{$print_history->print_reason}}</textarea>
                                     </div>
                                     {{-- <p id="short_descError" style="color:red">**Short description is required</p> --}}
                                 </div>

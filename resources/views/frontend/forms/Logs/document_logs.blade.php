@@ -41,8 +41,9 @@
 
         .filter-item {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             margin-right: 20px;
+            gap: 10px;
         }
 
         .table-responsive {

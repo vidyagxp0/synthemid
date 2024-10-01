@@ -191,7 +191,7 @@
                                     </tbody> --}}
                                     
                                         <tbody id="tableData">
-                                            @include('frontend.forms.logs.filterData.labincident_data');
+                                            @include('frontend.forms.Logs.filterData.labincident_data');
                                          
                                             </tbody>
                                         

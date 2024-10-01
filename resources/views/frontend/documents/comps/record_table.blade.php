@@ -59,13 +59,13 @@
                     {{ $doc->short_description }}
                 </td>
                 <td class="create-date">
-                    {{ $doc->created_at }}
+                    {{ \Carbon\Carbon::parse($doc->created_at)->format('d-M-Y H:i A') }}
                 </td>
                 <td class="assign-name">
                     {{ Helpers::getInitiatorName($doc->originator_id) }}
                 </td>
                 <td class="modify-date">
-                    {{ $doc->updated_at }}
+                    {{ \Carbon\Carbon::parse($doc->updated_at)->format('d-M-Y H:i A') }}
                 </td>
                 <td class="status">
                     {{ Helpers::getDocStatusByStage($doc->stage, $doc->training_required) }}
@@ -103,7 +103,7 @@
         </tbody>
     </table>
     @if (isset($count))
-        {!! $documents->links() !!}
+    {!! $documents->links() !!}
     @endif
 </div>
 <div class="modal fade" id="delegateModal" tabindex="-1" role="dialog" aria-labelledby="delegateModalLabel" aria-hidden="true">

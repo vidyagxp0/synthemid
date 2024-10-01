@@ -166,7 +166,7 @@
                                     </thead>
 
                                     <tbody id="tableData">
-                                        @include('frontend.forms.logs.filterData.riskmanagement_data')
+                                        @include('frontend.forms.Logs.filterData.riskmanagement_data')
 
 
                                     </tbody>
