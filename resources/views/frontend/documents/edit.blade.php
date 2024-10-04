@@ -405,6 +405,142 @@
 </div>
 
 
+<div class="col-6">
+        <div class="group-input">
+            <label for="major">Document Version <small>(Major)</small><span class="text-danger">*</span>
+                <span class="text-primary" data-bs-toggle="modal" data-bs-target="#document-management-system-modal" style="font-size: 0.8rem; font-weight: 400;">
+                    (Launch Instruction) </span>
+            </label>
+            <input type="number" name="major" id="major" min="0" value="{{ $document->major }}" required {{Helpers::isRevised($document->stage)}}>
+
+            @foreach ($history as $tempHistory)
+            @if (
+            $tempHistory->activity_type == 'Major' &&
+            !empty($tempHistory->comment) &&
+            $tempHistory->user_id == Auth::user()->id)
+            @php
+            $users_name = DB::table('users')
+            ->where('id', $tempHistory->user_id)
+            ->value('name');
+            @endphp
+            <p style="color: blue">Modify by {{ $users_name }} at
+                {{ $tempHistory->created_at }}
+            </p>
+            <input class="input-field" style="background: #ffff0061;
+                                color: black;" type="text" value="{{ $tempHistory->comment }}" disabled>
+            @endif
+            @endforeach
+        </div>
+        @if (Auth::user()->role != 3 && $document->stage < 8) {{-- Add Comment  --}} <div class="comment">
+            <div>
+                <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
+                    at {{ date('d-M-Y h:i:s') }}</p>
+
+                <input class="input-field" type="text" name="major_comment">
+            </div>
+            <div class="button">Add Comment</div>
+    </div>
+    @endif
+    </div>
+
+    <div class="col-6">
+        <div class="group-input">
+            <label for="minor">Document Version <small>(Minor)</small><span class="text-danger">*</span>
+                <span class="text-primary" data-bs-toggle="modal" data-bs-target="#document-management-system-modal" style="font-size: 0.8rem; font-weight: 400;">
+                    (Launch Instruction) </span>
+            </label>
+            <input type="number" name="minor" id="minor" min="0" value="{{ $document->minor }}" required {{Helpers::isRevised($document->stage)}}>
+
+            @foreach ($history as $tempHistory)
+            @if (
+            $tempHistory->activity_type == 'Minor' &&
+            !empty($tempHistory->comment) &&
+            $tempHistory->user_id == Auth::user()->id)
+            @php
+            $users_name = DB::table('users')
+            ->where('id', $tempHistory->user_id)
+            ->value('name');
+            @endphp
+            <p style="color: blue">Modify by {{ $users_name }} at
+                {{ $tempHistory->created_at }}
+            </p>
+            <input class="input-field" style="background: #ffff0061;
+                                color: black;" type="text" value="{{ $tempHistory->comment }}" disabled>
+            @endif
+            @endforeach
+        </div>
+        @if (Auth::user()->role != 3 && $document->stage < 8) {{-- Add Comment  --}} <div class="comment">
+            <div>
+                <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
+                    at {{ date('d-M-Y h:i:s') }}</p>
+
+                <input class="input-field" type="text" name="minor_comment">
+            </div>
+            <div class="button">Add Comment</div>
+    </div>
+    @endif
+    </div>
+
+    <div class="col-md-6">
+            <div class="group-input">
+                <label for="doc-lang">Document Language</label>
+                <select name="document_language_id" id="doc-lang" {{Helpers::isRevised($document->stage)}}>
+                    <option value="">Enter your Selection</option>
+                    @foreach ($documentLanguages as $lan)
+                    <option data-id="{{ $lan->lcode }}" value="{{ $lan->id }}" {{ $lan->id == $document->document_language_id ? 'selected' : '' }}>
+                        {{ $lan->lname }}
+                    </option>
+                    @endforeach
+                </select>
+                @foreach ($history as $tempHistory)
+                @if (
+                $tempHistory->activity_type == 'Document Language' &&
+                !empty($tempHistory->comment) &&
+                $tempHistory->user_id == Auth::user()->id)
+                @php
+                $users_name = DB::table('users')
+                ->where('id', $tempHistory->user_id)
+                ->value('name');
+                @endphp
+                <p style="color: blue">Modify by {{ $users_name }} at
+                    {{ $tempHistory->created_at }}
+                </p>
+                <input class="input-field" style="background: #ffff0061;
+                                    color: black;" type="text" value="{{ $tempHistory->comment }}" disabled>
+                @endif
+                @endforeach
+            </div>
+
+            @if (Auth::user()->role != 3 && $document->stage < 8) {{-- Add Comment  --}} <div class="comment">
+                <div>
+                    <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
+                        at {{ date('d-M-Y h:i:s') }}</p>
+
+                    <input class="input-field" type="text" name="document_language_id_comment">
+                </div>
+                <div class="button">Add Comment</div>
+        </div>
+        @endif
+
+        </div>
+
+        <div class="col-md-6">
+            <div class="group-input">
+                <label for="doc-lang">Document Language Code</label>
+                <div class="default-name"><span id="document_language">
+                        @if (!empty($documentLanguages))
+                        @foreach ($documentLanguages as $lan)
+                        {{ $document->document_language_id == $lan->id ? $lan->lcode : '' }}
+                        @endforeach
+                        @else
+                        Not Selected
+                        @endif
+
+                    </span></div>
+            </div>
+        </div>
+
+
 <div class="col-md-5 new-date-data-field">
     <div class="group-input input-date">
         <label for="effective-date">Effective Date</label>
@@ -1700,7 +1836,7 @@
             <div class="col-md-12">
                 <div class="group-input">
                     <label for="purpose">Objective</label>
-                    <textarea name="purpose" {{Helpers::isRevised($document->stage)}}>{{ $document->document_content ? $document->document_content->purpose : '' }}</textarea>
+                    <textarea name="purpose" class="summernote" {{Helpers::isRevised($document->stage)}}>{{ $document->document_content ? $document->document_content->purpose : '' }}</textarea>
                     @foreach ($history as $tempHistory)
                     @if ($tempHistory->activity_type == 'Purpose' && !empty($tempHistory->comment) )
                     @php
@@ -1734,7 +1870,7 @@
             <div class="group-input">
                 <label for="scope">Scope</label>
 
-                <textarea name="scope" {{Helpers::isRevised($document->stage)}}>{{ $document->document_content ? $document->document_content->scope : '' }}</textarea>
+                <textarea name="scope"  class="summernote" {{Helpers::isRevised($document->stage)}}>{{ $document->document_content ? $document->document_content->scope : '' }}</textarea>
                 @foreach ($history as $tempHistory)
                 @if ($tempHistory->activity_type == 'Scope' && !empty($tempHistory->comment) )
                 @php
@@ -1777,7 +1913,7 @@
                     @if (str_contains($key, 'sub'))
                     <div class="resrow row">
                         <div class="col-6">
-                            <textarea name="responsibility[{{ $key }}]" class="myclassname">{{ $data }}</textarea>
+                            <textarea name="responsibility[{{ $key }}]" class="summernote">{{ $data }}</textarea>
                         </div>
                         <div class="col-1">
                             <button class="btn btn-danger abbreviationbtnRemove">Remove</button>
@@ -1786,7 +1922,7 @@
                     @else
                     <div class="row">
                         <div class="col-sm-10">
-                            <textarea name="responsibility[]" class="myclassname" {{Helpers::isRevised($document->stage)}}>{{ $data }}</textarea>
+                            <textarea name="responsibility[]" class="summernote" {{Helpers::isRevised($document->stage)}}>{{ $data }}</textarea>
                         </div>
                         <div class="col-sm-1">
                             <button class="btn btn-dark subResponsibilityAdd">+</button>
@@ -1802,7 +1938,7 @@
                 <div class="singleResponsibilityBlock">
                     <div class="row">
                         <div class="col-sm-10">
-                            <textarea name="responsibility[]" class="myclassname"></textarea>
+                            <textarea name="responsibility[]" class="summernote"></textarea>
                         </div>
                         <div class="col-sm-1">
                             <button class="btn btn-dark subResponsibilityAdd">+</button>
@@ -1860,7 +1996,7 @@
                 @if (str_contains($key, 'sub'))
                 <div class="resrow row">
                     <div class="col-6">
-                        <textarea name="accountability[{{ $key }}]" class="myclassname">{{ $data }}</textarea>
+                        <textarea name="accountability[{{ $key }}]" class="summernote">{{ $data }}</textarea>
                     </div>
                     <div class="col-1">
                         <button class="btn btn-danger abbreviationbtnRemove">Remove</button>
@@ -1869,7 +2005,7 @@
                 @else
                 <div class="row">
                     <div class="col-sm-10">
-                        <textarea name="accountability[]" class="myclassname" {{Helpers::isRevised($document->stage)}}>{{ $data }}</textarea>
+                        <textarea name="accountability[]" class="summernote" {{Helpers::isRevised($document->stage)}}>{{ $data }}</textarea>
                     </div>
                     <div class="col-sm-1">
                         <button class="btn btn-dark subAccountabilityAdd">+</button>
@@ -1903,7 +2039,7 @@
                 @if (str_contains($key, 'sub'))
                 <div class="resrow row">
                     <div class="col-6">
-                        <textarea name="references[{{ $key }}]" class="myclassname">{{ $data }}</textarea>
+                        <textarea name="references[{{ $key }}]" class="summernote">{{ $data }}</textarea>
                     </div>
                     <div class="col-1">
                         <button class="btn btn-danger abbreviationbtnRemove">Remove</button>
@@ -1912,7 +2048,7 @@
                 @else
                 <div class="row">
                     <div class="col-sm-10">
-                        <textarea name="references[]" class="myclassname" {{Helpers::isRevised($document->stage)}}>{{ $data }}</textarea>
+                        <textarea name="references[]" class="summernote" {{Helpers::isRevised($document->stage)}}>{{ $data }}</textarea>
                     </div>
                     <div class="col-sm-1">
                         <button class="btn btn-dark subReferencesAdd">+</button>
@@ -1929,7 +2065,7 @@
             <div class="singleReferencesBlock">
                 <div class="row">
                     <div class="col-sm-10">
-                        <textarea name="references[]" class="myclassname"></textarea>
+                        <textarea name="references[]" class="summernote"></textarea>
                     </div>
                     <div class="col-sm-1">
                         <button class="btn btn-dark subReferencesAdd">+</button>
@@ -1990,7 +2126,7 @@
                     @if (str_contains($key, 'sub'))
                     <div class="resrow row">
                         <div class="col-6">
-                            <textarea name="abbreviation[{{ $key }}]" class="myclassname">{{ $data }}</textarea>
+                            <textarea name="abbreviation[{{ $key }}]" class="summernote">{{ $data }}</textarea>
                         </div>
                         <div class="col-1">
                             <button class="btn btn-danger abbreviationbtnRemove">Remove</button>
@@ -1999,7 +2135,7 @@
                     @else
                     <div class="row">
                         <div class="col-sm-10">
-                            <textarea name="abbreviation[]" class="myclassname" {{Helpers::isRevised($document->stage)}}>{{ $data }}</textarea>
+                            <textarea name="abbreviation[]" class="summernote" {{Helpers::isRevised($document->stage)}}>{{ $data }}</textarea>
                         </div>
                         <div class="col-sm-1">
                             <button class="btn btn-dark subAbbreviationAdd">+</button>
@@ -2057,7 +2193,7 @@
                         @if (str_contains($key, 'sub'))
                         <div class="resrow row">
                             <div class="col-6">
-                                <textarea name="defination[{{ $key }}]" class="myclassname">{{ $data }}</textarea>
+                                <textarea name="defination[{{ $key }}]" class="summernote">{{ $data }}</textarea>
                             </div>
                             <div class="col-1">
                                 <button class="btn btn-danger abbreviationbtnRemove">Remove</button>
@@ -2066,7 +2202,7 @@
                         @else
                         <div class="row">
                             <div class="col-sm-10">
-                                <textarea name="defination[]" class="myclassname" {{Helpers::isRevised($document->stage)}}>{{ $data }}</textarea>
+                                <textarea name="defination[]" class="summernote" {{Helpers::isRevised($document->stage)}}>{{ $data }}</textarea>
                             </div>
                             <div class="col-sm-1">
                                 <button class="btn btn-dark subDefinitionAdd">+</button>
@@ -2123,7 +2259,7 @@
                             @if (str_contains($key, 'sub'))
                             <div class="resrow row">
                                 <div class="col-6">
-                                    <textarea name="materials_and_equipments[{{ $key }}]" class="myclassname">{{ $data }}</textarea>
+                                    <textarea name="materials_and_equipments[{{ $key }}]" class="summernote">{{ $data }}</textarea>
                                 </div>
                                 <div class="col-1">
                                     <button class="btn btn-danger abbreviationbtnRemove">Remove</button>
@@ -2132,7 +2268,7 @@
                             @else
                             <div class="row">
                                 <div class="col-sm-10">
-                                    <textarea name="materials_and_equipments[]" class="myclassname" {{Helpers::isRevised($document->stage)}}>{{ $data }}</textarea>
+                                    <textarea name="materials_and_equipments[]" class="summernote" {{Helpers::isRevised($document->stage)}}>{{ $data }}</textarea>
                                 </div>
 
                                 <div class="col-sm-1">
@@ -2151,7 +2287,7 @@
                     <div class="singleMaterialBlock">
                         <div class="row">
                             <div class="col-sm-10">
-                                <textarea name="materials_and_equipments[]" class="myclassname"></textarea>
+                                <textarea name="materials_and_equipments[]" class="summernote"></textarea>
                             </div>
 
                             <div class="col-sm-1">
@@ -2200,7 +2336,7 @@
                     <div class="group-input">
                         <label for="procedure">Procedure</label>
                         <div><small class="text-primary">Please insert "NA" in the data field if it does not require completion</small></div>
-                        <textarea name="procedure" id="summernote" class="tiny">{{ $document->document_content ? $document->document_content->procedure : '' }}</textarea>
+                        <textarea name="procedure" id="summernote" class="summernote">{{ $document->document_content ? $document->document_content->procedure : '' }}</textarea>
                         @foreach ($history as $tempHistory)
                         @if ($tempHistory->activity_type == 'Procedure' && !empty($tempHistory->comment) )
                         @php
@@ -2234,7 +2370,7 @@
                                 @if (str_contains($key, 'sub'))
                                 <div class="resrow row">
                                     <div class="col-6">
-                                        <textarea name="reporting[{{ $key }}]" class="myclassname">{{ $data }}</textarea>
+                                        <textarea name="reporting[{{ $key }}]" class="summernote">{{ $data }}</textarea>
                                     </div>
                                     <div class="col-1">
                                         <button class="btn btn-danger abbreviationbtnRemove">Remove</button>
@@ -2243,7 +2379,7 @@
                                 @else
                                 <div class="row">
                                     <div class="col-sm-10">
-                                        <textarea type="text" name="reporting[]" class="" {{Helpers::isRevised($document->stage)}}>{{ $data }}</textarea>
+                                        <textarea type="text" name="reporting[]" class="summernote" {{Helpers::isRevised($document->stage)}}>{{ $data }}</textarea>
                                     </div>
                                     <div class="col-sm-1">
                                         <button class="btn btn-dark subReportingAdd">+</button>
@@ -2259,7 +2395,7 @@
                             <div class="singleReportingBlock">
                                 <div class="row">
                                     <div class="col-sm-10">
-                                        <textarea type="text" name="reporting[]" class=""></textarea>
+                                        <textarea type="text" name="reporting[]" class="summernote"></textarea>
                                     </div>
                                     <div class="col-sm-1">
                                         <button class="btn btn-dark subReportingAdd">+</button>
@@ -2335,7 +2471,7 @@
                     </table>
                     </div>
                     </div> --}}
-                    <div class="col-md-12">
+                    {{-- <div class="col-md-12">
                         <div class="group-input">
 
                             <label for="ann" id="ann">
@@ -2351,7 +2487,7 @@
                                     @if (str_contains($key, 'sub'))
                                     <div class="resrow row">
                                         <div class="col-6">
-                                            <textarea name="ann[{{ $key }}]" class="myclassname">{{ $data }}</textarea>
+                                            <textarea name="ann[{{ $key }}]" class="summernote">{{ $data }}</textarea>
                                         </div>
                                         <div class="col-1">
                                             <button class="btn btn-danger abbreviationbtnRemove">Remove</button>
@@ -2360,7 +2496,7 @@
                                     @else
                                     <div class="row">
                                         <div class="col-sm-10">
-                                            <textarea name="ann[]" class="myclassname" {{Helpers::isRevised($document->stage)}}>{{ $data }}</textarea>
+                                            <textarea name="ann[]" class="summernote" {{Helpers::isRevised($document->stage)}}>{{ $data }}</textarea>
                                         </div>
                                         <div class="col-sm-1">
                                             <button class="btn btn-dark subAnnexureAdd">+</button>
@@ -2377,7 +2513,7 @@
                                 <div class="singleAnnexureBlock">
                                     <div class="row">
                                         <div class="col-sm-10">
-                                            <input type="text" name="ann[]" class="myclassname">
+                                            <input type="text" name="ann[]" class="summernote">
                                         </div>
                                         <div class="col-sm-1">
                                             <button class="btn btn-dark subAnnexureAdd">+</button>
@@ -2409,19 +2545,8 @@
 
 
                         </div>
-                    </div>
+                    </div> --}}
 
-                    {{-- @if (Auth::user()->role != 3 && $document->stage < 8)
-                                <div class="comment">
-                                    <div>
-                                        <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at
-                    {{ date('d-M-Y h:i:s') }}</p>
-
-                    <input class="input-field" type="text" name="ann_comment">
-                    </div>
-                    <div class="button">Add Comment</div>
-                    </div>
-                    @endif --}}
                     {{-- <div class="col-md-12">
                                 <div class="group-input">
                                     <label for="test">
@@ -2444,17 +2569,7 @@
                                     </table>
                                 </div>
                             </div> --}}
-                    @if (Auth::user()->role != 3 && $document->stage < 8) {{-- Add Comment  --}} <div class="comment">
-                        <div>
-                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }} at
-                                {{ date('d-M-Y h:i:s') }}
-                            </p>
 
-                            <input class="input-field" type="text" name="comment">
-                        </div>
-                        <div class="button">Add Comment</div>
-                        </div>
-                        @endif
                         </div>
                         </div>
                         <div class="button-block">

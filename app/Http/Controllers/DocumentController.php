@@ -1198,7 +1198,7 @@ class DocumentController extends Controller
                 $history->activity_type = 'Short Description';
                 $history->previous = $lastDocument->short_description;
                 $history->current = $document->short_description;
-                $history->comment = implode($request->short_desc_comment);
+                $history->comment = $request->short_desc_comment == null ? null : implode($request->short_desc_comment); //error here
                 $history->user_id = Auth::user()->id;
                 $history->user_name = Auth::user()->name;
                 $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
@@ -2104,9 +2104,15 @@ class DocumentController extends Controller
     {
         $depaArr = ['ACC' => 'Accounting', 'ACC3' => 'Accounting',];
         $data = Document::find($id);
+
         //$data->department = Department::find($data->department_id);
         $department = Department::find(Auth::user()->departmentid);
         $document = Document::find($id);
+
+        $document_annexures = DocumentAnnexure::where([
+            'document_id' => $id,
+            'is_child' => 0
+        ])->get();
 
         if ($department) {
             $data['department_name'] = $department->name;
@@ -2124,6 +2130,7 @@ class DocumentController extends Controller
         $data['year'] = Carbon::parse($data->created_at)->format('Y');
         $data['document_content'] = DocumentContent::where('document_id', $id)->first();
 
+
         // pdf related work
         $pdf = App::make('dompdf.wrapper');
         $time = Carbon::now();
@@ -2131,7 +2138,7 @@ class DocumentController extends Controller
         // return view('frontend.documents.pdfpage', compact('data', 'time', 'document'))->render();
         // $pdf = PDF::loadview('frontend.documents.new-pdf', compact('data', 'time', 'document'))
 
-        $pdf = PDF::loadview('frontend.documents.pdfpage', compact('data', 'time', 'document'))
+        $pdf = PDF::loadview('frontend.documents.pdfpage', compact('data', 'time', 'document','document_annexures'))
             ->setOptions([
                 'defaultFont' => 'sans-serif',
                 'isHtml5ParserEnabled' => true,
@@ -2441,66 +2448,73 @@ class DocumentController extends Controller
         }
     }
 
-    public function printAnnexure($documentId, $annexure_number)
-    {
-        try {
-            $document = Document::findOrFail($documentId);
+        public function printAnnexure($documentId, $annexure_number)
+        {
+            try {
+                $document = Document::findOrFail($documentId);
+                $document_content = DocumentAnnexure::where(['document_id' =>  $documentId, 'version' => $annexure_number])->latest()->first();
+                if ($document_content && !empty($document_content->content)) {
+                    // dd( $document_content->content);
 
-            if ($document->doc_content && !empty($document->doc_content->annexuredata)) {
-                $annexure_data = unserialize($document->doc_content->annexuredata);
+                    $annexure_data = $document_content->content;
 
-                $annexure_data = $annexure_data[$annexure_number - 1];
+                    // $annexure_data = $annexure_data[$annexure_number - 1];
 
-            $document = Document::find($documentId);
-            $data = Document::find($documentId);
-            $data->department = Department::find($data->department_id);
-            $data['originator'] = User::where('id', $data->originator_id)->value('name');
-            $data['originator_email'] = User::where('id', $data->originator_id)->value('email');
-            $data['document_content'] = DocumentContent::where('document_id', $documentId)->first();
-            $data['document_type_name'] = DocumentType::where('id', $data->document_type_id)->value('name');
-            $data['document_type_code'] = DocumentType::where('id', $data->document_type_id)->value('typecode');
-            $data['document_division'] = Division::where('id', $data->division_id)->value('name');
-            $data['year'] = Carbon::parse($data->created_at)->format('Y');
-            $pdf = App::make('dompdf.wrapper');
-            $time = Carbon::now();
-            $pdf = PDF::loadview('frontend.documents.reports.annexure_report', compact('data', 'time', 'document', 'annexure_number', 'annexure_data'))
-                ->setOptions([
-                    'defaultFont' => 'sans-serif',
-                    'isHtml5ParserEnabled' => true,
-                    'isRemoteEnabled' => true,
-                    'isPhpEnabled' => true,
-                ]);
-            $pdf->setPaper('A4');
-            $pdf->render();
-            $canvas = $pdf->getDomPDF()->getCanvas();
-            $height = $canvas->get_height();
-            $width = $canvas->get_width();
+                $document = Document::find($documentId);
+                $data = Document::find($documentId);
+                $data->department = Department::find($data->department_id);
+                $data['originator'] = User::where('id', $data->originator_id)->value('name');
+                $data['originator_email'] = User::where('id', $data->originator_id)->value('email');
+                $data['document_content'] = DocumentContent::where('document_id', $documentId)->first();
+                $data['document_type_name'] = DocumentType::where('id', $data->document_type_id)->value('name');
+                $data['document_type_code'] = DocumentType::where('id', $data->document_type_id)->value('typecode');
+                $data['document_division'] = Division::where('id', $data->division_id)->value('name');
+                $data['year'] = Carbon::parse($data->created_at)->format('Y');
+                $pdf = App::make('dompdf.wrapper');
+                $time = Carbon::now();
+                $pdf = PDF::loadview('frontend.documents.reports.annexure_report', compact('data', 'time', 'document', 'annexure_number', 'annexure_data'))
+                    ->setOptions([
+                        'defaultFont' => 'sans-serif',
+                        'isHtml5ParserEnabled' => true,
+                        'isRemoteEnabled' => true,
+                        'isPhpEnabled' => true,
+                    ]);
+                $pdf->setPaper('A4');
+                $pdf->render();
+                $canvas = $pdf->getDomPDF()->getCanvas();
+                $height = $canvas->get_height();
+                $width = $canvas->get_width();
 
-            $canvas->page_script('$pdf->set_opacity(0.1,"Multiply");');
+                $canvas->page_script('$pdf->set_opacity(0.1,"Multiply");');
 
-            $canvas->page_text(
-                $width / 4,
-                $height / 2,
-                $data->status,
-                null,
-                25,
-                [0, 0, 0],
-                2,
-                6,
-                -20
-            );
+                $canvas->page_text(
+                    $width / 4,
+                    $height / 2,
+                    $data->status,
+                    null,
+                    25,
+                    [0, 0, 0],
+                    2,
+                    6,
+                    -20
+                );
 
-            return $pdf->stream('SOP'.$documentId.'.pdf');
-            
-        } else {
-            throw new \Exception('Annexure Data Not Found');
-        }
+                return $pdf->stream('SOP'.$documentId.'.pdf');
+                
+            } else {
+                throw new \Exception('Annexure Data Not Found');
+            }
 
-    } catch(\Exception $e) {
-        return $e->getMessage();
+            } catch(\Exception $e) {
+                return $e->getMessage();
+            }
+
     }
 
-}
+
+
+
+
 
 public function setReadonly($documentId, $annexure_number)
 {

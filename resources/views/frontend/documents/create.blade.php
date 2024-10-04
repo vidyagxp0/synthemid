@@ -98,6 +98,7 @@
             <button class="tablinks" onclick="openData(event, 'qa')">QA Input</button>
             <button class="tablinks" onclick="openData(event, 'reviewers')">Reviewer Input</button>
             <button class="tablinks" onclick="openData(event, 'approvers')">Approver Input</button>
+            <button class="tablinks" onclick="openData(event, 'add-doc')">Training Information</button>
             <button class="tablinks" onclick="openData(event, 'doc-content')">Document Content</button>
             <!-- <button class="tablinks" onclick="openData(event, 'hod-remarks-tab')">HOD Remarks</button> -->
             <button class="tablinks" onclick="openData(event, 'annexures')">Annexures</button>
@@ -227,7 +228,51 @@
                     </div>
                 </div>
 
+                <div class="col-6">
+            <div class="group-input">
+                <label for="major">Document Version <small>(Major)</small> <span class="text-danger">*</span>
+                    <span class="text-primary" data-bs-toggle="modal" data-bs-target="#document-management-system-modal" style="font-size: 0.8rem; font-weight: 400;">
+                        (Launch Instruction)
+                    </span>
+                </label>
+                <input type="number" name="major" id="major" min="0" required>
+            </div>
+            {{-- <p id="majorError" style="color:red">** Department is required</p> --}}
+        </div>
 
+       <div class="col-6">
+            <div class="group-input">
+                <label for="minor">Document Version <small>(Minor)</small><span class="text-danger">*</span>
+                    <span class="text-primary" data-bs-toggle="modal" data-bs-target="#document-management-system-modal-minor" style="font-size: 0.8rem; font-weight: 400;">
+                        (Launch Instruction)
+                    </span>
+                </label>
+                <input type="number" name="minor" id="minor" min="0" max="9" required>
+
+            </div>
+        </div> 
+
+
+<div class="col-md-6">
+    <div class="group-input">
+        <label for="doc-lang">Document Language</label>
+        <select name="document_language_id" id="doc-lang">
+            <option value="" selected>Enter your Selection</option>
+            @foreach ($documentLanguages as $lan)
+            <option data-id="{{ $lan->lcode }}" value="{{ $lan->id }}">
+                {{ $lan->lname }}
+            </option>
+            @endforeach
+        </select>
+    </div>
+</div>
+<div class="col-md-6">
+    <div class="group-input">
+        <label for="doc-lang">Document Language Code</label>
+        <div class="default-name"><span id="document_language">Not selected</span></div>
+    </div>
+</div>
+        
                 <div class="col-md-5 new-date-data-field">
                     <div class="group-input input-date">
                         <label for="effective-date">Effective Date</label>
@@ -673,6 +718,123 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+    <div class="button-block">
+        <button type="submit" value="save" name="submit" id="DocsaveButton" class="saveButton">Save</button>
+        <button type="button" class="backButton" onclick="previousStep()">Back</button>
+        <button type="button" class="nextButton" id="DocnextButton" onclick="nextStep()">Next</button>
+        <button type="button"> <a href="{{ url('rcms/qms-dashboard') }}" class="text-white"> Exit </a>
+        </button>
+    </div>
+</div>
+
+
+
+<div id="add-doc" class="tabcontent">
+    <div class="orig-head">
+        Training Information
+    </div>
+    <div class="input-fields">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="group-input">
+                    <label for="train-require">Training Required?</label>
+                    <select name="training_required" required>
+                        <option value="">Enter your Selection</option>
+                        <option value="yes">Yes</option>
+                        <option value="no" selected>No</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="group-input">
+                    <label for="link-doc">Trainer</label>
+                    <select name="trainer">
+                        <option value="" selected>Enter your Selection</option>
+                        @foreach ($trainer as $temp)
+                        @if(Helpers::checkUserRolestrainer($temp))
+                        <option value="{{ $temp->id }}">{{ $temp->name }}</option>
+                        @endif
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            {{-- <div class="col-md-6">
+                                <div class="group-input">
+                                    <label for="launch-cbt">Launch CBT</label>
+                                    <select name="cbt">
+                                        <option value="" selected>Enter your Selection</option>
+                                        <option value="1`">Lorem, ipsum.</option>
+                                        <option value="1`">Lorem, ipsum.</option>
+                                        <option value="1`">Lorem, ipsum.</option>
+                                        <option value="1`">Lorem, ipsum.</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="group-input">
+                                    <label for="training-type">Type</label>
+                                    <select name="training-type">
+                                        <option value="" selected>Enter your Selection</option>
+                                        <option value="">Lorem, ipsum.</option>
+                                        <option value="1`">Lorem, ipsum.</option>
+                                        <option value="1`">Lorem, ipsum.</option>
+                                    </select>
+                                </div>
+                            </div> --}}
+            {{-- <div class="col-md-12">
+                                    <div class="group-input">
+                                        <label for="test">
+                                            Test(0)<button type="button" name="test"
+                                                onclick="addTrainRow('test')">+</button>
+                                        </label>
+                                        <table class="table-bordered table" id="test">
+                                            <thead>
+                                                <tr>
+                                                    <th class="row-num">Row No.</th>
+                                                    <th class="question">Question</th>
+                                                    <th class="answer">Answer</th>
+                                                    <th class="result">Result</th>
+                                                    <th class="comment">Comment</th>
+                                                    <th class="comment">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div> --}}
+            {{-- <div class="col-md-12">
+                                    <div class="group-input">
+                                        <label for="test">
+                                            Survey(0)<button type="button" name="reporting1"
+                                                onclick="addTrainRow('survey')">+</button>
+                                        </label>
+                                        <table class="table-bordered table" id="survey">
+                                            <thead>
+                                                <tr>
+                                                    <th class="row-num">Row No.</th>
+                                                    <th class="question">Subject</th>
+                                                    <th class="answer">Topic</th>
+                                                    <th class="result">Rating</th>
+                                                    <th class="comment">Comment</th>
+                                                    <th class="comment">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div> --}}
+            <div class="col-md-12">
+                <div class="group-input">
+                    <label for="comments">Comments</label>
+                    <textarea name="comments"></textarea>
+                </div>
+            </div>
         </div>
     </div>
     <div class="button-block">

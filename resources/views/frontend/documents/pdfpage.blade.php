@@ -1009,7 +1009,7 @@ $total_copies_static = $total_copies;
                         <div class="w-100" style="display:inline-block;">
                             <div class="w-100">
                                 <div style="height:auto; overflow-x:hidden; width:650px; margin-left: 2.5rem;">
-                                    @php $i = 1; @endphp
+                                    {{-- @php $i = 1; @endphp
                                     @if ($data->document_content && !empty($data->document_content->ann) && is_array(unserialize($data->document_content->ann)))
                                     @foreach (unserialize($data->document_content->ann) as $key => $res)
                                     @php
@@ -1029,7 +1029,53 @@ $total_copies_static = $total_copies;
                                     }
                                     @endphp
                                     @endforeach
-                                    @endif
+                                    @endif --}}
+
+                                    @php
+    $i = 1; // Initialize the primary index for main annexures
+@endphp
+
+@foreach ($document_annexures as $document_annexure)
+    <div class="annexure">
+        <div class="annexure-header">
+            <span style="position: absolute; left: -3rem; top: 0;">11.{{ $i }}</span> <!-- Display main index -->
+            Annexure A-{{ $document_annexure->version }} 
+            @if($document_annexure->is_obselete)
+                <span class="obsolete">(Obsolete)</span>
+            @endif
+        </div>
+        <div class="content">
+            {!! nl2br(e($document_annexure->content)) !!}
+        </div>
+
+        @php
+            $sub_index = 1; // Initialize the sub-index for child annexures
+        @endphp
+
+        @foreach ($document_annexure->childs as $child_annexure)
+            <div class="annexure-header">
+                <span style="position: absolute; left: -3rem; top: 0;">11.{{ $i . '.' . $sub_index }}</span> <!-- Display sub-index -->
+                Annexure A-{{ $child_annexure->version }} <small>(Revised)</small>
+                @if($child_annexure->is_obselete)
+                    <span class="obsolete">(Obsolete)</span>
+                @endif
+            </div>
+            <div class="content">
+                {!! nl2br(e($child_annexure->content)) !!}
+            </div>
+
+            @php
+                $sub_index++; // Increment sub-index for each child annexure
+            @endphp
+        @endforeach
+    </div>
+    <hr>
+
+    @php
+        $i++; // Increment the primary index for the next main annexure
+    @endphp
+@endforeach
+
                                 </div>
                             </div>
                         </div>
