@@ -28,6 +28,7 @@ return new class extends Migration
             $table->integer('parent_id')->nullable();
             $table->string('parent_type')->nullable();
             $table->longtext('short_description')->nullable();
+            $table->longtext('initial_attachment')->nullable();
             $table->string('open_date')->nullable();
             $table->string('assign_to')->nullable();
             $table->string('departments')->nullable();

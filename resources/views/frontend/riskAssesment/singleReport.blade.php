@@ -266,6 +266,32 @@
                         </tr>
                     
                 </table>
+                <div class="border-table">
+                    <div class="block-head">
+                    Initial Attachment
+                    </div>
+                    <table>
+
+                        <tr class="table_bg">
+                            <th class="w-20">S.N.</th>
+                            <th class="w-60">Batch No</th>
+                        </tr>
+                            @if($data->initial_attachment)
+                            @foreach(json_decode($data->initial_attachment) as $key => $file)
+                        <tr>
+                            <td class="w-20">{{ $key + 1 }}</td>
+                            <td class="w-20"><a href="{{ asset('upload/' . $file) }}" target="_blank"><b>{{ $file }}</b></a> </td>
+                        </tr>
+                            @endforeach
+                            @else
+                        <tr>
+                            <td class="w-20">1</td>
+                            <td class="w-20">Not Applicable</td>
+                        </tr>
+                        @endif
+
+                    </table>
+                </div>
             </div>
 
            

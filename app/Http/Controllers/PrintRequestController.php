@@ -138,7 +138,7 @@ class PrintRequestController extends Controller
         $printRequest->initiated_on = Carbon::now()->format('d-M-Y');
         $printRequest->hods = $request->hods;
         $printRequest->qa = $request->qa;
-        
+
         if (!empty($request->initial_attachments)) {
             $files = [];
             if ($request->hasfile('initial_attachments')) {
@@ -153,7 +153,7 @@ class PrintRequestController extends Controller
         $printRequest->stage = 1;
         $printRequest->status = 'Initiation';
 
-        if (! empty($request->reference_records)) {
+        if (!empty($request->reference_records)) {
             $printRequest->reference_records = implode(',', $request->reference_records);
         }
 
@@ -185,7 +185,7 @@ class PrintRequestController extends Controller
 
         $usersValue = User::get();
         // dd($print_history);
-        return view('frontend.documents.print_request.edit', compact('usersValue', 'qa', 'hods','documentList', 'print_history'));
+        return view('frontend.documents.print_request.edit', compact('usersValue', 'qa', 'hods', 'documentList', 'print_history'));
     }
 
     public function update(Request $request, $id)
@@ -200,7 +200,7 @@ class PrintRequestController extends Controller
         $printRequest->permission_user_id = $request->permission_user_id;
         // $printRequest->initiated_by = Auth::user()->id;
         // $printRequest->initiated_on = Carbon::now()->format('d-M-Y');
-        if($printRequest->stage == 2){
+        if ($printRequest->stage == 2) {
             $printRequest->hods = $request->hods;
             $printRequest->qa = $request->qa;
         }
@@ -216,54 +216,54 @@ class PrintRequestController extends Controller
             $printRequest->initial_attachments = json_encode($files);
         }
 
-        if (! empty($request->reference_records)) {
+        if (!empty($request->reference_records)) {
             $printRequest->reference_records = implode(',', $request->reference_records);
         }
-        
-        if($printRequest->stage == 2){
-                    $printRequest->hod_remarks = $request->hod_remarks;
-                    $printRequest->hod_on = Carbon::now()->format('d-M-Y');
-                    $printRequest->hod_by = Auth::user()->id;
-                    if (!empty ($request->hod_attachments)) {
-                        $files = [];
-                        if ($printRequest->hod_attachments) {
-                            $existingFiles = json_decode($printRequest->hod_attachments, true); // Convert to associative array
-                            if (is_array($existingFiles)) {
-                                $files = $existingFiles;
-                            }
-                        }
-                        if ($request->hasfile('hod_attachments')) {
-                            foreach ($request->file('hod_attachments') as $file) {
-                                $name = $request->name . 'hod_attachments' . rand(1, 100) . '.' . $file->getClientOriginalExtension();
-                                $file->move('upload/', $name);
-                                $files[] = $name;
-                            }
-                        }
-                        $printRequest->hod_attachments = json_encode($files);
+
+        if ($printRequest->stage == 2) {
+            $printRequest->hod_remarks = $request->hod_remarks;
+            $printRequest->hod_on = Carbon::now()->format('d-M-Y');
+            $printRequest->hod_by = Auth::user()->id;
+            if (!empty($request->hod_attachments)) {
+                $files = [];
+                if ($printRequest->hod_attachments) {
+                    $existingFiles = json_decode($printRequest->hod_attachments, true); // Convert to associative array
+                    if (is_array($existingFiles)) {
+                        $files = $existingFiles;
                     }
                 }
-                if($printRequest->stage == 3){
-                    $printRequest->qa_remarks = $request->qa_remarks;
-                    $printRequest->qa_on = Carbon::now()->format('d-M-Y');
-                    $printRequest->qa_by = Auth::user()->id;
-                    if (!empty ($request->qa_attachments)) {
-                        $files = [];
-                        if ($printRequest->qa_attachments) {
-                            $existingFiles = json_decode($printRequest->qa_attachments, true); // Convert to associative array
-                            if (is_array($existingFiles)) {
-                                $files = $existingFiles;
-                            }
-                        }
-                        if ($request->hasfile('qa_attachments')) {
-                            foreach ($request->file('qa_attachments') as $file) {
-                                $name = $request->name . 'qa_attachments' . rand(1, 100) . '.' . $file->getClientOriginalExtension();
-                                $file->move('upload/', $name);
-                                $files[] = $name;
-                            }
-                        }
-                        $printRequest->qa_attachments = json_encode($files);
+                if ($request->hasfile('hod_attachments')) {
+                    foreach ($request->file('hod_attachments') as $file) {
+                        $name = $request->name . 'hod_attachments' . rand(1, 100) . '.' . $file->getClientOriginalExtension();
+                        $file->move('upload/', $name);
+                        $files[] = $name;
                     }
                 }
+                $printRequest->hod_attachments = json_encode($files);
+            }
+        }
+        if ($printRequest->stage == 3) {
+            $printRequest->qa_remarks = $request->qa_remarks;
+            $printRequest->qa_on = Carbon::now()->format('d-M-Y');
+            $printRequest->qa_by = Auth::user()->id;
+            if (!empty($request->qa_attachments)) {
+                $files = [];
+                if ($printRequest->qa_attachments) {
+                    $existingFiles = json_decode($printRequest->qa_attachments, true); // Convert to associative array
+                    if (is_array($existingFiles)) {
+                        $files = $existingFiles;
+                    }
+                }
+                if ($request->hasfile('qa_attachments')) {
+                    foreach ($request->file('qa_attachments') as $file) {
+                        $name = $request->name . 'qa_attachments' . rand(1, 100) . '.' . $file->getClientOriginalExtension();
+                        $file->move('upload/', $name);
+                        $files[] = $name;
+                    }
+                }
+                $printRequest->qa_attachments = json_encode($files);
+            }
+        }
 
         $printRequest->update();
         toastr()->success('Print Request Created');
@@ -440,48 +440,48 @@ class PrintRequestController extends Controller
         if ($request->username == Auth::user()->email && Hash::check($request->password, Auth::user()->password)) {
             $ErrataControl = PrintRequest::find($id);
             $lastDocument = PrintRequest::find($id);
-                $ErrataControl->stage = "0";
-                $ErrataControl->status = "Closed-Cancelled";
-                $ErrataControl->reject_by = Auth::user()->id;
-                $ErrataControl->reject_on = Carbon::now()->format('d-M-Y');
-                $ErrataControl->reject_comment = $request->comment;
+            $ErrataControl->stage = "0";
+            $ErrataControl->status = "Closed-Cancelled";
+            $ErrataControl->reject_by = Auth::user()->id;
+            $ErrataControl->reject_on = Carbon::now()->format('d-M-Y');
+            $ErrataControl->reject_comment = $request->comment;
 
-                // $ErrataControl->sent_to_open_state_by = Auth::user()->id;
-                // $ErrataControl->sent_to_open_state_on = Carbon::now()->format('d-M-Y');
-                // $ErrataControl->sent_to_open_state_comment = $request->comment;
-                // $history = new ErrataAuditTrail();
-                // $history->errata_id = $id;
-                // $history->activity_type = 'Activity Log';
-                // $history->previous = "";
-                // $history->current = $ErrataControl->sent_to_open_state_by;
-                // $history->comment = $request->comment;
-                // $history->action = 'Cancel';
-                // $history->user_id = Auth::user()->id;
-                // $history->user_name = Auth::user()->name;
-                // $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
-                // $history->origin_state = $lastDocument->status;
-                // $history->change_to =   "Closed-Cancelled";
-                // $history->change_from = $lastDocument->status;
-                // $history->action_name = 'Not Applicable';
-                // $history->stage = 'Closed-Cancelled';
-                // $history->save();
+            // $ErrataControl->sent_to_open_state_by = Auth::user()->id;
+            // $ErrataControl->sent_to_open_state_on = Carbon::now()->format('d-M-Y');
+            // $ErrataControl->sent_to_open_state_comment = $request->comment;
+            // $history = new ErrataAuditTrail();
+            // $history->errata_id = $id;
+            // $history->activity_type = 'Activity Log';
+            // $history->previous = "";
+            // $history->current = $ErrataControl->sent_to_open_state_by;
+            // $history->comment = $request->comment;
+            // $history->action = 'Cancel';
+            // $history->user_id = Auth::user()->id;
+            // $history->user_name = Auth::user()->name;
+            // $history->user_role = RoleGroup::where('id', Auth::user()->role)->value('name');
+            // $history->origin_state = $lastDocument->status;
+            // $history->change_to =   "Closed-Cancelled";
+            // $history->change_from = $lastDocument->status;
+            // $history->action_name = 'Not Applicable';
+            // $history->stage = 'Closed-Cancelled';
+            // $history->save();
 
-                $ErrataControl->update();
-                toastr()->success('Document Sent');
-                return back();
-            }
-            else {
+            $ErrataControl->update();
+            toastr()->success('Document Sent');
+            return back();
+        } else {
             toastr()->error('E-signature Not match');
             return back();
         }
     }
 
-    public function singleReport($id){
+    public function singleReport($id)
+    {
         $data = PrintRequest::find($id);
         if (!empty($data)) {
-            $data->originator = User::where('id', $data->originator_id)->value('name'); 
-            $ids = explode(',', $data->reference_records);  
-            $relatedRecords = Document::whereIn('id', $ids)->pluck('document_name')->toArray();    
+            $data->originator = User::where('id', $data->originator_id)->value('name');
+            $ids = explode(',', $data->reference_records);
+            $relatedRecords = Document::whereIn('id', $ids)->pluck('document_name')->toArray();
 
             $pdf = App::make('dompdf.wrapper');
             $time = Carbon::now();
@@ -518,8 +518,16 @@ class PrintRequestController extends Controller
         }
     }
 
-    public function printHistories($id){
-        $data = PrintHistory::where('document_id', $id)->get();
+    public function printHistories($id)
+    {
+        // $data = PrintHistory::where('document_id', $id)->get();
+        $data = PrintHistory::where('document_id', $id)->orderBy('created_at', 'desc')->get();
         return view('frontend.documents.print_histories', compact('data'));
+    }
+
+    public function downloadHistories($id)
+    {
+        $data = DownloadHistory::where('document_id', $id)->orderBy('created_at', 'desc')->get();
+        return view('frontend.documents.download_histories', compact('data'));
     }
 }

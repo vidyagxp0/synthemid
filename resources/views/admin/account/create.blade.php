@@ -58,6 +58,17 @@
                     @enderror
                 </div>
 
+                <div class="form-group">
+                    <label for="delegate">Delegate Admin Permission<span style="color: red">*</span></label>
+                    <select class="form-control @error('delegate') is-invalid @enderror" id="delegate" name="delegate" required>
+                        <option value="No">No</option>
+                            <option value="Yes">Yes</option>
+                    </select>
+                    @error('delegate')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 <div class="form-group" id="roleGroup">
                     <label for="roles">Roles (Ctrl (windows) or Command (Mac) button to select multiple options)<span style="color: red">*</span></label>
                     <select class="form-control2 @error('roles') is-invalid @enderror" id="roles" name="roles[]" multiple required onchange="updateSelectedOptions()">

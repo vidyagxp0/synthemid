@@ -18,11 +18,12 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
+            $table->boolean('delegate')->default(0);
+            $table->bigInteger('departmentid');
             $table->string('password');
             $table->rememberToken();
             $table->string('image')->nullable();
             $table->longText('role')->nullable();
-            $table->bigInteger('departmentid');
             $table->boolean('active')->default(1);
             $table->text('permission')->nullable();
             $table->timestamps();

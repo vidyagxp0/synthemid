@@ -47,8 +47,8 @@ class QMSRolesSeeder extends Seeder
 
         $group  = new QMSRoles();
         $group->id = 5;
-        $group->name = "CFT/SME";
-        $group->description = "CFT/SME";
+        $group->name = "CFT";
+        $group->description = "CFT";
         $group->permission = json_encode(['read' => true, 'create' => true, 'edit' => true, 'delete' => true]);
         $group->save();
 
@@ -82,8 +82,8 @@ class QMSRolesSeeder extends Seeder
 
         $group  = new QMSRoles();
         $group->id = 10;
-        $group->name = "QC Head/ Designee";
-        $group->description = "QC Head/ Designee";
+        $group->name = "QC Head/Designee";
+        $group->description = "QC Head/Designee";
         $group->permission = json_encode(['read' => true, 'create' => true, 'edit' => true, 'delete' => true]);
         $group->save();
 
@@ -125,7 +125,7 @@ class QMSRolesSeeder extends Seeder
 
         $group  = new QMSRoles();
         $group->id = 16;
-        $group->name = "Work Group";
+        $group->name = "Work Group (Risk Management Head)";
         $group->description = "Work Group (Risk Management Head)";
         $group->permission = json_encode(['read' => true, 'create' => true, 'edit' => true, 'delete' => true]);
         $group->save();
@@ -293,9 +293,93 @@ class QMSRolesSeeder extends Seeder
 
         $group  = new QMSRoles();
         $group->id = 40;
-        $group->name = "Drafter";
-        $group->description = "Drafter";
+        $group->name = "Author";
+        $group->description = "Author";
         $group->permission = json_encode(['read' => true, 'create' => true, 'edit' => true, 'delete' => true]);
         $group->save();
+
+        $group  = new QMSRoles();
+        $group->id = 41;
+        $group->name = "HOD/Supervisor/Designee";
+        $group->description = "HOD/Supervisor/Designee";
+        $group->permission = json_encode(['read' => true, 'create' => true, 'edit' => true, 'delete' => true]);
+        $group->save();
+
+        $group  = new QMSRoles();
+        $group->id = 42;
+        $group->name = "Head QA";
+        $group->description = "Head QA";
+        $group->permission = json_encode(['read' => true, 'create' => true, 'edit' => true, 'delete' => true]);
+        $group->save();
+
+        $group  = new QMSRoles();
+        $group->id = 43;
+        $group->name = "QA Head/Designee";
+        $group->description = "QA Head/Designee";
+        $group->permission = json_encode(['read' => true, 'create' => true, 'edit' => true, 'delete' => true]);
+        $group->save();
+
+        $group  = new QMSRoles();
+        $group->id = 44;
+        $group->name = "Lab Supervisor";
+        $group->description = "Lab Supervisor";
+        $group->permission = json_encode(['read' => true, 'create' => true, 'edit' => true, 'delete' => true]);
+        $group->save();
+
+        $group  = new QMSRoles();
+        $group->id = 45;
+        $group->name = "QC Head";
+        $group->description = "QC Head";
+        $group->permission = json_encode(['read' => true, 'create' => true, 'edit' => true, 'delete' => true]);
+        $group->save();
+
+        $group  = new QMSRoles();
+        $group->id = 46;
+        $group->name = "QC Supervisor";
+        $group->description = "QC Supervisor";
+        $group->permission = json_encode(['read' => true, 'create' => true, 'edit' => true, 'delete' => true]);
+        $group->save();
+
+        $group  = new QMSRoles();
+        $group->id = 47;
+        $group->name = "Manufacturing QA";
+        $group->description = "Manufacturing QA";
+        $group->permission = json_encode(['read' => true, 'create' => true, 'edit' => true, 'delete' => true]);
+        $group->save();
+
+        $group  = new QMSRoles();
+        $group->id = 48;
+        $group->name = "QA Reviewer";
+        $group->description = "QA Reviewer";
+        $group->permission = json_encode(['read' => true, 'create' => true, 'edit' => true, 'delete' => true]);
+        $group->save();
+
+        $roles = [
+            ['id' => 49, 'name' => 'QA Reviewer', 'description' => 'QA Reviewer', 'permission' => ['read' => true, 'create' => true, 'edit' => true, 'delete' => true]],
+            ['id' => 50, 'name' => 'RA Review', 'description' => 'RA Review', 'permission' => ['read' => true, 'create' => true, 'edit' => true, 'delete' => true]],
+            ['id' => 51, 'name' => 'Production Tablet', 'description' => 'Production Tablet', 'permission' => ['read' => true, 'create' => true, 'edit' => true, 'delete' => true]],
+            ['id' => 52, 'name' => 'Production Liquid', 'description' => 'Production Liquid', 'permission' => ['read' => true, 'create' => true, 'edit' => true, 'delete' => true]],
+            ['id' => 53, 'name' => 'Production Injection', 'description' => 'Production Injection', 'permission' => ['read' => true, 'create' => true, 'edit' => true, 'delete' => true]],
+            ['id' => 54, 'name' => 'Stores', 'description' => 'Stores', 'permission' => ['read' => true, 'create' => true, 'edit' => true, 'delete' => true]],
+            ['id' => 55, 'name' => 'Research & Development', 'description' => 'Research & Development', 'permission' => ['read' => true, 'create' => true, 'edit' => true, 'delete' => true]],
+            ['id' => 56, 'name' => 'Microbiology', 'description' => 'Microbiology', 'permission' => ['read' => true, 'create' => true, 'edit' => true, 'delete' => true]],
+            ['id' => 57, 'name' => 'Regulatory Affair', 'description' => 'Regulatory Affair', 'permission' => ['read' => true, 'create' => true, 'edit' => true, 'delete' => true]],
+            ['id' => 58, 'name' => 'Corporate Quality Assurance', 'description' => 'Corporate Quality Assurance', 'permission' => ['read' => true, 'create' => true, 'edit' => true, 'delete' => true]],
+            ['id' => 59, 'name' => 'Safety', 'description' => 'Safety', 'permission' => ['read' => true, 'create' => true, 'edit' => true, 'delete' => true]],
+            ['id' => 60, 'name' => 'Contract Giver', 'description' => 'Contract Giver', 'permission' => ['read' => true, 'create' => true, 'edit' => true, 'delete' => true]],
+            ['id' => 61, 'name' => 'Closed Record', 'description' => 'Closed Record', 'permission' => ['read' => true, 'create' => true, 'edit' => true, 'delete' => true]],
+            ['id' => 62, 'name' => 'Delegate Person', 'description' => 'Delegate Person', 'permission' => ['read' => true, 'create' => true, 'edit' => true, 'delete' => true]],
+        ];
+
+
+
+        foreach ($roles as $role) {
+            $group = new QMSRoles();
+            $group->id = $role['id'];
+            $group->name = $role['name'];
+            $group->description = $role['description'];
+            $group->permission = json_encode($role['permission']);
+            $group->save();
+        }
     }
 }

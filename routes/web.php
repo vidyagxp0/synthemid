@@ -17,7 +17,7 @@ use App\Http\Controllers\rcms\DesktopController;
 use App\Http\Controllers\UserLoginController;
 use App\Http\Controllers\MytaskController;
 use App\Http\Controllers\CabinateController;
-use App\Http\Controllers\rcms\{CCController,DeviationController, IncidentController};
+use App\Http\Controllers\rcms\{CCController, DeviationController, IncidentController};
 use App\Http\Controllers\rcms\EffectivenessCheckController;
 use App\Http\Controllers\rcms\ObservationController;
 use App\Http\Controllers\DashboardController;
@@ -91,6 +91,8 @@ Route::middleware(['auth', 'prevent-back-history', 'user-activity'])->group(func
     Route::get('send-notification/{id}', [OpenStageController::class, 'notification']);
     Route::resource('documents', DocumentController::class);
     Route::post('revision/{id}', [DocumentController::class, 'revision']);
+    Route::get('delegate/{id}', [DocumentController::class, 'delegate']);
+    Route::post('delegate-updated', [DocumentController::class, 'delegateUpdate']);
     Route::get('/documentExportPDF', [DocumentController::class, 'documentExportPDF'])->name('documentExportPDF');
     Route::get('/documentExportEXCEL', [DocumentController::class, 'documentExportEXCEL'])->name('documentExportEXCEL');
     Route::post('/import', [DocumentController::class, 'import'])->name('csv.import');
@@ -139,6 +141,14 @@ Route::get('documents/{document}/annexures', [DocumentController::class, 'showAn
     Route::get('audit-detail/{id}', [DocumentDetailsController::class, 'auditDetails'])->name('audit-detail');
     Route::post('update-doc/{id}', [DocumentDetailsController::class, 'updatereviewers'])->name('update-doc');
     Route::get('audit-details/{id}', [DocumentDetailsController::class, 'getAuditDetail'])->name('audit-details');
+
+
+    // pdf to word/////////////////////////////////////////////////////
+    Route::get('/document/download-word/{id}', [DocumentController::class, 'downloadWord'])->name('download.word');
+
+    Route::get('/document/download-print/{id}', [DocumentController::class, 'printDownloadPDF'])->name('document.print.downloadpdf');
+    ////////////////////////////////////////////////////////////////
+
     Route::get('dashboard', [DashboardController::class, 'index']);
     Route::get('analytics', [DashboardController::class, 'analytics']);
     Route::post('subscribe', [DashboardController::class, 'subscribe']);
@@ -157,6 +167,13 @@ Route::get('documents/{document}/annexures', [DocumentController::class, 'showAn
     //     return redirect()->back()->with('success', 'Data Imported Successfully');
     // });
     Route::get('example/{id}/', [TMSController::class, 'example']);
+    //Route::post('logs', [TMSController::class, 'logsTms_dashboard'])->name('logstms');
+     Route::match(['get', 'post'],'logs', [TMSController::class, 'logsTms_dashboard'])->name('logstms');
+    Route::get('/traneeLogsreport/{training_id}/{trainee_id}', [TMSController::class, 'logsReportTranee'])->name('traneeLogsreport');
+
+
+   
+    
 
     // Questions Part
     Route::resource('question', QuestionController::class);
@@ -354,8 +371,8 @@ Route::view('trainer_qualification', 'frontend.TMS.Trainer_qualification.trainer
 
 // // Route::view('induction_training', 'frontend.TMS.Induction_training.induction_training')->name('induction_training');
 // Route::view('job_training', 'frontend.TMS.Job_Training.job_training')->name('job_training');
-Route::get('job_training',[JobTrainingController::class ,'index'])->name('job_training');
-Route::get('job_training/show/{id}',[JobTrainingController::class ,'edit'])->name('job_training_view');
+Route::get('job_training', [JobTrainingController::class, 'index'])->name('job_training');
+Route::get('job_training/show/{id}', [JobTrainingController::class, 'edit'])->name('job_training_view');
 
 Route::post('job_trainingcreate', [JobTrainingController::class, 'store'])->name('job_trainingcreate');
 Route::put('job_trainingupdate/{id}', [JobTrainingController::class, 'update'])->name('job_trainingupdate');
@@ -607,9 +624,8 @@ Route::get('print-request/create', [PrintRequestController::class, 'create'])->n
 Route::post('print-request/store', [PrintRequestController::class, 'store'])->name('print-request.store');
 Route::get('print-request/edit/{id}', [PrintRequestController::class, 'show']);
 Route::post('print-request/update/{id}', [PrintRequestController::class, 'update'])->name('print-request.update');
-Route::post('print-request/stage/{id}',[PrintRequestController::class, 'stageChange'])->name('print-request.stage');
-Route::post('print-request/stage-reject/{id}',[PrintRequestController::class, 'stageReject'])->name('print-request.stagereject');
-Route::post('print-request/stage-cancel/{id}',[PrintRequestController::class, 'erratacancelstage'])->name('print-request.cancel');
+Route::post('print-request/stage/{id}', [PrintRequestController::class, 'stageChange'])->name('print-request.stage');
+Route::post('print-request/stage-reject/{id}', [PrintRequestController::class, 'stageReject'])->name('print-request.stagereject');
+Route::post('print-request/stage-cancel/{id}', [PrintRequestController::class, 'erratacancelstage'])->name('print-request.cancel');
 
 Route::get('print-request/single-report/{id}', [PrintRequestController::class, 'singleReport']);
-

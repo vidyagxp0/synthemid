@@ -203,9 +203,9 @@
                         <th class="w-20">Due Date</th>
                         <td class="w-30">
                             @if ($data->due_date)
-                                {{ Helpers::getdateFormat($data->due_date) }}
+                            {{ Helpers::getdateFormat($data->due_date) }}
                             @else
-                                Not Applicable
+                            Not Applicable
                             @endif
                         </td>
                     </tr>
@@ -214,9 +214,9 @@
                         <th class="w-20">Short Description</th>
                         <td class="w-80" colspan="3">
                             @if ($data->short_description)
-                                {{ $data->short_description }}
+                            {{ $data->short_description }}
                             @else
-                                Not Applicable
+                            Not Applicable
                             @endif
                         </td>
                     </tr>
@@ -225,9 +225,9 @@
                         <th class="w-20">Related Records</th>
                         <td class="w-80" colspan="3">
                             @if(count($relatedRecords) > 0)
-                                {{ implode(', ', $relatedRecords) }}
+                            {{ implode(', ', $relatedRecords) }}
                             @else
-                                No related records found.
+                            No related records found.
                             @endif
                         </td>
                     </tr>
@@ -236,9 +236,9 @@
                         <th class="w-20">HOD</th>
                         <td class="w-30">
                             @if ($data->hods)
-                                {{ Helpers::getInitiatorName($data->hods) }}
+                            {{ Helpers::getInitiatorName($data->hods) }}
                             @else
-                                Not Applicable
+                            Not Applicable
                             @endif
                         </td>
                     </tr>
@@ -247,18 +247,18 @@
                         <th class="w-20">Initiated By</th>
                         <td class="w-30">
                             @if ($data->initiated_by)
-                                {{ Helpers::getInitiatorName($data->initiated_by) }}
+                            {{ Helpers::getInitiatorName($data->initiated_by) }}
                             @else
-                                Not Applicable
+                            Not Applicable
                             @endif
                         </td>
 
                         <th class="w-20">Initiated On</th>
                         <td class="w-30">
                             @if ($data->initiated_on)
-                                {{ $data->initiated_on }}
+                            {{ $data->initiated_on }}
                             @else
-                                Not Applicable
+                            Not Applicable
                             @endif
                         </td>
                     </tr>
@@ -275,18 +275,18 @@
                         <th class="w-60">Attachment</th>
                     </tr>
                     @if ($data->initial_attachments)
-                        @foreach (json_decode($data->initial_attachments) as $key => $file)
-                            <tr>
-                                <td class="w-20">{{ $key + 1 }}</td>
-                                <td class="w-20"><a href="{{ asset('upload/' . $file) }}"
-                                        target="_blank"><b>{{ $file }}</b></a> </td>
-                            </tr>
-                        @endforeach
+                    @foreach (json_decode($data->initial_attachments) as $key => $file)
+                    <tr>
+                        <td class="w-20">{{ $key + 1 }}</td>
+                        <td class="w-20"><a href="{{ asset('upload/' . $file) }}"
+                                target="_blank"><b>{{ $file }}</b></a> </td>
+                    </tr>
+                    @endforeach
                     @else
-                        <tr>
-                            <td class="w-20">1</td>
-                            <td class="w-20">Not Applicable</td>
-                        </tr>
+                    <tr>
+                        <td class="w-20">1</td>
+                        <td class="w-20">Not Applicable</td>
+                    </tr>
                     @endif
                 </table>
             </div>
@@ -302,9 +302,9 @@
                         <th class="w-20">HOD Remark</th>
                         <td class="w-80" colspan="3">
                             @if ($data->hod_remarks)
-                                {{ $data->hod_remarks }}
+                            {{ $data->hod_remarks }}
                             @else
-                                Not Applicable
+                            Not Applicable
                             @endif
                         </td>
                     </tr>
@@ -313,18 +313,18 @@
                         <th class="w-20">HOD Completed By</th>
                         <td class="w-30">
                             @if ($data->hod_by)
-                                {{ Helpers::getInitiatorName($data->hod_by) }}
+                            {{ Helpers::getInitiatorName($data->hod_by) }}
                             @else
-                                Not Applicable
+                            Not Applicable
                             @endif
                         </td>
 
                         <th class="w-20">HOD Completed On</th>
                         <td class="w-30">
                             @if ($data->hod_on)
-                                {{ $data->hod_on }}
+                            {{ $data->hod_on }}
                             @else
-                                Not Applicable
+                            Not Applicable
                             @endif
                         </td>
                     </tr>
@@ -341,18 +341,18 @@
                         <th class="w-60">Attachment</th>
                     </tr>
                     @if ($data->hod_attachments)
-                        @foreach (json_decode($data->hod_attachments) as $key => $file)
-                            <tr>
-                                <td class="w-20">{{ $key + 1 }}</td>
-                                <td class="w-20"><a href="{{ asset('upload/' . $file) }}"
-                                        target="_blank"><b>{{ $file }}</b></a> </td>
-                            </tr>
-                        @endforeach
+                    @foreach (json_decode($data->hod_attachments) as $key => $file)
+                    <tr>
+                        <td class="w-20">{{ $key + 1 }}</td>
+                        <td class="w-20"><a href="{{ asset('upload/' . $file) }}"
+                                target="_blank"><b>{{ $file }}</b></a> </td>
+                    </tr>
+                    @endforeach
                     @else
-                        <tr>
-                            <td class="w-20">1</td>
-                            <td class="w-20">Not Applicable</td>
-                        </tr>
+                    <tr>
+                        <td class="w-20">1</td>
+                        <td class="w-20">Not Applicable</td>
+                    </tr>
                     @endif
                 </table>
             </div>
@@ -368,9 +368,9 @@
                         <th class="w-20">QA Remarks</th>
                         <td class="w-80" colspan="3">
                             @if ($data->qa_remarks)
-                                {{ $data->qa_remarks }}
+                            {{ $data->qa_remarks }}
                             @else
-                                Not Applicable
+                            Not Applicable
                             @endif
                         </td>
                     </tr>
@@ -379,18 +379,18 @@
                         <th class="w-20">QA Completed By</th>
                         <td class="w-30">
                             @if ($data->qa_by)
-                                {{ Helpers::getInitiatorName($data->qa_by) }}
+                            {{ Helpers::getInitiatorName($data->qa_by) }}
                             @else
-                                Not Applicable
+                            Not Applicable
                             @endif
                         </td>
 
                         <th class="w-20">QA Completed By</th>
                         <td class="w-30">
                             @if ($data->qa_on)
-                                {{ $data->qa_on }}
+                            {{ $data->qa_on }}
                             @else
-                                Not Applicable
+                            Not Applicable
                             @endif
                         </td>
                     </tr>
@@ -407,18 +407,18 @@
                         <th class="w-60">Attachment</th>
                     </tr>
                     @if ($data->qa_attachments)
-                        @foreach (json_decode($data->qa_attachments) as $key => $file)
-                            <tr>
-                                <td class="w-20">{{ $key + 1 }}</td>
-                                <td class="w-20"><a href="{{ asset('upload/' . $file) }}"
-                                        target="_blank"><b>{{ $file }}</b></a> </td>
-                            </tr>
-                        @endforeach
+                    @foreach (json_decode($data->qa_attachments) as $key => $file)
+                    <tr>
+                        <td class="w-20">{{ $key + 1 }}</td>
+                        <td class="w-20"><a href="{{ asset('upload/' . $file) }}"
+                                target="_blank"><b>{{ $file }}</b></a> </td>
+                    </tr>
+                    @endforeach
                     @else
-                        <tr>
-                            <td class="w-20">1</td>
-                            <td class="w-20">Not Applicable</td>
-                        </tr>
+                    <tr>
+                        <td class="w-20">1</td>
+                        <td class="w-20">Not Applicable</td>
+                    </tr>
                     @endif
                 </table>
             </div>
@@ -570,6 +570,8 @@
 
             </table>
         </div> -->
+
+
     </div>
     </div>
 
@@ -582,7 +584,6 @@
                 <td class="w-40">
                     <strong>Printed By :</strong> {{ Auth::user()->name }}
                 </td>
-
             </tr>
         </table>
     </footer>
