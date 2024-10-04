@@ -458,6 +458,36 @@ $total_copies_static = $total_copies;
         .main-section {
             text-align: left;
         }
+
+        .annexure {
+        margin-bottom: 20px; /* Space between annexures */
+        padding: 10px; /* Padding around content */
+        border: 1px solid #ccc; /* Light border around annexures */
+        border-radius: 5px; /* Rounded corners */
+    }
+
+    .annexure-header {
+        font-weight: bold; /* Bold text for headers */
+        font-size: 14px; /* Slightly larger font for headers */
+        margin-bottom: 5px; /* Space below headers */
+    }
+
+    .obsolete {
+        color: red; /* Color for obsolete indication */
+        font-style: italic; /* Italic style for obsolete */
+    }
+
+    .content {
+        padding: 5px; /* Padding for content area */
+        background-color: #f9f9f9; /* Light background for content */
+        border-left: 3px solid #007bff; /* Blue left border */
+    }
+
+    hr {
+        border: 0; /* Remove default border */
+        border-top: 1px solid #ccc; /* Custom border for the line */
+        margin: 20px 0; /* Margin for the line */
+    }
     </style>
 
 </head>
@@ -1031,21 +1061,21 @@ $total_copies_static = $total_copies;
                                     @endforeach
                                     @endif --}}
 
-                                    @php
-    $i = 1; // Initialize the primary index for main annexures
+@php
+    $i = 1;
 @endphp
 
 @foreach ($document_annexures as $document_annexure)
     <div class="annexure">
         <div class="annexure-header">
-            <span style="position: absolute; left: -3rem; top: 0;">11.{{ $i }}</span> <!-- Display main index -->
+            <span style="position: absolute; left: -3rem; top: 0;">11.{{ $i }}</span> 
             Annexure A-{{ $document_annexure->version }} 
             @if($document_annexure->is_obselete)
                 <span class="obsolete">(Obsolete)</span>
             @endif
         </div>
         <div class="content">
-            {!! nl2br(e($document_annexure->content)) !!}
+            {!! nl2br(e(strip_tags($document_annexure->content))) !!}
         </div>
 
         @php
@@ -1054,25 +1084,25 @@ $total_copies_static = $total_copies;
 
         @foreach ($document_annexure->childs as $child_annexure)
             <div class="annexure-header">
-                <span style="position: absolute; left: -3rem; top: 0;">11.{{ $i . '.' . $sub_index }}</span> <!-- Display sub-index -->
+                <span style="position: absolute; left: -3rem; top: 0;">11.{{ $i . '.' . $sub_index }}</span>
                 Annexure A-{{ $child_annexure->version }} <small>(Revised)</small>
                 @if($child_annexure->is_obselete)
                     <span class="obsolete">(Obsolete)</span>
                 @endif
             </div>
             <div class="content">
-                {!! nl2br(e($child_annexure->content)) !!}
+                {!! nl2br(e(strip_tags($child_annexure->content))) !!}
             </div>
 
             @php
-                $sub_index++; // Increment sub-index for each child annexure
+                $sub_index++; 
             @endphp
         @endforeach
     </div>
     <hr>
 
     @php
-        $i++; // Increment the primary index for the next main annexure
+        $i++;
     @endphp
 @endforeach
 

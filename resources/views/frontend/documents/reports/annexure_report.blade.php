@@ -419,48 +419,49 @@
 <body>
 
     <header class="">
-        <table class="border" style="height: 147px;">
+    <table class="border" style="height: 138px;">
             <tbody>
                 <tr>
-                    <td class="logo w-20">
-                        <img src="{{ asset('user/images/vidyagxplogo.png') }}" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem;"> 
+                    <td class="logo w-25">
+                        <img src="https://vidyagxp.com/vidyaGxp_logo.png" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem; height:2.5rem;">
                     </td>
-                    <td class="title w-60" 
-                    style="height: 150px; padding: 0px;  margin: 0px; border-left: 1px solid rgb(104, 104, 104); border-right: 1px solid rgb(104, 104, 104);">
-                        <p 
-                        style="margin-top: -0.1rem; border-bottom: 1px solid rgb(104, 104, 104);">{{ config('site.pdf_title') }}</p>
+                    <td class="title w-60" style="height: 150px; padding: 0px;  margin: 0px; border-left: 1px solid rgb(104, 104, 104); border-right: 1px solid rgb(104, 104, 104);">
+                        <p style="margin-top: -0.1rem; border-bottom: 1px solid rgb(104, 104, 104);">{{ config('site.pdf_title') }}</p>
                         <br>
                         <p style="margin-top: -2rem; margin-bottom: 0px;">
                             {{ $data->document_name }}
                         </p>
                     </td>
-                    <td class="logo w-20">
-                        <img src="{{ asset('user/images/vidyagxplogo.png') }}" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem;"> 
+                    <td class="logo w-25">
+                        <img src="https://vidyagxp.com/vidyaGxp_logo.png" alt="..." style="margin-top: 0.5rem; margin-bottom: 1rem; height:2.5rem;">
                     </td>
                 </tr>
             </tbody>
         </table>
         <table class="border border-top-none p-10">
             <tbody>
-                <tr>
-                    <td class="doc-num w-100"> 
+            <tr>
+                    <td class="doc-num w-100">
                         @php
                         $temp = DB::table('document_types')
-                            ->where('name', $data->document_type_name)
-                            ->value('typecode');
-                       @endphp
-                        @if($data->revised === 'Yes') 
-                               
+                        ->where('name', $data->document_type_name)
+                        ->value('typecode');
+                        @endphp
+                        @if($data->revised === 'Yes')
+
                         {{ Helpers::getDivisionName($data->division_id) }}
-                        /@if($data->document_type_name){{  $temp }} /@endif{{ $data->year }}
-                        /000{{ $data->document_number }}/R{{$data->major}}.{{$data->minor}}
+                        /@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}
+                        /000{{ $data->document_id }}/R{{$data->major}}.{{$data->minor}}
+
+                        {{-- @else
+                        {{ Helpers::getDivisionName($data->division_id) }}
+                        /@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}
+                        /000{{ $data->department_id }}/R{{$data->major}}.{{$data->minor}}
+                        @endif --}}
 
                         @else
-                        {{ Helpers::getDivisionName($data->division_id) }}
-                        /@if($data->document_type_name){{  $temp }} /@endif{{ $data->year }}
-                        /000{{ $data->document_number }}/R{{$data->major}}.{{$data->minor}}
-                        A-{{ $annexure_number }}
-                    @endif
+                        {{Helpers::getDivisionName($data->division_id)}}/@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}{{$data->department_id}}/000{{ $data->id }}/R{{$data->major}}.{{$data->minor}}
+                        @endif
                 </tr>
             </tbody>
         </table>
@@ -470,26 +471,29 @@
         <table class="border p-20">
             <tbody>
                
-                <tr>
-                    <td class="text-left w-36">
+            <tr>
+                    <td class="text-left w-30">
                         @php
-                            $temp = DB::table('document_types')
-                                ->where('name', $data->document_type_name)
-                                ->value('typecode');
+                        $temp = DB::table('document_types')
+                        ->where('name', $data->document_type_name)
+                        ->value('typecode');
                         @endphp
-                        @if($data->revised === 'Yes')  
-                            {{ Helpers::getDivisionName($data->division_id) }}
-                            /@if($data->document_type_name){{  $temp }} /@endif{{ $data->year }}
-                            /000{{ $data->document_number }}/R{{$data->major}}.{{$data->minor}}
+                        @if($data->revised === 'Yes')
+                        {{ Helpers::getDivisionName($data->division_id) }}
+                        /@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}
+                        /000{{ $data->document_number }}/R{{$data->major}}.{{$data->minor}}
 
-                            @else
-                            {{ Helpers::getDivisionName($data->division_id) }}
-                            /@if($data->document_type_name){{  $temp }} /@endif{{ $data->year }}
-                            /000{{ $data->document_number }}/R{{$data->major}}.{{$data->minor}}                           
+                        {{-- @else
+                        {{ Helpers::getDivisionName($data->division_id) }}
+                        /@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}
+                        /000{{ $data->document_number }}/R{{$data->major}}.{{$data->minor}}
+                        @endif --}}
+
+                        @else
+                        {{Helpers::getDivisionName($data->division_id)}}/@if($data->document_type_name){{ $temp }} /@endif{{ $data->year }}{{$data->department_id}}/000{{ $data->id }}/R{{$data->major}}.{{$data->minor}}
                         @endif
-                        A-{{ $annexure_number }}
-                        
-                    <td class="w-36">Printed On : {{ $time }}</td>
+
+                    <td class="w-40">Printed On : {{ \Carbon\Carbon::parse($time)->format('d-M-Y H:i A') }}</td>
                     <td class="text-right w-20"></td>
                 </tr>
             </tbody>
