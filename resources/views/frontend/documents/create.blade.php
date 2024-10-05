@@ -856,13 +856,13 @@
             <div class="col-md-12">
                 <div class="group-input">
                     <label for="purpose">Objective</label>
-                    <textarea name="purpose"></textarea>
+                    <textarea class="summernote" name="purpose"></textarea>
                 </div>
             </div>
             <div class="col-md-12">
                 <div class="group-input">
                     <label for="scope">Scope</label>
-                    <textarea name="scope"></textarea>
+                    <textarea class="summernote" name="scope"></textarea>
                 </div>
             </div>
 
@@ -878,7 +878,7 @@
                         <div class="singleResponsibilityBlock">
                             <div class="row">
                                 <div class="col-sm-10">
-                                    <textarea name="responsibility[]" class="myclassname"></textarea>
+                                    <textarea class="summernote" name="responsibility[]" class="myclassname"></textarea>
                                 </div>
                                 <div class="col-sm-1">
                                     <button class="btn btn-dark subResponsibilityAdd">+</button>
@@ -905,7 +905,7 @@
                         <div class="singleAccountabilityBlock">
                             <div class="row">
                                 <div class="col-sm-10">
-                                    <textarea name="accountability[]" class="myclassname"></textarea>
+                                    <textarea name="accountability[]" class="myclassname summernote"></textarea>
                                 </div>
                                 <div class="col-sm-1">
                                     <button class="btn btn-dark subAccountabilityAdd">+</button>
@@ -930,7 +930,7 @@
                         <div class="singleReferencesBlock">
                             <div class="row">
                                 <div class="col-sm-10">
-                                    <textarea name="references[]" class="myclassname"></textarea>
+                                    <textarea name="references[]" class="myclassname summernote"></textarea>
                                 </div>
                                 <div class="col-sm-1">
                                     <button class="btn btn-dark subReferencesAdd">+</button>
@@ -956,7 +956,7 @@
                         <div class="singleAbbreviationBlock">
                             <div class="row">
                                 <div class="col-sm-10">
-                                    <textarea name="abbreviation[]" class="myclassname"></textarea>
+                                    <textarea name="abbreviation[]" class="myclassname summernote"></textarea>
                                 </div>
                                 <div class="col-sm-1">
                                     <button class="btn btn-dark subAbbreviationAdd">+</button>
@@ -986,7 +986,7 @@
                         <div class="singleDefinitionBlock">
                             <div class="row">
                                 <div class="col-sm-10">
-                                    <textarea name="defination[]" class="myclassname"></textarea>
+                                    <textarea name="defination[]" class="myclassname summernote"></textarea>
                                 </div>
                                 <div class="col-sm-1">
                                     <button class="btn btn-dark subDefinitionAdd">+</button>
@@ -1013,7 +1013,7 @@
                         <div class="singleMaterialBlock">
                             <div class="row">
                                 <div class="col-sm-10">
-                                    <textarea name="materials_and_equipments[]" class="myclassname"></textarea>
+                                    <textarea name="materials_and_equipments[]" class="myclassname summernote"></textarea>
                                 </div>
                                 <div class="col-sm-1">
                                     <button type="button" class="subMaterialsAdd" name="button">+</button>
@@ -1032,7 +1032,7 @@
                 <div class="group-input">
                     <label for="procedure">Procedure</label>
                     <div><small class="text-primary">Please insert "NA" in the data field if it does not require completion</small></div>
-                    <textarea name="procedure" class="tiny">
+                    <textarea name="procedure" class="summernote">
                                     </textarea>
                 </div>
             </div>
@@ -1050,7 +1050,7 @@
                         <div class="singleReportingBlock">
                             <div class="row">
                                 <div class="col-sm-10">
-                                    <textarea name="reporting[]" class=""></textarea>
+                                    <textarea name="reporting[]" class="myclassname summernote"></textarea>
                                 </div>
                                 <div class="col-sm-1">
                                     <button class="btn btn-dark subReportingAdd">+</button>
@@ -1078,7 +1078,7 @@
                         <div class="singleAnnexureBlock">
                             <div class="row">
                                 <div class="col-sm-10">
-                                    <textarea name="ann[]" class="myclassname"></textarea>
+                                    <textarea name="ann[]" class="myclassname summernote"></textarea>
                                 </div>
                                 <div class="col-sm-1">
                                     <button class="btn btn-dark subAnnexureAdd">+</button>
@@ -1953,7 +1953,7 @@
                 <input type="text" name="reference-text">
             </div>
             <div class="col-lg-6">
-                <input type="file" name="references" class="myclassname">
+                <input type="file"  name="references" class="myclassname">
             </div><div class="col-lg-6">
                 <input type="file" name="references" class="myclassname">
             </div>

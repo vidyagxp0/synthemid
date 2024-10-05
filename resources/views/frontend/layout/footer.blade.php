@@ -460,7 +460,7 @@
         $('#responsibilitybtnadd').click(function(e) {
 
             var html =
-                '<div class="singleResponsibilityBlock"><div class="resrow row"><div class="col-10"><textarea name="responsibility[]" class="myclassname"> </textarea> </div><div class="col-1"><button class="btn btn-dark subResponsibilityAdd">+</button></div><div class="col-1"><button class="btn btn-danger removeAllBlocks">Remove</button></div></div></div>';
+                '<div class="singleResponsibilityBlock"><div class="resrow row"><div class="col-10"><textarea name="responsibility[]" class="myclassname summernote"> </textarea> </div><div class="col-1"><button class="btn btn-dark subResponsibilityAdd">+</button></div><div class="col-1"><button class="btn btn-danger removeAllBlocks">Remove</button></div></div></div>';
 
             $('#responsibilitydiv').append(html);
 
@@ -469,7 +469,7 @@
         $('#accountabilitybtnadd').click(function(e) {
 
             var html =
-                '<div class="singleAccountabilityBlock"><div class="resrow row"><div class="col-10"><textarea name="accountability[]" class="myclassname"> </textarea> </div><div class="col-1"><button class="btn btn-dark subAccountabilityAdd">+</button></div><div class="col-1"><button class="btn btn-danger removeAllBlocks">Remove</button></div></div></div>';
+                '<div class="singleAccountabilityBlock"><div class="resrow row"><div class="col-10"><textarea name="accountability[]" class="myclassname summernote"> </textarea> </div><div class="col-1"><button class="btn btn-dark subAccountabilityAdd">+</button></div><div class="col-1"><button class="btn btn-danger removeAllBlocks">Remove</button></div></div></div>';
 
             $('#accountabilitydiv').append(html);
 
