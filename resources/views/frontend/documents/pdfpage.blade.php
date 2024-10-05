@@ -546,10 +546,10 @@ $total_copies_static = $total_copies;
             <tbody>
                 <tr>
                     <td class="doc-num w-50">
-                        Effective Date: {{ \Carbon\Carbon::parse($data->effective_date)->format('d-M-Y') }}
+                        Effective Date: {{ $data->effective_date ? \Carbon\Carbon::parse($data->effective_date)->format('d-M-Y') : '-' }}
                     </td>
                     <td class="doc-num w-50">
-                        Next Review Date: {{ \Carbon\Carbon::parse($data->next_review_date)->format('d-M-Y') }}
+                        Next Review Date: {{ $data->next_review_date ? \Carbon\Carbon::parse($data->next_review_date)->format('d-M-Y') : '-' }}
                     </td>
 
                 </tr>

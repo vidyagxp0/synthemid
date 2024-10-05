@@ -1146,6 +1146,12 @@ class DocumentDetailsController extends Controller
               if ($document->approver_group) {
                 if ($reviewersDataforgroup == 1 && $reviewersData == 1) {
                   $document->stage = $document->training_required == 'yes' ? 7 : 10;
+                  if($document->stage == 10){
+                    $document->effective_date = Carbon::now()->format('Y-m-d');
+                    $document->next_review_date = Carbon::createFromFormat('Y-m-d', $document->effective_date)
+                                                        ->addYears($document->review_period)
+                                                        ->format('Y-m-d');
+                  }
                   $document->approver_by = Auth::user()->id;
                   $document->approver_on = now();
                   $document->status = $document->training_required == 'yes' ? Stage::where('id', 7)->value('name') : Stage::where('id', 10)->value('name');
@@ -1165,6 +1171,12 @@ class DocumentDetailsController extends Controller
               } else {
                 if ($reviewersData == 1) {
                   $document->stage = $document->training_required == 'yes' ? 7 : 10;
+                  if($document->stage == 10){
+                    $document->effective_date = Carbon::now()->format('Y-m-d');
+                    $document->next_review_date = Carbon::createFromFormat('Y-m-d', $document->effective_date)
+                                                        ->addYears($document->review_period)
+                                                        ->format('Y-m-d');
+                  }
                   $document->approver_by = Auth::user()->id;
                   $document->approver_on = now();
                   $document->status = $document->training_required == 'yes' ? Stage::where('id', 7)->value('name') : Stage::where('id', 10)->value('name');
