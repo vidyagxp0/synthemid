@@ -398,10 +398,25 @@ $total_copies_static = $total_copies;
             page-break-before: auto;
         }
 
+        .w3-example {
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            page-break-after: auto;
+            page-break-inside: auto;
+            page-break-before: auto;
+        }
+
+        .w3-white > table {
+            table-layout: fixed;
+            width: 650px !important;
+        }
+
         .MsoNormalTable,
         .table {
             table-layout: fixed;
-            width: 650px !important;
+            width: 600px !important;
         }
 
         /* CSS to allow page breaks after and inside common HTML elements */
@@ -462,8 +477,7 @@ $total_copies_static = $total_copies;
         .annexure {
         margin-bottom: 20px; /* Space between annexures */
         padding: 10px; /* Padding around content */
-        border: 1px solid #ccc; /* Light border around annexures */
-        border-radius: 5px; /* Rounded corners */
+        border-radius: 2px; /* Rounded corners */
     }
 
     .annexure-header {
@@ -480,7 +494,7 @@ $total_copies_static = $total_copies;
     .content {
         padding: 5px; /* Padding for content area */
         background-color: #f9f9f9; /* Light background for content */
-        border-left: 3px solid #007bff; /* Blue left border */
+        border-left: 3px; /* Blue left border */
     }
 
     hr {
@@ -1075,7 +1089,7 @@ $total_copies_static = $total_copies;
             @endif
         </div>
         <div class="content">
-            {!! nl2br(e(strip_tags($document_annexure->content))) !!}
+            {!! nl2br($document_annexure->content) !!}
         </div>
 
         @php
@@ -1091,7 +1105,7 @@ $total_copies_static = $total_copies;
                 @endif
             </div>
             <div class="content">
-                {!! nl2br(e(strip_tags($child_annexure->content))) !!}
+                {!! nl2br($child_annexure->content) !!}
             </div>
 
             @php
@@ -1105,6 +1119,8 @@ $total_copies_static = $total_copies;
         $i++;
     @endphp
 @endforeach
+
+
 
                                 </div>
                             </div>

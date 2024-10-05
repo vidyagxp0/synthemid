@@ -3545,7 +3545,7 @@
                     <!-- Modal body -->
                     <div class="modal-body">
                         @for ($i = 1; $i <= 20; $i++)
-                            <a href='{{ route('document.print.annexure', ['document' => $document->id, 'annexure' => $i]) }}' target="_blank">Print Annexure A-{{ $i }}</a> <br>
+                            <a href="{{ route('document.print.annexure', ['document' => $document->id, 'annexure' => $i]) }}" target="_blank">Print Annexure A-{{ $i }}</a> <br>
                         @endfor
                     </div>
     
