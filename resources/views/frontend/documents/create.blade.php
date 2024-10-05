@@ -227,8 +227,56 @@
                         <input type="number" name="priodic_review" id="priodic_review" style="margin-top: 25px;" value="" min="0">
                     </div>
                 </div>
-
-                <div class="col-6">
+                <div class="col-md-12">
+                                    <div class="group-input">
+                                        <label for="depart-name">Department Name<span class="text-danger">*</span></label>
+                                        <select name="department_id" id="depart-name" required>
+                                            <option value="" selected>Enter your Selection</option>
+                                            <option value="CQA" @if (old('department_id') == 'CQA') selected @endif>
+                                                Corporate Quality Assurance</option>
+                                            <option value="QAB" @if (old('department_id') == 'QAB') selected @endif>Quality
+                                                Assurance Biopharma</option>
+                                            <option value="CQC" @if (old('department_id') == 'CQA') selected @endif>Central
+                                                Quality Control</option>
+                                            <option value="MANU" @if (old('department_id') == 'MANU') selected @endif>
+                                                Manufacturing</option>
+                                            <option value="PSG" @if (old('department_id') == 'PSG') selected @endif>Plasma
+                                                Sourcing Group</option>
+                                            <option value="CS" @if (old('department_id') == 'CS') selected @endif>Central
+                                                Stores</option>
+                                            <option value="ITG" @if (old('department_id') == 'ITG') selected @endif>
+                                                Information Technology Group</option>
+                                            <option value="MM" @if (old('department_id') == 'MM') selected @endif>
+                                                Molecular Medicine</option>
+                                            <option value="CL" @if (old('department_id') == 'CL') selected @endif>
+                                                Central Laboratory</option>
+                                            <option value="TT" @if (old('department_id') == 'TT') selected @endif>Tech
+                                                Team</option>
+                                            <option value="QA" @if (old('department_id') == 'QA') selected @endif>
+                                                Quality Assurance</option>
+                                            <option value="QM" @if (old('department_id') == 'QM') selected @endif>
+                                                Quality Management</option>
+                                            <option value="IA" @if (old('department_id') == 'IA') selected @endif>IT
+                                                Administration</option>
+                                            <option value="ACC" @if (old('department_id') == 'ACC') selected @endif>
+                                                Accounting</option>
+                                            <option value="LOG" @if (old('department_id') == 'LOG') selected @endif>
+                                                Logistics</option>
+                                            <option value="SM" @if (old('department_id') == 'SM') selected @endif>
+                                                Senior Management</option>
+                                            <option value="BA" @if (old('department_id') == 'BA') selected @endif>
+                                                Business Administration</option>
+                                            <option value="others" @if (old('department_id') == 'others') selected @endif>
+                                                Others</option>
+                                            {{-- @foreach ($departments as $department)
+                                                <option data-id="{{ $department->dc }}" value="{{ $department->id }}">
+                                                    {{ $department->name }}</option>
+                                            @endforeach --}}
+                                        </select>
+                                    </div>
+                                    <p id="depart-nameError" style="color:red">** Department is required</p>
+                                </div>
+        <div class="col-6">
             <div class="group-input">
                 <label for="major">Document Version <small>(Major)</small> <span class="text-danger">*</span>
                     <span class="text-primary" data-bs-toggle="modal" data-bs-target="#document-management-system-modal" style="font-size: 0.8rem; font-weight: 400;">

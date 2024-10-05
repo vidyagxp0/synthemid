@@ -410,7 +410,7 @@ $total_copies_static = $total_copies;
 
         .w3-white > table {
             table-layout: fixed;
-            width: 650px !important;
+            width: 580px !important;
         }
 
         .MsoNormalTable,
@@ -560,7 +560,11 @@ $total_copies_static = $total_copies;
             <tbody>
                 <tr>
                     <td class="doc-num w-50">
+                    @if ($data->stage == 7)
                         Effective Date: {{ $data->effective_date ? \Carbon\Carbon::parse($data->effective_date)->format('d-M-Y') : '-' }}
+                    @else
+                        Effective Date: -
+                    @endif
                     </td>
                     <td class="doc-num w-50">
                         Next Review Date: {{ $data->next_review_date ? \Carbon\Carbon::parse($data->next_review_date)->format('d-M-Y') : '-' }}
@@ -1052,7 +1056,7 @@ $total_copies_static = $total_copies;
                     <div class="w-100">
                         <div class="w-100" style="display:inline-block;">
                             <div class="w-100">
-                                <div style="height:auto; overflow-x:hidden; width:650px; margin-left: 2.5rem;">
+                                <div style="height:auto; overflow-x:hidden; width:600px; margin-left: 1.5rem;">
                                     {{-- @php $i = 1; @endphp
                                     @if ($data->document_content && !empty($data->document_content->ann) && is_array(unserialize($data->document_content->ann)))
                                     @foreach (unserialize($data->document_content->ann) as $key => $res)
@@ -1082,7 +1086,7 @@ $total_copies_static = $total_copies;
 @foreach ($document_annexures as $document_annexure)
     <div class="annexure">
         <div class="annexure-header">
-            <span style="position: absolute; left: -3rem; top: 0;">11.{{ $i }}</span> 
+            <!-- <span style="position: absolute; left: -3rem; top: 0;">11.{{ $i }}</span>  -->
             Annexure A-{{ $document_annexure->version }} 
             @if($document_annexure->is_obselete)
                 <span class="obsolete">(Obsolete)</span>

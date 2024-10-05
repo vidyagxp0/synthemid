@@ -261,7 +261,7 @@
 
             <div class="col-md-6">
                 <div class="group-input">
-                    <label for="doc-type">Department Type</label>
+                    <label for="doc-type">Document Type</label>
                     <select name="document_type_id" id="doc-type" {{Helpers::isRevised($document->stage)}}>
                         <option value="">Enter your Selection</option>
                         @foreach (Helpers::getDocumentTypes() as $code => $type)
@@ -324,7 +324,7 @@
 
     <div class="col-md-6">
         <div class="group-input">
-            <label for="doc-code">Department Type Code</label>
+            <label for="doc-code">Document Type Code</label>
             <div class="default-name"> <span id="document_type_code">
                     @foreach (Helpers::getDocumentTypes() as $code => $type)
                     {{ $code == $document->document_type_id ? $code : '' }}
@@ -403,6 +403,199 @@
         <input type="number" name="priodic_review" id="priodic_review" style="margin-top: 25px;" value="{{$document->priodic_review}}" min="0">
     </div>
 </div>
+
+                  
+                            <div class="col-md-6">
+                                <div class="group-input">
+                                    <label for="doc-num">Document Number</label>
+                                    <div class="default-name">
+                        @php
+                        $temp = DB::table('document_types')
+                        ->where('name', $document->document_type_name)
+                        ->value('typecode');
+                        @endphp
+                        @if($document->revised === 'Yes')
+
+                        000{{ $document->document_id }}/R{{$document->major}}.{{$document->minor}}
+
+                        {{-- @else
+                        {{ Helpers::getDivisionName($document->division_id) }}
+                        /@if($document->document_type_name){{ $temp }} /@endif{{ $document->year }}
+                        /000{{ $document->department_id }}/R{{$document->major}}.{{$document->minor}}
+                        @endif --}}
+
+                        @else
+                        {{-- 000{{ $document->id }}/R{{$document->major}}.{{$document->minor}} --}}
+                        @foreach (Helpers::getDocumentTypes() as $code => $type)
+                            @if ($code == $document->document_type_id)
+                                {{ $code }}/000{{ $document->id }}/R{{ $document->major }}.{{ $document->minor }}
+                            @endif
+                        @endforeach
+
+
+                        @endif
+                                    </div>
+                                        
+                                        {{-- {{ $document->division_name }} --}}
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="group-input">
+                                    <label for="link-doc">Reference Record</label>
+                                    <select multiple name="reference_record[]" placeholder="Select Reference Records"
+                                        data-search="false" data-silent-initial-value-set="true" id="reference_record" {{Helpers::isRevised($document->stage)}} >
+                                        @if (!empty($document_data))
+                                            @foreach ($document_data as $temp)
+                                            
+                                                <option value="{{ $temp->id }}" {{ str_contains($document->reference_record, $temp->id) ? 'selected' : '' }}>
+                                                    {{ Helpers::getDivisionName($temp->division_id) }}/{{ $temp->typecode }}/{{ $temp->year }}/000{{ $temp->id }}/R{{$temp->major}}.{{$temp->minor}}/{{$temp->document_name}}
+                                                </option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                    @foreach ($history as $tempHistory)
+                                        @if (
+                                            $tempHistory->activity_type == 'Reference Record' &&
+                                                !empty($tempHistory->comment)  &&
+                                                $tempHistory->user_id == Auth::user()->id)
+                                            @php
+                                                $users_name = DB::table('users')
+                                                    ->where('id', $tempHistory->user_id)
+                                                    ->value('name');
+                                            @endphp
+                                            <p style="color: blue">Modify by {{ $users_name }} at
+                                                {{ $tempHistory->created_at }}
+                                            </p>
+                                            <input class="input-field"
+                                                style="background: #ffff0061;
+                                    color: black;"
+                                                type="text" value="{{ $tempHistory->comment }}" disabled>
+                                        @endif
+                                    @endforeach
+                                </div>
+
+                                @if (Auth::user()->role != 3 && $document->stage < 8)
+
+                                    {{-- Add Comment  --}}
+                                    <div class="comment">
+                                        <div>
+                                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
+                                                at {{ date('d-M-Y h:i:s') }}</p>
+
+                                            <input class="input-field" type="text" name="reference_record_comment">
+                                        </div>
+                                        <div class="button">Add Comment</div>
+                                    </div>
+                                @endif
+
+                            </div>
+  
+
+
+
+                            <div class="col-md-12">
+                                <div class="group-input">
+                                    <label for="depart-name">Department Name</label>
+                                    <select name="department_id" id="depart-name" {{Helpers::isRevised($document->stage)}} >
+                                        <option value="">Enter your Selection</option>
+                                            <option value="CQA"
+                                                @if ($document->department_id == 'CQA') selected @endif>Corporate
+                                                Quality Assurance</option>
+                                            <option value="QAB"
+                                                @if ($document->department_id == 'QAB') selected @endif>Quality
+                                                Assurance Biopharma</option>
+                                            <option value="CQC"
+                                                @if ($document->department_id == 'CQC') selected @endif>Central
+                                                Quality Control</option>
+                                            <option value="MANU"
+                                                @if ($document->department_id == 'MANU') selected @endif>Manufacturing
+                                            </option>
+                                            <option value="PSG"
+                                                @if ($document->department_id == 'PSG') selected @endif>Plasma
+                                                Sourcing Group</option>
+                                            <option value="CS"
+                                                @if ($document->department_id == 'CS') selected @endif>Central
+                                                Stores</option>
+                                            <option value="ITG"
+                                                @if ($document->department_id == 'ITG') selected @endif>Information
+                                                Technology Group</option>
+                                            <option value="MM"
+                                                @if ($document->department_id == 'MM') selected @endif>Molecular
+                                                Medicine</option>
+                                            <option value="CL"
+                                                @if ($document->department_id == 'CL') selected @endif>Central
+                                                Laboratory</option>
+                                            <option value="TT"
+                                                @if ($document->department_id == 'TT') selected @endif>Tech
+                                                Team</option>
+                                            <option value="QA"
+                                                @if ($document->department_id == 'QA') selected @endif>Quality
+                                                Assurance</option>
+                                            <option value="QM"
+                                                @if ($document->department_id == 'QM') selected @endif>Quality
+                                                Management</option>
+                                            <option value="IA"
+                                                @if ($document->department_id == 'IA') selected @endif>IT
+                                                Administration</option>
+                                            <option value="ACC"
+                                                @if ($document->department_id == 'ACC') selected @endif>Accounting
+                                            </option>
+                                            <option value="LOG"
+                                                @if ($document->department_id == 'LOG') selected @endif>Logistics
+                                            </option>
+                                            <option value="SM"
+                                                @if ($document->department_id == 'SM') selected @endif>Senior
+                                                Management</option>
+                                            <option value="BA"
+                                                @if ($document->department_id == 'BA') selected @endif>Business
+                                                Administration</option>
+                                            <option value="BA"
+                                                @if ($document->department_id == 'others') selected @endif>Others
+                                                </option>
+                                        @foreach ($departments as $department)
+                                            <option data-id="{{ $department->dc }}" value="{{ $department->id }}"
+                                                {{ $department->id == $document->department_id ? 'selected' : '' }}>
+                                                {{ $department->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @foreach ($history as $tempHistory)
+                                        @if (
+                                            $tempHistory->activity_type == 'Department' &&
+                                                !empty($tempHistory->comment)  &&
+                                                $tempHistory->user_id == Auth::user()->id)
+                                            @php
+                                                $users_name = DB::table('users')
+                                                    ->where('id', $tempHistory->user_id)
+                                                    ->value('name');
+                                            @endphp
+                                            <p style="color: blue">Modify by {{ $users_name }} at
+                                                {{ $tempHistory->created_at }}
+                                            </p>
+                                            <input class="input-field"
+                                                style="background: #ffff0061;
+                                    color: black;"
+                                                type="text" value="{{ $tempHistory->comment }}" disabled>
+                                        @endif
+                                    @endforeach
+                                </div>
+                                <p id="depart-nameError" style="color:red">**Department Name is required</p>
+
+
+                                @if (Auth::user()->role != 3 && $document->stage < 8)
+                                    {{-- Add Comment  --}}
+                                    <div class="comment">
+                                        <div>
+                                            <p class="timestamp" style="color: blue">Modify by {{ Auth::user()->name }}
+                                                at {{ date('d-M-Y h:i:s') }}</p>
+
+                                            <input class="input-field" type="text" name="department_id_comment">
+                                        </div>
+                                        <div class="button">Add Comment</div>
+                                    </div>
+                                @endif
+
+                            </div>
 
 
 <div class="col-6">

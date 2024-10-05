@@ -53,7 +53,7 @@
 
                 <td style="
                 width: 305px;
-                white-space: nowrap;
+             
                 overflow: hidden !important;
                 text-overflow: ellipsis" class="short-desc">
                     {{ $doc->short_description }}
